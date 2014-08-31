@@ -7,8 +7,6 @@ import org.htmlparser.util.NodeList;
 import org.htmlparser.util.ParserException;
 import org.htmlparser.visitors.NodeVisitor;
 
-import triple.extract.TripleGenerator;
-
 import com.tag.TagChild;
 import com.tag.myElement;
 
@@ -45,26 +43,11 @@ public class InfoboxNode {
 						return;
 					}
 					String triples = 
-							TripleGenerator.GenerFromTR(PageId, tag);
+							RecordGenerator.GenerFromTR(PageId, tag);
 					if(triples == null)
 						return;
 					outputTriples += triples;
 				}
-				else if(tagName.equals("td") || tagName.equals("th"))
-				{
-					
-				}
-				else
-				{
-					/*
-					System.out.println("InfoboxNode.java:PageId:" + PageId
-							+ " may be tagName:" + tagName + "\t\"" 
-							+ tag.toPlainTextString() + "\"");
-							*/
-				}
-					
-				
-				
 				lastTagName = tagName;
 				tags.push(lastTagName);
 			}

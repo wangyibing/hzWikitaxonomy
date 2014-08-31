@@ -2,6 +2,8 @@ package extract;
 
 import java.util.Vector;
 
+import normalization.PredExtraction;
+
 import org.htmlparser.Remark;
 import org.htmlparser.Tag;
 import org.htmlparser.Text;
@@ -14,7 +16,6 @@ import com.tag.dedup;
 import dumps.Entity;
 import dumps.InfoboxNameList;
 import tools.uFunc;
-import triple.predicate.feature.PredExtraction;
 
 
 public class PageNode {

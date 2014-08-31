@@ -1,11 +1,12 @@
-package triple.predicate.feature;
+package normalization;
 
+
+import normalization.predicate.UpperTitleExtract;
+import normalization.predicate.linkExtract;
 
 import org.htmlparser.util.NodeList;
 
 import tools.uFunc;
-import triple.predicate.feature.extraction.UpperTitleExtract;
-import triple.predicate.feature.extraction.linkExtract;
 
 public class PredExtraction {
 	public static String UpperTitleFeaturePath = 

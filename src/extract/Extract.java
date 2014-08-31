@@ -2,12 +2,13 @@ package extract;
 
 import java.io.File;
 
+import normalization.PredExtraction;
+
 import org.htmlparser.Parser;
 import org.htmlparser.util.NodeList;
 
 import dumps.InfoboxIdList;
 import tools.uFunc;
-import triple.predicate.feature.PredExtraction;
 
 public class Extract{
 
