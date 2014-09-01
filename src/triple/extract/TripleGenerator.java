@@ -46,8 +46,9 @@ public class TripleGenerator {
 				//System.out.println("SecondStandardize.java:" +  "contO empty:pageid:" + pageid + " " + contP);
 				continue;
 			}
-			if(predi.eleNr == objc.eleNr && objc.eleNr > 1)
+			if(predi.eleNr == objc.eleNr && objc.eleNr > 1){
 				contP = getStringFromMyelement(predi.eles.get(i), NoLink);
+			}
 			if(uFunc.isPeriod(contP) || contP.contains("〒"))
 			{
 				if(tRTitleNr <= 1)
@@ -97,6 +98,7 @@ public class TripleGenerator {
 
 	public static String getTripleFromSgl(String cont, int pageid2) {
 		// TODO Auto-generated method stub
+		PageId = pageid2;
 		String result = "";
 		if(cont.split(":|：").length < 2){
 			System.out.println("SecondStandardize.java: error");
