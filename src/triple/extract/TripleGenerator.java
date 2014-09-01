@@ -3,7 +3,7 @@ package triple.extract;
 import com.tag.myElement;
 import com.tag.myObj;
 
-import dumps.Entity;
+import database.Entity;
 import tools.URL2UTF8;
 import tools.uFunc;
 import triple.object.ObjeStdz;

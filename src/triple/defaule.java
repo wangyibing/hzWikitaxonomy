@@ -5,7 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import dumps.InfoboxNameList;
+import database.InfoboxNameList;
 import extract.Extract;
 import tools.URL2UTF8;
 import tools.uFunc;

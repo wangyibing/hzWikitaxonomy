@@ -11,7 +11,7 @@ import com.tag.myElement;
 import com.tag.myObj;
 import com.tag.myTag;
 
-import dumps.Entity;
+import database.Entity;
 import tools.uFunc;
 import triple.extract.TripleGenerator;
 import triple.object.ObjeStdz;

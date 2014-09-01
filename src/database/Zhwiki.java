@@ -63,8 +63,7 @@ public class Zhwiki {
 	public static String getTitle(int PageId){
 		ConnectToDB();
 		try {
-			return uFunc.Simplify(
-					wiki.getPage(PageId).getTitle().getWikiStyleTitle());
+			return wiki.getPage(PageId).getTitle().getWikiStyleTitle();
 		} catch (Exception e) {
 			return null;
 		}

@@ -11,7 +11,7 @@ import com.tag.TagChild;
 import com.tag.myElement;
 import com.tag.myTag;
 
-import dumps.Entity;
+import database.Entity;
 import triple.extract.TripleGenerator;
 import triple.predicate.PredStdz;
 

@@ -6,9 +6,38 @@
 	<classpathentry kind="lib" path="lib/htmllexer.jar"/>
 	<classpathentry kind="lib" path="lib/htmlparser.jar"/>
 	<classpathentry kind="lib" path="lib/jdom-2.0.4.jar"/>
-	<classpathentry kind="lib" path="lib/jwpl_v05b.jar"/>
 	<classpathentry kind="lib" path="lib/prefuse-beta-20071021.jar"/>
 	<classpathentry kind="lib" path="lib/tree_split-1.0.1.jar"/>
 	<classpathentry kind="lib" path="lib/ZHConverter.jar"/>
+	<classpathentry kind="lib" path="/home/hanzhe/git/hzWikitaxonomy/lib/dependencies/xml-apis-1.0.b2.jar"/>
+	<classpathentry kind="lib" path="/home/hanzhe/git/hzWikitaxonomy/lib/dependencies/xercesImpl-2.9.1-lucene.jar"/>
+	<classpathentry kind="lib" path="/home/hanzhe/git/hzWikitaxonomy/lib/dependencies/trove4j-2.0.2.jar"/>
+	<classpathentry kind="lib" path="/home/hanzhe/git/hzWikitaxonomy/lib/dependencies/swing-layout-1.0.2.jar"/>
+	<classpathentry kind="lib" path="/home/hanzhe/git/hzWikitaxonomy/lib/dependencies/spring-core-3.0.3.RELEASE.jar"/>
+	<classpathentry kind="lib" path="/home/hanzhe/git/hzWikitaxonomy/lib/dependencies/spring-beans-3.0.3.RELEASE.jar"/>
+	<classpathentry kind="lib" path="/home/hanzhe/git/hzWikitaxonomy/lib/dependencies/spring-asm-3.0.3.RELEASE.jar"/>
+	<classpathentry kind="lib" path="/home/hanzhe/git/hzWikitaxonomy/lib/dependencies/mysql-connector-java-5.1.14.jar"/>
+	<classpathentry kind="lib" path="/home/hanzhe/git/hzWikitaxonomy/lib/dependencies/mail-1.4.1.jar"/>
+	<classpathentry kind="lib" path="/home/hanzhe/git/hzWikitaxonomy/lib/dependencies/log4j-1.2.16.jar"/>
+	<classpathentry kind="lib" path="/home/hanzhe/git/hzWikitaxonomy/lib/dependencies/jgrapht-jdk1.5-0.7.3.jar"/>
+	<classpathentry kind="lib" path="/home/hanzhe/git/hzWikitaxonomy/lib/dependencies/jfreechart-1.0.12.jar"/>
+	<classpathentry kind="lib" path="/home/hanzhe/git/hzWikitaxonomy/lib/dependencies/jcommon-1.0.15.jar"/>
+	<classpathentry kind="lib" path="/home/hanzhe/git/hzWikitaxonomy/lib/dependencies/jboss-transaction-api_1.1_spec-1.0.0.Final.jar"/>
+	<classpathentry kind="lib" path="/home/hanzhe/git/hzWikitaxonomy/lib/dependencies/jboss-logging-3.1.0.CR2.jar"/>
+	<classpathentry kind="lib" path="/home/hanzhe/git/hzWikitaxonomy/lib/dependencies/javassist-3.9.0.GA.jar"/>
+	<classpathentry kind="lib" path="/home/hanzhe/git/hzWikitaxonomy/lib/dependencies/jandex-1.0.3.Final.jar"/>
+	<classpathentry kind="lib" path="/home/hanzhe/git/hzWikitaxonomy/lib/dependencies/hibernate-jpa-2.0-api-1.0.1.Final.jar"/>
+	<classpathentry kind="lib" path="/home/hanzhe/git/hzWikitaxonomy/lib/dependencies/hibernate-core-4.0.0.Final.jar"/>
+	<classpathentry kind="lib" path="/home/hanzhe/git/hzWikitaxonomy/lib/dependencies/hibernate-commons-annotations-4.0.1.Final.jar"/>
+	<classpathentry kind="lib" path="/home/hanzhe/git/hzWikitaxonomy/lib/dependencies/dom4j-1.6.1.jar"/>
+	<classpathentry kind="lib" path="/home/hanzhe/git/hzWikitaxonomy/lib/dependencies/commons-logging-1.1.1.jar"/>
+	<classpathentry kind="lib" path="/home/hanzhe/git/hzWikitaxonomy/lib/dependencies/commons-collections-3.2.1.jar"/>
+	<classpathentry kind="lib" path="/home/hanzhe/git/hzWikitaxonomy/lib/dependencies/commons-codec-1.4.jar"/>
+	<classpathentry kind="lib" path="/home/hanzhe/git/hzWikitaxonomy/lib/dependencies/classmate-0.5.4.jar"/>
+	<classpathentry kind="lib" path="/home/hanzhe/git/hzWikitaxonomy/lib/dependencies/antlr-2.7.7.jar"/>
+	<classpathentry kind="lib" path="/home/hanzhe/git/hzWikitaxonomy/lib/dependencies/ant-launcher-1.8.2.jar"/>
+	<classpathentry kind="lib" path="/home/hanzhe/git/hzWikitaxonomy/lib/dependencies/ant-1.8.2.jar"/>
+	<classpathentry kind="lib" path="/home/hanzhe/git/hzWikitaxonomy/lib/dependencies/activation-1.1.jar"/>
+	<classpathentry kind="lib" path="/home/hanzhe/git/hzWikitaxonomy/lib/de.tudarmstadt.ukp.wikipedia.api-0.9.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

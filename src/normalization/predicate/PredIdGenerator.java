@@ -9,225 +9,187 @@ import org.htmlparser.util.NodeList;
 import org.htmlparser.util.ParserException;
 import org.htmlparser.visitors.NodeVisitor;
 
+import tools.URL2UTF8;
 import tools.uFunc;
 import triple.extract.TripleGenerator;
 import triple.object.ObjeStdz;
 import triple.predicate.PredStdz;
+import triple.standardize.HTMLStdz;
 
 import com.tag.TagChild;
 import com.tag.myElement;
 import com.tag.myObj;
 import com.tag.myTag;
 
-import dumps.Entity;
+import database.Entity;
 import extract.InfoboxNode;
 
 public class PredIdGenerator {
-	private static Vector<myTag> tags = new Vector<myTag>();
-	private static int PageId ;
-	public static String GenerFromTR(int pageid, Tag tr)
-	{
-		if(Init(tr) == false)
-		{
-			return null;
-		}
-		tags = TagChild.getChildren(tr);
-		if(tags == null)
-		{
-			uFunc.OutputTagInfo(tr, "no children");
-			return null;
-		}
+	public static boolean NoLink = false;
+	public static myElement UpperTitle;
+	public static int PageId;
+
+	public static String GetTriples(int pageid, myObj predi, myObj objc, 
+			myElement upperTitle, int tRTitleNr) {
+		// TODO Auto-generated method stub
+		UpperTitle = upperTitle;
 		PageId = pageid;
+		if(predi == null || objc == null || predi.eles.size() < 1)
+		{
+			return null;
+		}
+		String contP = getStringFromMyelement(predi.eles.get(0), NoLink);
+		if(contP == null || contP.equals(""))
+		{
+			//System.out.println("SecondStandardize.java:" + "conP empty:pageid:" + pageid);
+			return null;
+		}
 		
-		int TRformat = -1;
-		if(tags.size() == 2)
+		String result = "";
+		for(int i = 0; i < objc.eles.size(); i ++)
 		{
-			myTag tagPre = tags.get(0);
-			myTag tagObj = tags.get(1);
-			String preName = tagPre.tag.getTagName().toLowerCase();
-			String objName = tagObj.tag.getTagName().toLowerCase();
-			
-			if((preName != null && objName != null ))
+			String contO = getStringFromMyelement(objc.eles.get(i), !NoLink);
+			if(contO == null || contO.equals(""))
 			{
-				if((preName.equals("th") && objName.equals("td")))
-					TRformat = 1;
-				else if(preName.equals("td") && objName.equals("td") 
-						&& (tagPre.context.endsWith(":") || tagPre.context.endsWith("：")))
-					TRformat = 1;
-				else if((preName.equals("td") && objName.equals("td")))
-				{
-					if(isNotPredicate(tagPre))
-					{
-						TRformat = 0;
-					}
-					else
-					{
-						TRformat = 1;
-					}
-				}
-				else TRformat = 0;
-				
+				continue;
 			}
-			
-			switch(TRformat)
+			if(predi.eleNr == objc.eleNr && objc.eleNr > 1)
+				contP = getStringFromMyelement(predi.eles.get(i), NoLink);
+			if(uFunc.isPeriod(contP) || contP.contains("〒"))
 			{
-			case 1:
-				myObj predi = ObjeStdz.standardize(tagPre);
-				myObj objc = ObjeStdz.standardize(tagObj);
-				if(InfoboxNode.infoboxIMG == false &&
-						predi != null && objc != null)
+				if(tRTitleNr <= 1)
 				{
-					InfoboxNode.infoboxIMG = true;
-					InfoboxNode.TRTitleNr ++;
-					//System.out.println("TripleGenerator.java:" + InfoboxNode.TRTitleNr);
+					continue;
 				}
-				//System.out.println("TripleGenerator.java:" + tagPre.outputInfo() + "\t" + SecondStandardize.GetTriples(pageid, predi, objc, null));
-				return TripleGenerator.GetTriples(pageid, predi, objc, 
-						InfoboxNode.UpperTitle, InfoboxNode.TRTitleNr);
-			case 2:
-				
+				if(contP.contains("〒") == false && upperTitle == null)
+				{
+					//System.out.println(pageid + ";" + contP);
+					continue;
+				}
+				contO += "####" + contP;
+				contP = upperTitle.context;
 			}
+			if(isNotPredicate(contP))
+				continue;
+			// page's title can't be predicate
+			if(Entity.getEntityId(uFunc.Simplify(contP.replaceAll(" |_", "").toLowerCase())) == pageid)
+			{
+				//System.out.println("SecondStandardize.java:is Entity:" + pageid + ":" + contP);
+				continue;
+			}
+			//System.out.println(contP + ":" + Entity.getEntityId(uFunc.Simplify(contP.replaceAll(" |_", ""))));
+			if(contP.contains(":") == true)
+			{
+				if(contO.contains(":") == true)
+				{
+					result += getTripleFromSgl(contP, pageid);
+					result += getTripleFromSgl(contO, pageid);
+				}
+				continue;
+			}
+			if(contP.matches("\\(.+\\)") == false)
+				contP = contP.replaceAll("(?m)(\\(.+\\))$", "");
+			result += pageid + "\t" + contP + "\t" + contO + "\n";
 		}
-		else if(tags.size() == 1)
-		{
-			String tName = tags.get(0).tag.getTagName().toLowerCase();
-
-			// top img
-			if(InfoboxNode.infoboxIMG == false && 
-					TagChild.containDescendantTag(tags.get(0).tag, "img"))
-			{
-				InfoboxNode.TRTitleNr = 0;
-				InfoboxNode.infoboxIMG = true;
-				InfoboxNode.TRTitleNr = 0;
-				//System.out.println("TripleGenerator.java:IMG" + tags.get(0).tag.toPlainTextString());
-			}
-			
-			String context =uFunc.Simplify(uFunc.ReplaceBoundSpace(
-					tags.get(0).tag.toPlainTextString())); 
-			if(context.matches(".+([\\u4e00-\\u9fa5]| |_)+(\\:|：).+") &&
-					TagChild.containDescendantTag(tags.get(0).tag, "tr") == false)
-			{
-				//System.out.println("TripleGenerator.java:single tr containing \":\", " + pageid + ":" + context);
-				TripleGenerator.PageId = pageid;
-				return TripleGenerator.getTripleFromSgl(context, pageid);
-			}
-			// subTitle
-			if(tName.equals("th"))
-			{
-				InfoboxNode.TRTitleNr ++;
-				String cont = uFunc.Simplify(tags.get(0).tag.toPlainTextString());
-				if(cont.contains("参战方") || cont.contains("交战方"))
-				{
-					//System.out.println("battle:" + pageid);
-					InfoboxNode.BattelInfo = true;
-				}
-				// it's the title in infobox, not a subtitle
-				myElement tUpperTitle = PredStdz.standardize(tags.get(0).tag, pageid);
-				
-				// there are some image or format defin on the top
-				if(tUpperTitle == null || tUpperTitle.context == null)
-				{
-					return null;
-				}
-				// subtitle is not the entity's name
-				String pageTitle = Entity.getEntityTitle(pageid);
-				if(pageTitle != null && tUpperTitle.context.contains(pageTitle))
-					return null;
-				if(Entity.getEntityId(tUpperTitle.context) == PageId)
-					return null;
-				InfoboxNode.UpperTitle = tUpperTitle;
-			}
-			// content
-			else if(tName.equals("td"))
-			{
-				RemoveUpperTitleElement(tags.get(0).tag);
-				if(TagChild.containDescendantTag(tags.get(0).tag, "tr"))
-					return null;
-				if(InfoboxNode.TRTitleNr > 1)
-				{
-					myObj predi = new myObj();
-					predi.addEle(InfoboxNode.UpperTitle);
-					myObj objc = ObjeStdz.standardize(new myTag(tags.get(0).tag, true));
-					//System.out.println("TripleGenerator.java:\n\t" + SecondStandardize.GetTriples(pageid, predi, objc));
-					return TripleGenerator.GetTriples(pageid, predi, objc, InfoboxNode.UpperTitle, InfoboxNode.TRTitleNr);
-				}
-				else if(InfoboxNode.TRTitleNr == 1)
-				{
-					//if(InfoboxNode.UpperTitle != null)
-					//	System.out.println("TripleGenerator.java:not a stand sub-title:" + pageid + "\t" + InfoboxNode.UpperTitle.context + "&&&&" + tags.get(0).context);
-				}
-			}
-		}
-
+		if(result.equals("") == false)
+			return result;
+		//System.out.println("not in my cases!" + objc.eles.size());
 		return null;
 	}
-	
-	
 
-	private static void RemoveUpperTitleElement(Tag tag) {
+	public static String getTripleFromSgl(String cont, int pageid2) {
 		// TODO Auto-generated method stub
-		if(tag.getTagName().equals("DIV"))
-		{
-			InfoboxNode.UpperTitle = null;
-			return;
+		String result = "";
+		if(cont.split(":|：").length < 2){
+			System.out.println("SecondStandardize.java: error");
+			return "";
 		}
-		Vector<myTag> child = TagChild.getChildren(tag);
-		Tag tTag;
-		while(child != null && child.size() == 1)
-		{
-			tTag = child.get(0).tag;
-			if(tTag == null)
-				return;
-			if(tTag != null && tTag.getTagName().equals("DIV"))
-			{
-				InfoboxNode.UpperTitle = null;
-				return;
-			}
-			child = TagChild.getChildren(tTag);
-		}
+		int index = cont.indexOf(":");
+		if(index < 0 || (index > cont.indexOf("：") && cont.indexOf("：") > 0))
+			index = cont.indexOf("：");
+		String predi = uFunc.ReplaceBoundSpace(cont.substring(0, index));
+		String objc = uFunc.ReplaceBoundSpace(cont.substring(index + 1));
+		myObj p, o;
+		p = new myObj();
+		p.addEle(new myElement(predi));
+		o = new myObj();
+		for(String ss : objc.split(ObjeStdz.splitRegex))
+			o.addEle(new myElement(ss));
+		result += GetTriples(PageId, p, o, null, 0);
+		return result;
 	}
 
-
-
-	private static boolean isNotPredicate(myTag tagPre) {
+	private static boolean isNotPredicate(String contP) {
 		// TODO Auto-generated method stub
-		int eleNr = 0;
-		if(tagPre == null)
+		contP = uFunc.Simplify(contP);
+		if(contP.contains("伤亡") && uFunc.containNumber(contP))
 			return true;
-		Vector<myTag> child = TagChild.getChildren(tagPre.tag);
-		if(child == null)
+		if(contP.contains("国旗") || contP.contains("←") 
+				|| contP.contains("国旗") || contP.contains("«")  )
 			return true;
-		Pattern pat = Pattern.compile("\n");
-		for(int i = 0 ; i < child.size(); i ++)
-		{
-			if(child.get(i).tag == null)
-				continue;
-			Matcher mat = pat.matcher(child.get(i).tag.toPlainTextString());
-			while(mat.find())
-			{
-				eleNr ++;
-			}
-			eleNr ++;
-		}
-		if(eleNr > 1)
-		{
+		if(contP.contains("查") && contP.contains("论") && contP.contains("编"))
 			return true;
-		}
 		return false;
 	}
 
-
-
-	private static boolean Init(Tag tr) {
+	public static String getStringFromMyelement(myElement predi, boolean hasLink) {
 		// TODO Auto-generated method stub
-		tags.clear();
-
-		if(tr.getTagName().toLowerCase().equals("tr") == false)
+		if(predi == null)
+			return null;
+		String cont = predi.context;
+		cont = uFunc.ReplaceBoundSpace(
+				HTMLStdz.standardize(cont));
+		if(cont.contains("•"))
 		{
-			System.out.println("TripleGenerator.java:not a \"tr\" tag");
-			return false;
+			if(UpperTitle != null)
+			{
+				//System.out.println(UpperTitle.context + "\t" + cont);
+				String upp = UpperTitle.context.replaceAll("(\\(.+\\))|(\\[.+\\])", "");
+				//uFunc.countStrings(upp + ":" + cont);
+				if(cont.contains("总") || cont.contains("陆地")
+						|| cont.contains("密度")|| cont.contains("水域")
+						|| cont.contains("排名")|| cont.contains("首都")
+						|| cont.contains("市")|| cont.contains("都会区"))
+				{
+					cont = upp + cont.replaceAll("(?m)^[•_ ]+", "");
+				}
+			}
+			cont = cont.replaceAll("(?m)^[•_ ]+", "");
+			//System.out.println("SecondStandardize.java:" + PageId + cont);
 		}
-		return true;
+		if(cont.equals("") && predi.context.equals("") == false)
+		{
+			//System.out.println("cont: is emptey;Context:" + predi.context + " link:" + predi.link);
+			return null;
+		}
+		if(predi.link == null)
+			return cont;
+		String link = predi.link;
+		if(hasLink == true && (link.startsWith("/wiki/") || 
+				link.startsWith("http://zh.wikipedia.org/wiki/")))
+		{
+			if(link.endsWith(".jpg") || link.endsWith(".png") ||
+					link.endsWith(".svg"))
+			{
+				return cont;
+			}
+			else
+			{
+				String entity = URL2UTF8.unescape(link.substring
+						(link.indexOf("/wiki/") + 6));
+				if(entity.contains("#"))
+					entity = entity.substring(0,  entity.indexOf("#"));
+				int pageid = Entity.getEntityId(entity);
+				if(pageid > 0)
+				{
+					return "[" + Entity.getEntityTitle(pageid) + "]";
+				}
+				else
+				{
+					return cont;
+				}
+			}
+		}
+		return cont;
 	}
-
 }

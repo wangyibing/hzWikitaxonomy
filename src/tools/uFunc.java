@@ -428,12 +428,20 @@ public class uFunc {
 		uFunc.SaveHashMap(tmp, path);
 	}
 
-
 	public static String AlertPath;
+	public static int AlertNr = 0;
+	public static String AlertOutput = "";
 	public static void Alert(String className, String info) {
 		// TODO Auto-generated method stub
 		System.out.println(className + ":" + info);
-		uFunc.addFile(className + ":" + info + "\n", AlertPath);
+		AlertNr ++;
+		AlertOutput += className + ":" + info + "\n";
+		if(AlertNr % 100 == 0)
+		{
+			uFunc.addFile(AlertOutput, AlertPath);
+			AlertOutput = "";
+		}
+			
 	}
 
 }

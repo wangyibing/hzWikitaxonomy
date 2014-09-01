@@ -13,8 +13,8 @@ import org.htmlparser.visitors.NodeVisitor;
 
 import com.tag.dedup;
 
-import dumps.Entity;
-import dumps.InfoboxNameList;
+import database.Entity;
+import database.InfoboxNameList;
 import tools.uFunc;
 
 

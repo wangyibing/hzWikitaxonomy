@@ -7,7 +7,7 @@ import normalization.PredExtraction;
 import org.htmlparser.Parser;
 import org.htmlparser.util.NodeList;
 
-import dumps.InfoboxIdList;
+import database.InfoboxIdList;
 import tools.uFunc;
 
 public class Extract{

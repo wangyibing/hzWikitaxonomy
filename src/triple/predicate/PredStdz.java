@@ -5,7 +5,7 @@ import org.htmlparser.Tag;
 import com.tag.myElement;
 import com.tag.myTag;
 
-import dumps.Entity;
+import database.Entity;
 import tools.uFunc;
 import triple.standardize.HTMLStdz;
 

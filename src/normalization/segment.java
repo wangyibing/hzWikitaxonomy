@@ -8,7 +8,7 @@ import java.util.List;
 import org.ansj.domain.Term;
 import org.ansj.splitWord.analysis.NlpAnalysis;
 
-import dumps.Entity;
+import database.Entity;
 import tools.predicate;
 import tools.uFunc;
 
