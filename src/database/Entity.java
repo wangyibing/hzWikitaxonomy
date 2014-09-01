@@ -59,20 +59,20 @@ public class Entity {
 			return null;
 		initEntityIdTitMap();
 		if(EntityIdTitMap.containsKey(pageid) == false){
-			if(pageid > 0 )
+			if(RediPage.getTargetPageid(pageid) <= 0)
 			{
-				pageid = RediPage.getTargetPageid(pageid);
-				if(EntityIdTitMap.containsKey(pageid) == false)
-				{
-					System.out.println("Entity.java:page title not exist:" + pageid);
-					return null;
-				}
-				else
-				{
-					return EntityIdTitMap.get(pageid);
-				}
+				System.out.println("Entity.java:page title not exist:" + pageid);
 			}
-			return null;
+			pageid = RediPage.getTargetPageid(pageid);
+			if(EntityIdTitMap.containsKey(pageid) == false)
+			{
+				System.out.println("Entity.java:page title not exist:" + pageid);
+				return null;
+			}
+			else
+			{
+				return EntityIdTitMap.get(pageid);
+			}
 		}
 		else
 			return EntityIdTitMap.get(pageid);

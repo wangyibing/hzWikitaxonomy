@@ -34,7 +34,7 @@ public class conn_db {
 
 		String title = "香港";
 		
-		Page page = wiki.getPage(42350);
+		Page page = wiki.getPage(3407054);
 		System.out.println("Page title           : "+wiki.existsPage(title) + page.getTitle());
 		System.out.println("Page id              : "+page.getPageId());
 		System.out.println("\n\n\n\ngetPlainText:   "+page.getText());

@@ -77,7 +77,8 @@ public class RecordGenerator {
 					//System.out.println("TripleGenerator.java:" + InfoboxNode.TRTitleNr);
 				}
 				//System.out.println("TripleGenerator.java:" + tagPre.outputInfo() + "\t" + SecondStandardize.GetTriples(pageid, predi, objc, null));
-				return TripleGenerator.GetTriples(pageid, predi, objc, InfoboxNode.UpperTitle, InfoboxNode.TRTitleNr);
+				return GeneratorDistributor.distribute(
+						pageid, predi, objc, InfoboxNode.UpperTitle, InfoboxNode.TRTitleNr);
 			case 2:
 				
 			}
@@ -102,8 +103,7 @@ public class RecordGenerator {
 					TagChild.containDescendantTag(tags.get(0).tag, "tr") == false)
 			{
 				//System.out.println("TripleGenerator.java:single tr containing \":\", " + pageid + ":" + context);
-				TripleGenerator.PageId = pageid;
-				return TripleGenerator.getTripleFromSgl(context, pageid);
+				return GeneratorDistributor.distribute(context, pageid);
 			}
 			// subTitle
 			if(tName.equals("th"))
@@ -143,7 +143,8 @@ public class RecordGenerator {
 					predi.addEle(InfoboxNode.UpperTitle);
 					myObj objc = ObjeStdz.standardize(new myTag(tags.get(0).tag, true));
 					//System.out.println("TripleGenerator.java:\n\t" + SecondStandardize.GetTriples(pageid, predi, objc));
-					return TripleGenerator.GetTriples(pageid, predi, objc, InfoboxNode.UpperTitle, InfoboxNode.TRTitleNr);
+					return GeneratorDistributor.distribute(
+							pageid, predi, objc, InfoboxNode.UpperTitle, InfoboxNode.TRTitleNr);
 				}
 				else if(InfoboxNode.TRTitleNr == 1)
 				{
