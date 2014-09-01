@@ -32,9 +32,9 @@ public class conn_db {
 		Wikipedia wiki = new Wikipedia(dbConfig);
 		
 
-		String title = "香港";
+		String title = "南车青岛四方机车车辆";
 		
-		Page page = wiki.getPage(3407054);
+		Page page = wiki.getPage(title);
 		System.out.println("Page title           : "+wiki.existsPage(title) + page.getTitle());
 		System.out.println("Page id              : "+page.getPageId());
 		System.out.println("\n\n\n\ngetPlainText:   "+page.getText());

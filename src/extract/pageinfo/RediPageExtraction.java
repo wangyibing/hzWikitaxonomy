@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 import tools.uFunc;
 import database.Zhwiki;
 import de.tudarmstadt.ukp.wikipedia.api.Page;
+import de.tudarmstadt.ukp.wikipedia.api.exception.WikiApiException;
 
 public class RediPageExtraction {
 	static String i = "RediPageExtraction";
@@ -25,6 +26,12 @@ public class RediPageExtraction {
 		Zhwiki.init();
 		for(Page page : Zhwiki.wiki.getPages())
 		{
+			try {
+				page = Zhwiki.wiki.getPage(3407054);
+			} catch (WikiApiException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			PageNr ++;
 			PageId = page.getPageId();
 			PageTitle = Zhwiki.getTitle(PageId);
@@ -38,6 +45,7 @@ public class RediPageExtraction {
 				uFunc.addFile(info, infoPath);
 				System.out.print(info);
 			}
+			System.out.println(page.getNumberOfOutlinks());
 			if(page.isRedirect() == true)
 			{
 				info = PageId + "\t" + "0" + "\t" + 
@@ -91,6 +99,7 @@ public class RediPageExtraction {
 					uFunc.Alert(i, PageId + ":redirect extract missed4!!");
 				}
 			}
+			break;
 		}
 		uFunc.addFile(output, outputPath);
 		uFunc.addFile(uFunc.AlertOutput, uFunc.AlertPath);
