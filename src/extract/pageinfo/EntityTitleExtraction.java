@@ -29,17 +29,15 @@ public class EntityTitleExtraction {
 	 * @param outputTitlesPath
 	 * @param infoPath
 	 */
-	public static void Extract(String outputPath, String outputTitlesPath, String infoPath)
+	public static void Extract(String outputTitlesPath, String infoPath)
 	{
 		int PageNr = 0;
 		int RediNr = 0;
 		int DisaNr = 0;
-		String output = "";
 		String outputTitles = "";
 		String info = "";
 		String type = "";
 		uFunc.deleteFile(infoPath);
-		uFunc.deleteFile(outputPath);
 		uFunc.deleteFile(outputTitlesPath);
 		uFunc.AlertPath = infoPath;
 		Zhwiki.init();
@@ -117,9 +115,8 @@ public class EntityTitleExtraction {
 			}
 			
 			
-			
-			output += PageId + "\t" + PageTitle + "\t" + type + "\n";
-			outputTitles = PageId + "\t" + PageTitle + "\t" + type + "\n";
+			info = PageId + "\t" + PageTitle + "\t" + type + "\n";
+			outputTitles += info;
 			for(String redi : page.getRedirects())
 			{
 				outputTitles += PageId + "\t" + redi + "\t" + "redi" + "\n";
@@ -155,13 +152,10 @@ public class EntityTitleExtraction {
 			}
 			if(PageNr % 1000 == 0)
 			{
-				uFunc.addFile(output, outputPath);
 				uFunc.addFile(outputTitles, outputTitlesPath);
-				output = "";
 				outputTitles = "";
 			}
 		}
-		uFunc.addFile(output, outputPath);
 		uFunc.addFile(outputTitles, outputTitlesPath);
 		uFunc.addFile(uFunc.AlertOutput, uFunc.AlertPath);
 		
