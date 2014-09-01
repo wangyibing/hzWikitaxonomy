@@ -269,7 +269,9 @@ public class DisaPageExtraction {
 	static Vector<Tag> LIs = new Vector<Tag>();
 	static NodeVisitor Livisitor = new NodeVisitor(){
 		public void visitTag(Tag tag){
-			if(tag.getTagName().equals("LI"))
+			String tName = tag.getTagName();
+			if(tName.equals("LI") || tName.equals("DD")
+					|| tName.equals("P"))
 				LIs.add(tag);
 		}
 	};
@@ -287,7 +289,7 @@ public class DisaPageExtraction {
 		}
 	};
 	private static String info = "";
-	private static void ExtractFromWeb(int pageId, String infoPath, String folder) {
+	private static void ExtractFromWeb(int pageId, String folder, String infoPath) {
 		// TODO Auto-generated method stub
 		if(filter == null)
 			filter = new AndFilter(DIVFilter, ContFilter);
@@ -301,6 +303,8 @@ public class DisaPageExtraction {
 			pageNodeList.visitAllNodesWith(Livisitor);
 			for(Tag tag: LIs){
 				titles.clear();
+				if(tag.getChildren() == null)
+					continue;
 				tag.getChildren().visitAllNodesWith(Linkvisitor);
 				int id = 0;
 				int MaxChnOccr = 0;

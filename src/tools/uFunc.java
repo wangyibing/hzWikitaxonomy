@@ -438,7 +438,7 @@ public class uFunc {
 		System.out.println(className + ":" + info);
 		AlertNr ++;
 		AlertOutput += className + ":" + info + "\n";
-		if(AlertNr % 100 == 0)
+		if(AlertNr % 10 == 0)
 		{
 			uFunc.addFile(AlertOutput, AlertPath);
 			AlertOutput = "";
