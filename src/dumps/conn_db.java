@@ -34,16 +34,17 @@ public class conn_db {
 
 		String title = "香港";
 		
-		Page page = wiki.getPage(2090);
-		System.out.println("Page title           : "+page.getTitle());
+		Page page = wiki.getPage(42350);
+		System.out.println("Page title           : "+wiki.existsPage(title) + page.getTitle());
 		System.out.println("Page id              : "+page.getPageId());
+		System.out.println("\n\n\n\ngetPlainText:   "+page.getText());
 
 		//System.out.println(uFunc_ZH.isAdministrativeRegion(page.getPageId()));
 		for(String t: page.getRedirects()){
 			System.out.println(":"+t);
 		}
 		// 页面的所述的所有类别
-		System.out.println("Categories" + page.LF);
+		System.out.println("Categories:" + page.LF);
 		for (Category category : page.getCategories()) {
 		    System.out.println("  " + category.getTitle()  + " " + category.getPageId() + page.LF);
 		}

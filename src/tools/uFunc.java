@@ -221,14 +221,16 @@ public class uFunc {
 			return;
 		try{
 			File file=new File(path);
-			if(!file.exists())
-				file.createNewFile();
+			if(!file.exists()){
+				if(file.createNewFile() == false)
+					System.out.println("path not exist: " + path);
+			}
 			OutputStreamWriter osw=
 					new OutputStreamWriter(new FileOutputStream(file,true),"utf-8");
 			osw.append(string);
 			osw.close();
 		}catch(Exception e){
-			//System.out.println(path);
+			System.out.println(path);
 			e.printStackTrace();
 		}		
 	}

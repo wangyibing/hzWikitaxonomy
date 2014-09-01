@@ -18,7 +18,7 @@ public class defaule {
 		System.out.println(re);
 		OutputTripleNr();
 		
-		String s2 = "http://zh.wikipedia.org/wiki/%E4%B8%AD%E5%9B%BD";
+		String s2 = "/wiki/%F0%A8%A7%80";
 		System.out.println("chinese:" + URL2UTF8.unescape(s2));
 		
 		String ssss01 = "网站：[中国重庆武隆网%20%20http://www.cqwulong.cn/ www.cqwulong.cn]";

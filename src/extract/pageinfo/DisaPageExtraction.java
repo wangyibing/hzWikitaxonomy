@@ -8,12 +8,23 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Vector;
 
+import org.htmlparser.NodeFilter;
+import org.htmlparser.Parser;
+import org.htmlparser.Tag;
+import org.htmlparser.filters.AndFilter;
+import org.htmlparser.filters.HasAttributeFilter;
+import org.htmlparser.filters.TagNameFilter;
+import org.htmlparser.util.NodeList;
+import org.htmlparser.util.ParserException;
+import org.htmlparser.visitors.NodeVisitor;
 
+import tools.URL2UTF8;
 import tools.uFunc;
 import database.DisPage;
 import database.Zhwiki;
 import de.tudarmstadt.ukp.wikipedia.api.Page;
 import de.tudarmstadt.ukp.wikipedia.api.exception.WikiApiException;
+import de.tudarmstadt.ukp.wikipedia.api.exception.WikiTitleParsingException;
 import de.tudarmstadt.ukp.wikipedia.parser.Link;
 import de.tudarmstadt.ukp.wikipedia.parser.NestedList;
 import de.tudarmstadt.ukp.wikipedia.parser.NestedListContainer;
@@ -33,13 +44,13 @@ public class DisaPageExtraction {
 		
 		
 		ExtractDisPages(folder, infoPath);
+		/*
 		GenerateExceptions(folder + DisPage.CanonicalPath_pageoutlinks + "1", 
 				folder + DisPage.ExceptionListPath);
 		ResultFiltering(folder + DisPage.CanonicalPath_pageoutlinks + "1",
 				folder + DisPage.ExceptionListPath,
 				folder + DisPage.CanonicalPath_pageoutlinks);
-		
-		
+		*/
 		uFunc.addFile(uFunc.AlertOutput, uFunc.AlertPath);
 	}
 
@@ -157,6 +168,7 @@ public class DisaPageExtraction {
 	
 	static String output = "";
 	static int outNr = 0;
+	static boolean PageExtraced = false;
 	/**
 	 * extra dis pages:99109, 1372763, 3843677, 4140222, 4140539
 	 * @param srcFile
@@ -173,10 +185,12 @@ public class DisaPageExtraction {
 		long time = System.currentTimeMillis();
 		for(Page page : Zhwiki.wiki.getPages())
 		{
-			//page = Zhwiki.getPage(562732);
+			//page = Zhwiki.getPage(43690);
 			PageNr ++;
 			PageId = page.getPageId();
 			PageTitle = Zhwiki.getTitle(PageId);
+			//uFunc.Alert("", PageId + "\t" + PageTitle);
+			PageExtraced = true;
 			if(PageId <= 0){
 				uFunc.Alert(i, "pageid null:" + page.getText());
 				continue;
@@ -195,7 +209,7 @@ public class DisaPageExtraction {
 					|| PageId == 4140539)
 			{
 				DisNr ++;
-
+				PageExtraced = false;
 				output += PageId + "\t" + PageTitle + "\n";
 				outNr ++;
 				if(outNr % 1000 == 0)
@@ -235,11 +249,107 @@ public class DisaPageExtraction {
 				}
 				*/
 			}
+			if(PageExtraced == false)
+			{
+				ExtractFromWeb(PageId, folder, infoPath);
+				if(PageExtraced == false)
+					uFunc.Alert(i, "disa extract failed:" + PageId);
+				
+			}
 			//break;
 		}
 		uFunc.addFile(output, folder + DisPage.CanonicalPath_pagelist);
 		uFunc.addFile(LinkOutput, folder + DisPage.CanonicalPath_pageoutlinks + "1");
 		uFunc.addFile(errorOutput, infoPath);
+	}
+
+	static NodeFilter DIVFilter = new TagNameFilter("DIV");
+	static NodeFilter ContFilter = new HasAttributeFilter("ID", "mw-content-text");
+	static NodeFilter filter = null;
+	static Vector<Tag> LIs = new Vector<Tag>();
+	static NodeVisitor Livisitor = new NodeVisitor(){
+		public void visitTag(Tag tag){
+			if(tag.getTagName().equals("LI"))
+				LIs.add(tag);
+		}
+	};
+	static Vector<String> titles = new Vector<String>();
+	static NodeVisitor Linkvisitor = new NodeVisitor(){
+		public void visitTag(Tag tag){
+			if(tag.getTagName().equals("A")){
+				String link = tag.getAttribute("HREF");
+				String entity = URL2UTF8.unescape(link.substring
+						(link.indexOf("/wiki/") + 6));
+				if(entity.contains("#"))
+					entity = entity.substring(0,  entity.indexOf("#"));
+				titles.add(entity);
+			}
+		}
+	};
+	private static String info = "";
+	private static void ExtractFromWeb(int pageId, String infoPath, String folder) {
+		// TODO Auto-generated method stub
+		if(filter == null)
+			filter = new AndFilter(DIVFilter, ContFilter);
+		LIs.clear();
+		titles.clear();
+		String url = "http://zh.wikipedia.org/wiki?curid=" + pageId;
+		try {
+			Parser pageParser = new Parser(url);
+			pageParser.setEncoding("utf8");
+			NodeList pageNodeList = pageParser.parse(filter);
+			pageNodeList.visitAllNodesWith(Livisitor);
+			for(Tag tag: LIs){
+				titles.clear();
+				tag.getChildren().visitAllNodesWith(Linkvisitor);
+				int id = 0;
+				int MaxChnOccr = 0;
+				for(int i = 0; i < titles.size(); i ++)
+				{
+					String entity = titles.get(i);
+					int pageid = Zhwiki.getPageId(entity);
+					if(pageid <= 0)
+						pageid = Zhwiki.getPageId(uFunc.Simplify(entity));
+					if(pageid <= 0)
+						pageid = Zhwiki.getPageId(uFunc.TraConverter.convert(entity));
+					if(pageid <= 0)
+					{
+						String info = "";
+						info = "no targer ERROR:" + PageId + "\t"+ PageTitle + "\t" + id;
+						errorOutput += info +"\n";
+						errorNr ++;
+						if(errorNr % 1000 == 0)
+						{
+							uFunc.addFile(errorOutput, infoPath);
+							errorOutput = "";
+						}
+						continue;
+					}
+					if(GetChnOccr(pageid, titles) > MaxChnOccr ||
+							i == 0)
+					{
+						id = pageid;
+						MaxChnOccr = GetChnOccr(pageid, titles);
+					}
+					if(pageDis.containsKey(id))
+					{
+						//System.out.println(PageId + "\t" );
+						continue;
+					}
+					else{
+						pageDis.put(id, 0);
+					}
+					info  = "web disa:" + Zhwiki.getTitle(id) + "\t" + id
+							+ "\t" + PageTitle + "\t" + PageId;
+					//uFunc.Alert("", info);
+				}
+				AddOneInstance(id, folder, infoPath);
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 
 	static String LinkOutput = "";
@@ -256,9 +366,12 @@ public class DisaPageExtraction {
 		for(String redi : page.getRedirects())
 			titles.add(redi);
 		pageDis.clear();
+		//uFunc.Alert(i, page.getText());
 		for(NestedListContainer nest : 
 			page.getParsedPage().getNestedLists()){
+			//uFunc.Alert(i, nest.getText());
 			for(NestedList nest2 : nest.getNestedLists()){
+				//uFunc.Alert(i, nest2.getText());
 				List<Link> linklist = nest2.getLinks();
 				if(linklist == null || linklist.size() < 1)
 				{
@@ -272,7 +385,10 @@ public class DisaPageExtraction {
 					String link = linklist.get(i).getTarget();
 					int pageid = Zhwiki.getPageId(link);
 					if(pageid <= 0)
-						pageid = Zhwiki.getPageId(uFunc.Simplify(link));
+					{
+						link = uFunc.Simplify(link);
+						pageid = Zhwiki.getPageId(link);
+					}
 					if(pageid <= 0)
 						pageid = Zhwiki.getPageId(uFunc.TraConverter.convert(link));
 					if(pageid <= 0)
@@ -344,6 +460,7 @@ public class DisaPageExtraction {
 			return;
 		LinkOutput += PageId +"\t"+ id +"\t"+ PageTitle +"\t"+ Zhwiki.getTitle(id) +"\n";
 		LinkOutputNr++;
+		PageExtraced = true;
 		if(LinkOutputNr % 1000 == 0){
 			uFunc.addFile(LinkOutput, 
 					folder + DisPage.CanonicalPath_pageoutlinks + "1");

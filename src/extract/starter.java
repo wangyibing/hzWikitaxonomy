@@ -14,22 +14,22 @@ public class starter {
 			"/home/hanzhe/Public/result_hz/wiki_count/pageinfo/";
 	public static void main(String [] args)
 	{
-		EntityTitleExtraction.Extract(Entity.CanonicalPath_title, 
-				Entity.CanonicalPath_titles, Folder + "EntityExtractionInfo");
+		//EntityTitleExtraction.Extract(Entity.CanonicalPath_title, 
+		//		Entity.CanonicalPath_titles, Folder + "EntityExtractionInfo");
 		//ExtractRedi();
-		//ExtractDis();
+		ExtractDis();
 		//test();
 	}
 
 	public static void ExtractDis() {
 		// TODO Auto-generated method stub
-		DisaPageExtraction.ExtracDisPages(Folder, 
-				Folder + "DisPageExtractionInfo");
+		DisaPageExtraction.ExtracDisPages("", 
+				"data/DisPageExtractionInfo");
 	}
 
 	public static void ExtractRedi() {
 
-		RediPageExtraction.ExtracRedirectPages(Folder + RediPage.CanonicalPath, 
+		RediPageExtraction.ExtracRedirectPages(RediPage.CanonicalPath, 
 				Folder + "RediPageExtractionInfo");
 	}
 

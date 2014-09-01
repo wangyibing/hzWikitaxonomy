@@ -37,7 +37,7 @@ public class Zhwiki {
 			return p;
 		} catch (WikiApiException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//e.printStackTrace();
 			return null;
 		}
 		
@@ -55,8 +55,8 @@ public class Zhwiki {
 				return 0;
 			return wiki.getPage(title).getPageId();
 		} catch (Exception e) {
-			e.printStackTrace();
-			uFunc.Alert("Zhwiki", "getId error " + title);
+			//e.printStackTrace();
+			//uFunc.Alert("Zhwiki", "getId error " + title);
 			return 0;
 		}
 	}
@@ -73,6 +73,7 @@ public class Zhwiki {
 			return;
 		try{
 			System.out.println("ZHWIKI");
+			System.setProperty("hibernate.c3p0.timeout", "10");
 			//连接到wikipedia
 			dbConfig.setHost("localhost");
 			dbConfig.setDatabase("wikipedia");
