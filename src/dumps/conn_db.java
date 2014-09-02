@@ -50,7 +50,6 @@ public class conn_db {
 		Matcher m = p.matcher(page.getText().toLowerCase());
 		if(m.find())
 		System.out.println(m.group(2));
-
 		//System.out.println(uFunc_ZH.isAdministrativeRegion(page.getPageId()));
 		for(String t: page.getRedirects()){
 			System.out.println(":"+t);
