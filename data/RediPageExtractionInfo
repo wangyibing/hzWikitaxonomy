@@ -1,0 +1,44 @@
+PageNumPast:10000	RediNr:157	cost:57
+PageNumPast:20000	RediNr:511	cost:69
+PageNumPast:30000	RediNr:950	cost:107
+PageNumPast:40000	RediNr:1272	cost:62
+PageNumPast:50000	RediNr:1797	cost:60
+RediPageExtraction:35941 not standd redirect!!
+RediPageExtraction:68880 not standd redirect3!!
+RediPageExtraction:110425 not standd redirect3!!
+RediPageExtraction:135915 not standd redirect!!
+RediPageExtraction:179400 not standd redirect!!
+RediPageExtraction:180577 not standd redirect3!!
+RediPageExtraction:181458 not standd redirect3!!
+RediPageExtraction:189214:redirect extract missed4!!
+RediPageExtraction:204337 not standd redirect3!!
+ExtractAPI:targetId: 209555	已灭绝动物列表_(现代)
+PageNumPast:60000	RediNr:2291	cost:63
+PageNumPast:70000	RediNr:2842	cost:65
+ExtractAPI:targetId: 209555	已灭绝动物列表_(现代)
+RediPageExtraction:232819 not standd redirect!!
+RediPageExtraction:273886 not standd redirect!!
+RediPageExtraction:273970 not standd redirect!!
+RediPageExtraction:288053 not standd redirect3!!
+RediPageExtraction:291315 not standd redirect!!
+RediPageExtraction:309995 not standd redirect!!
+RediPageExtraction:310047 not standd redirect3!!match 0 times
+RediPageExtraction:317875 not standd redirect!!
+RediPageExtraction:317913 not standd redirect!!
+PageNumPast:80000	RediNr:3317	cost:76
+PageNumPast:90000	RediNr:3842	cost:55
+PageNumPast:100000	RediNr:4204	cost:49
+PageNumPast:110000	RediNr:4757	cost:56
+PageNumPast:120000	RediNr:5262	cost:57
+PageNumPast:130000	RediNr:5841	cost:58
+PageNumPast:140000	RediNr:6464	cost:55
+RediPageExtraction:317942 not standd redirect!!
+RediPageExtraction:318599:redirect extract missed4!!
+RediPageExtraction:415924 not standd redirect2!!match 0 times
+ExtractAPI:targetId: 209555	已灭绝动物列表_(现代)
+RediPageExtraction:462237 not standd redirect3!!
+RediPageExtraction:502397 not standd redirect3!!
+RediPageExtraction:519590 not standd redirect!!
+RediPageExtraction:531592 not standd redirect!!
+RediPageExtraction:581323:redirect extract missed4!!
+RediPageExtraction:596098 not standd redirect!!
