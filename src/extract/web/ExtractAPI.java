@@ -20,7 +20,7 @@ public class ExtractAPI {
 					.replaceAll("\\s+", "_");
 			URL url = new URL("http://zh.wikipedia.org/w/api.php?action=query"
 					+ "&titles=" + title + "&format=xml");
-			System.out.println(url);
+			//System.out.println(url);
 			URLConnection connection = url.openConnection();
 			Document doc = builder.build(connection.getInputStream());
 			Element root = doc.getRootElement();
@@ -31,7 +31,7 @@ public class ExtractAPI {
 			if(id == null)
 				return 0;
 			pageid = Integer.parseInt(id);
-			uFunc.Alert(i, "targetId: " + pageid + "\t" + title);
+			//uFunc.Alert(i, "targetId: " + pageid + "\t" + title);
 		} catch (Exception e1) {
 			uFunc.Alert(i, "error:" + title);
 			e1.printStackTrace();
