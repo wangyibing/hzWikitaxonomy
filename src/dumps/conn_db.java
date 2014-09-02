@@ -40,7 +40,7 @@ public class conn_db {
 
 		String title = "TGM6型柴油机车‎‎";
 		
-		Page page = wiki.getPage(3163);
+		Page page = wiki.getPage(462237);
 		System.out.println("Page title           : "+ wiki.existsPage(title) + page.getTitle());
 		System.out.println("Page id              : "+ page.getPageId());
 		System.out.println("getPlainText:        : "+ "\"" + page.getText() + "\"");

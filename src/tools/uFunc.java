@@ -86,9 +86,9 @@ public class uFunc {
 	public static String ReplaceBoundSpace(String string){
 		return string
 				//replace the space at the beginning
-				.replaceAll("(?m)^[‡\\*\\- _]+", "")
+				.replaceAll("(?m)^[‡\\*\\- _\\s]+", "")
 				// replace the space at the end
-				.replaceAll("(?m)[ _:：‡\\*]+$", "")
+				.replaceAll("(?m)[ _:：‡\\*\\s]+$", "")
 				// replace two or more spaces with a single space
 				.replaceAll(" {2,}", " ")
 				//replace the space at the beginning
