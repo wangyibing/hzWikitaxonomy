@@ -105,6 +105,7 @@ public class RediPageExtraction {
 					uFunc.Alert(i, PageId + ":redirect extract missed4!!");
 				}
 			}
+			break;
 		}
 		uFunc.addFile(output, outputPath);
 		uFunc.addFile(uFunc.AlertOutput, uFunc.AlertPath);

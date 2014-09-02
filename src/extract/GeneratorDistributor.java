@@ -23,7 +23,7 @@ public class GeneratorDistributor {
 		{
 			info = pageid + " has multi-predi:";
 			for(int i = 0 ; i < predi.eleNr; i ++)
-				info += predi.eles.get(i) + ";" + objc.eles.get(i) + " ";
+				info += predi.eles.get(i).context + ";" + objc.eles.get(i).context + " ";
 			
 			uFunc.Alert(i, info);
 		}
