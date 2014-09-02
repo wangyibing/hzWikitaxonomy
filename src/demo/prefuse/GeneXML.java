@@ -14,7 +14,6 @@ import org.jdom2.output.XMLOutputter;
 
 import database.Entity;
 import database.RediPage;
-import extract.Extract;
 import tools.uFunc;
 
 public class GeneXML {

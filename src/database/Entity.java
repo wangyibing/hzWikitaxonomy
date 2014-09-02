@@ -10,8 +10,6 @@ import com.spreada.utils.chinese.ZHConverter;
 
 
 public class Entity {
-	public static String CanonicalPath_title = 
-			"data/EntityTitle";
 	public static String CanonicalPath_titles = 
 			"data/EntityTitles";
 
@@ -23,16 +21,7 @@ public class Entity {
 	private static HashMap<String, Integer> EntityTitsIdMap = 
 			new HashMap<String, Integer>();
 	private static boolean TitIdInited = false;
-	// <数学, 013>
-	private static HashMap<String, Integer> titles = 
-			new HashMap<String, Integer>();
-	private static boolean titlesInited = false;
 
-	private static String EntityIdTitPath = 
-			"/home/hanzhe/Public/result_hz/wiki_count/EntityId/EntityId_unif.txt";
-	private static String EntityIdTitsPath = 
-			"/home/hanzhe/Public/result_hz/wiki_count/EntityId/PageIdTits.txt";
-	
 	
 	private static ZHConverter simConvt = 
 			ZHConverter.getInstance(ZHConverter.SIMPLIFIED);
@@ -83,15 +72,19 @@ public class Entity {
 			return;
 		String oneLine = "";
 		try{
-			BufferedReader reader = uFunc.getBufferedReader(EntityIdTitPath);
+			BufferedReader reader = uFunc.getBufferedReader(
+					CanonicalPath_titles);
 			while((oneLine = reader.readLine())!= null){
 				String [] ts = oneLine.split("\t");
-				if(ts.length <2)
+				if(ts.length < 3)
 					continue;
-				int Eid = Integer.parseInt(ts[0]);
-				// 抽取的title都不含空字符，已经简体了
-				String title = uFunc.Simplify(ts[1]);
-				EntityIdTitMap.put(Eid, title);
+				if(ts[2].equals("title"))
+				{
+					int Eid = Integer.parseInt(ts[0]);
+					// 抽取的title都不含空字符，已经简体了
+					String title = uFunc.Simplify(ts[1]);
+					EntityIdTitMap.put(Eid, title);
+				}
 			}
 			System.out.println("EntityIdTitMap.size:"+ 
 			EntityIdTitMap.size());
@@ -106,24 +99,27 @@ public class Entity {
 			return;
 		String oneLine = "";
 		try{
-			BufferedReader reader = uFunc.getBufferedReader(EntityIdTitsPath);
+			BufferedReader reader = uFunc.getBufferedReader(CanonicalPath_titles);
 			while((oneLine = reader.readLine())!= null){
 				String [] ts = oneLine.split("\t");
-				if(ts.length <2)
+				if(ts.length < 3)
 					continue;
-				int Eid = Integer.parseInt(ts[0]);
-				// 抽取的title都不含空字符，已经简体了
-				String title = uFunc.Simplify(ts[1]).replaceAll("_| ", "").toLowerCase();
-				if(EntityTitsIdMap.containsKey(title))
+				if(ts[2].equals("title"))
 				{
-					int id = EntityTitsIdMap.get(title);
-					if(id != Eid && RediPage.getTargetPageid(Eid) <= 0
-							&& RediPage.getTargetPageid(id) <= 0)
+					int Eid = Integer.parseInt(ts[0]);
+					// 抽取的title都不含空字符，已经简体了
+					String title = uFunc.Simplify(ts[1]).replaceAll("_| ", "").toLowerCase();
+					if(EntityTitsIdMap.containsKey(title))
 					{
-						//System.out.println("Entity.java:" + title + ":" + id + ";" + Eid);
+						int id = EntityTitsIdMap.get(title);
+						if(id != Eid && RediPage.getTargetPageid(Eid) <= 0
+								&& RediPage.getTargetPageid(id) <= 0)
+						{
+							System.out.println("Entity.java:" + title + ":" + id + ";" + Eid);
+						}
 					}
+					EntityTitsIdMap.put(title, Eid);
 				}
-				EntityTitsIdMap.put(title, Eid);
 			}
 			System.out.println("EntityTitsIdMap.size:"+ 
 					EntityTitsIdMap.size());

@@ -29,17 +29,15 @@ public class EntityTitleExtraction {
 	 * @param outputTitlesPath
 	 * @param infoPath
 	 */
-	public static void Extract(String outputPath, String outputTitlesPath, String infoPath)
+	public static void Extract(String outputTitlesPath, String infoPath)
 	{
 		int PageNr = 0;
 		int RediNr = 0;
 		int DisaNr = 0;
-		String output = "";
 		String outputTitles = "";
 		String info = "";
 		String type = "";
 		uFunc.deleteFile(infoPath);
-		uFunc.deleteFile(outputPath);
 		uFunc.deleteFile(outputTitlesPath);
 		uFunc.AlertPath = infoPath;
 		Zhwiki.init();
@@ -74,12 +72,12 @@ public class EntityTitleExtraction {
 			{
 				type = "redi";
 				RediNr ++;
-				if(DisPage.GetOutlinks(PageId) != null)
+				if(DisPage.isDisaPage(PageId) != null)
 				{
 					uFunc.Alert(i, PageId + "is redirect and disambiguation page");
 				}
 			}
-			else if(DisPage.GetOutlinks(PageId) != null)
+			else if(DisPage.isDisaPage(PageId) != null)
 			{
 				type = "Disa";
 				DisaNr ++;
@@ -117,51 +115,18 @@ public class EntityTitleExtraction {
 			}
 			
 			
-			
-			output += PageId + "\t" + PageTitle + "\t" + type + "\n";
-			outputTitles = PageId + "\t" + PageTitle + "\t" + type + "\n";
+			info = PageId + "\t" + PageTitle + "\t" + type + "\n";
+			outputTitles += info;
 			for(String redi : page.getRedirects())
 			{
-				outputTitles += PageId + "\t" + redi + "\t" + "redi" + "\n";
-				/*
-				// only calculate normal pages(not redirect and disambiguation page)
-				if(type.equals("title") == true)
-				{
-					if(simTitles2Id.containsKey(uFunc.Simplify(redi)) &&
-							simTitles2Id.get(uFunc.Simplify(redi)) != PageId)
-					{
-						info = "simplify entity redirect repeated:" + 
-								uFunc.Simplify(redi) + "\t" + 
-								simTitles2Id.get(uFunc.Simplify(redi)) + ";" + PageId;
-					}
-					else{
-						simTitles2Id.put(uFunc.Simplify(redi), PageId);
-					}
-				}
-				// only calculate normal pages(not redirect and disambiguation page)
-				if(type.equals("redi") == false)
-				{
-					if(traTitles2Id.containsKey(redi) &&
-							traTitles2Id.get(redi) != PageId)
-					{
-						info = "tradition entity redirect repeated:" + redi + "\t" + 
-								traTitle2Id.get(redi) + ";" + PageId;
-					}
-					else{
-						traTitles2Id.put(redi, PageId);
-					}
-				}
-				*/
+				outputTitles += PageId + "\t" + redi + "\t" + "redititle" + "\n";
 			}
 			if(PageNr % 1000 == 0)
 			{
-				uFunc.addFile(output, outputPath);
 				uFunc.addFile(outputTitles, outputTitlesPath);
-				output = "";
 				outputTitles = "";
 			}
 		}
-		uFunc.addFile(output, outputPath);
 		uFunc.addFile(outputTitles, outputTitlesPath);
 		uFunc.addFile(uFunc.AlertOutput, uFunc.AlertPath);
 		

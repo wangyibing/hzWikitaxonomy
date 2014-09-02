@@ -26,6 +26,13 @@ public class RedirectRepair {
 	 */
 	public static void Repair(String infoPath, String RediFilePath)
 	{
+		RepairFromInfo(infoPath, RediFilePath);
+		
+	}
+
+	public static void RepairFromInfo(String infoPath, 
+			String rediFilePath) {
+		// TODO Auto-generated method stub
 		BufferedReader br = uFunc.getBufferedReader(infoPath);
 		String oneLine = "";
 		Scanner sc = new Scanner(System.in);
@@ -65,7 +72,7 @@ public class RedirectRepair {
 					System.out.println("error:" + oneLine);
 				}
 			}
-			uFunc.addFile(output, RediFilePath);
+			uFunc.addFile(output, rediFilePath);
 			System.out.println("total fixed Nr of redirect Page:" + fixNr);
 		} catch (NumberFormatException e) {
 			// TODO Auto-generated catch block
@@ -74,5 +81,6 @@ public class RedirectRepair {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
 	}
 }

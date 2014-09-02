@@ -108,7 +108,7 @@ public class predicate {
 					PagePred.clear();
 					pageid = id;
 				}
-				String pred = uFunc.UnifiedWord(ss[1]);
+				String pred = uFunc.ReplaceBoundSpace(ss[1]);
 				if(pred.equals(lastPred))
 					continue;
 				if(PagePred.containsKey(pred))
