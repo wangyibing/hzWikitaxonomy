@@ -143,7 +143,7 @@ public class RediPageExtraction {
 				targetId = ExtractAPI.GetPageId(
 						uFunc.PunctuationZh2En(s));
 			if(targetId > 0){
-				System.out.println("GetRedirectInfo targetId: " + targetId + "\t" + s);
+				//System.out.println("GetRedirectInfo targetId: " + targetId + "\t" + s);
 				if(targetId == lastId)
 					continue;
 				else{
