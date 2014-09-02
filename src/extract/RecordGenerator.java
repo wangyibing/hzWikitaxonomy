@@ -13,7 +13,6 @@ import com.tag.myTag;
 
 import database.Entity;
 import tools.uFunc;
-import triple.extract.TripleGenerator;
 import triple.object.ObjeStdz;
 import triple.predicate.PredStdz;
 

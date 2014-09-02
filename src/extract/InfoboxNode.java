@@ -7,7 +7,6 @@ import org.htmlparser.util.NodeList;
 import org.htmlparser.util.ParserException;
 import org.htmlparser.visitors.NodeVisitor;
 
-import com.tag.TagChild;
 import com.tag.myElement;
 
 public class InfoboxNode {

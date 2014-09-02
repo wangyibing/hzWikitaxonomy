@@ -53,7 +53,7 @@ public class linkExtract {
 							if(predicate != null && predicate.link != null)
 							{
 								result += TripleGenerator.getStringFromMyelement(predicate, true)
-										+ "\t" + uFunc.UnifiedWord(predicate.context)
+										+ "\t" + uFunc.ReplaceBoundSpace(predicate.context)
 										+ "\t" + PageId + "\n";
 							}
 						}

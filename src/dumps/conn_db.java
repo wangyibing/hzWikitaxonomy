@@ -1,5 +1,10 @@
 package dumps;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import tools.uFunc;
+import database.Zhwiki;
 import de.tudarmstadt.ukp.wikipedia.api.Category;
 import de.tudarmstadt.ukp.wikipedia.api.DatabaseConfiguration;
 import de.tudarmstadt.ukp.wikipedia.api.Page;
@@ -14,6 +19,7 @@ import de.tudarmstadt.ukp.wikipedia.parser.Template;
 import de.tudarmstadt.ukp.wikipedia.parser.mediawiki.FlushTemplates;
 import de.tudarmstadt.ukp.wikipedia.parser.mediawiki.MediaWikiParser;
 import de.tudarmstadt.ukp.wikipedia.parser.mediawiki.MediaWikiParserFactory;
+import extract.pageinfo.RediPageExtraction;
 
 
 public class conn_db {
@@ -32,12 +38,18 @@ public class conn_db {
 		Wikipedia wiki = new Wikipedia(dbConfig);
 		
 
-		String title = "香港";
+		String title = "TGM6型柴油机车‎‎";
 		
-		Page page = wiki.getPage(3407054);
-		System.out.println("Page title           : "+wiki.existsPage(title) + page.getTitle());
-		System.out.println("Page id              : "+page.getPageId());
-		System.out.println("\n\n\n\ngetPlainText:   "+page.getText());
+		Page page = wiki.getPage(3163);
+		System.out.println("Page title           : "+ wiki.existsPage(title) + page.getTitle());
+		System.out.println("Page id              : "+ page.getPageId());
+		System.out.println("getPlainText:        : "+ "\"" + page.getText() + "\"");
+
+		Pattern p = Pattern.compile("(#\\s*重定向\\s*:?\\s*(\\[\\[[^\\]]{1,}\\]\\]))|"
+				+ "(#\\s*redirect\\s*:?\\s*(\\[\\[[^\\]]{1,}\\]\\]))");
+		Matcher m = p.matcher(page.getText().toLowerCase());
+		if(m.find())
+		System.out.println(m.group(2));
 
 		//System.out.println(uFunc_ZH.isAdministrativeRegion(page.getPageId()));
 		for(String t: page.getRedirects()){
@@ -205,4 +217,5 @@ public class conn_db {
 			e.printStackTrace();
 		}
 	}
+
 }

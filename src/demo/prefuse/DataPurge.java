@@ -4,11 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 
 import database.Entity;
-import database.SubCategory;
-import database.Zhwiki;
-import de.tudarmstadt.ukp.wikipedia.api.Category;
-import de.tudarmstadt.ukp.wikipedia.api.Page;
-import de.tudarmstadt.ukp.wikipedia.api.exception.WikiTitleParsingException;
 import extract.Extract;
 import tools.uFunc;
 
@@ -59,7 +54,6 @@ public class DataPurge {
 				if(title == null || title.equals(""))
 					continue;
 				//System.out.println(oneLine +"\n" + outNr);
-				String tmp = title + ss[1] + ss[2];
 				if(isInfo(oneLine, lastId, lastInfo))
 				{
 					//System.out.println(oneLine +"\n" + outNr);

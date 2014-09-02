@@ -141,8 +141,9 @@ public class uFunc {
 	public static boolean isNumeric(String str) {
 		return str.replaceAll(",", "").matches("[\\+-]?[0-9]+((.)[0-9])*[0-9]*");
 	}
-	public static String UnifiedWord(String string){
-		String s1 = string.replaceAll("\\s", "")
+	
+	public static String PunctuationZh2En(String string){
+		String s1 = string
 				.replaceAll("，", ",").replaceAll("？", "?").replaceAll("！", "!")
 				.replaceAll("；", ";").replaceAll("：", ":").replaceAll("”", "\"")
 				.replaceAll("“", "\"").replaceAll("‘", "'").replaceAll("’", "'")

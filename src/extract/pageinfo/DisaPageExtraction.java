@@ -15,7 +15,6 @@ import org.htmlparser.filters.AndFilter;
 import org.htmlparser.filters.HasAttributeFilter;
 import org.htmlparser.filters.TagNameFilter;
 import org.htmlparser.util.NodeList;
-import org.htmlparser.util.ParserException;
 import org.htmlparser.visitors.NodeVisitor;
 
 import tools.URL2UTF8;
@@ -24,10 +23,10 @@ import database.DisPage;
 import database.Zhwiki;
 import de.tudarmstadt.ukp.wikipedia.api.Page;
 import de.tudarmstadt.ukp.wikipedia.api.exception.WikiApiException;
-import de.tudarmstadt.ukp.wikipedia.api.exception.WikiTitleParsingException;
 import de.tudarmstadt.ukp.wikipedia.parser.Link;
 import de.tudarmstadt.ukp.wikipedia.parser.NestedList;
 import de.tudarmstadt.ukp.wikipedia.parser.NestedListContainer;
+import extract.web.ExtractAPI;
 
 public class DisaPageExtraction {
 	static String i = "DisaPageExtraction";
@@ -44,13 +43,13 @@ public class DisaPageExtraction {
 		
 		
 		ExtractDisPages(folder, infoPath);
-		/*
+		
 		GenerateExceptions(folder + DisPage.CanonicalPath_pageoutlinks + "1", 
 				folder + DisPage.ExceptionListPath);
 		ResultFiltering(folder + DisPage.CanonicalPath_pageoutlinks + "1",
 				folder + DisPage.ExceptionListPath,
 				folder + DisPage.CanonicalPath_pageoutlinks);
-		*/
+		
 		uFunc.addFile(uFunc.AlertOutput, uFunc.AlertPath);
 	}
 
@@ -157,6 +156,7 @@ public class DisaPageExtraction {
 					it.remove();
 				
 			}
+			System.out.println("targetFreq.size(): " + targetFreq.size());
 			uFunc.SaveHashMap(targetFreq, ExceptionFile);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -288,7 +288,7 @@ public class DisaPageExtraction {
 			}
 		}
 	};
-	private static String info = "";
+	public static String info = "";
 	private static void ExtractFromWeb(int pageId, String folder, String infoPath) {
 		// TODO Auto-generated method stub
 		if(filter == null)
@@ -317,9 +317,11 @@ public class DisaPageExtraction {
 					if(pageid <= 0)
 						pageid = Zhwiki.getPageId(uFunc.TraConverter.convert(entity));
 					if(pageid <= 0)
+						pageid = ExtractAPI.GetPageId(entity);
+					if(pageid <= 0)
 					{
 						String info = "";
-						info = "no targer ERROR:" + PageId + "\t"+ PageTitle + "\t" + id;
+						info = "no targer ERROR:" + PageId + "\t"+ PageTitle + "\t" + entity;
 						errorOutput += info +"\n";
 						errorNr ++;
 						if(errorNr % 1000 == 0)

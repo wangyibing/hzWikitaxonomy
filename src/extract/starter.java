@@ -14,10 +14,10 @@ public class starter {
 			"/home/hanzhe/Public/result_hz/wiki_count/pageinfo/";
 	public static void main(String [] args)
 	{
-		//EntityTitleExtraction.Extract(Entity.CanonicalPath_title, 
-		//		Entity.CanonicalPath_titles, Folder + "EntityExtractionInfo");
-		//ExtractRedi();
-		ExtractDis();
+		//ExtractDis();
+		//EntityTitleExtraction.Extract(Entity.CanonicalPath_titles, 
+		//		Folder + "EntityExtractionInfo");
+		ExtractRedi();
 		//test();
 	}
 
@@ -30,7 +30,7 @@ public class starter {
 	public static void ExtractRedi() {
 
 		RediPageExtraction.ExtracRedirectPages(RediPage.CanonicalPath, 
-				Folder + "RediPageExtractionInfo");
+				"data/RediPageExtractionInfo");
 	}
 
 	public static void test() {

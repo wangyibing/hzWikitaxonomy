@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 import tools.uFunc;
 import database.Zhwiki;
 import de.tudarmstadt.ukp.wikipedia.api.Page;
+import extract.web.ExtractAPI;
 
 public class RediPageExtraction {
 	static String i = "RediPageExtraction";
@@ -23,8 +24,10 @@ public class RediPageExtraction {
 		uFunc.deleteFile(outputPath);
 		uFunc.AlertPath = infoPath;
 		Zhwiki.init();
+		long time = System.currentTimeMillis();
 		for(Page page : Zhwiki.wiki.getPages())
 		{
+			//page = Zhwiki.getPage(36553);
 			PageNr ++;
 			PageId = page.getPageId();
 			PageTitle = Zhwiki.getTitle(PageId);
@@ -34,10 +37,14 @@ public class RediPageExtraction {
 			}
 			if(PageNr % 10000 == 0)
 			{
-				info = "PageNumPast:" + PageNr + "\t" + "RediNr:" + RediNr + "\n";
+				info = "PageNumPast:" + PageNr + "\t" + "RediNr:" + RediNr + 
+						"\tcost:" + (System.currentTimeMillis() - time)/1000
+						+ "\n";
+				time = System.currentTimeMillis();
 				uFunc.addFile(info, infoPath);
 				System.out.print(info);
 			}
+			String text = page.getText();
 			if(page.isRedirect() == true)
 			{
 				info = PageId + "\t" + "0" + "\t" + 
@@ -47,11 +54,9 @@ public class RediPageExtraction {
 			}
 			else if(page.getNumberOfOutlinks() == 0)
 			{
-				if(uFunc.ReplaceBoundSpace(uFunc.Simplify(page.getText()))
-						.startsWith("#重定向") == false)
+				if(IsRedirectPage(text) == false)
 				{
-					if(uFunc.ReplaceBoundSpace(uFunc.Simplify(page.getText()))
-							.contains("#重定向") == true)
+					if(ContainsRedirectPage(text) == true)
 					{
 						uFunc.Alert(i, PageId + " not standd redirect!!");
 					}
@@ -66,8 +71,7 @@ public class RediPageExtraction {
 			}
 			else if(page.getNumberOfOutlinks() == 1)
 			{
-				if(uFunc.ReplaceBoundSpace(page.getText())
-						.startsWith("#重定向") == true)
+				if(IsRedirectPage(text) == true)
 				{
 					int matchNr = GetRedirectInfo(page.getText(), outputPath);
 					RediNr += matchNr;
@@ -76,8 +80,7 @@ public class RediPageExtraction {
 						uFunc.Alert(i, PageId + " not standd redirect3!!match " + matchNr + " times");
 					}
 				}
-				else if(uFunc.ReplaceBoundSpace(uFunc.Simplify(page.getText()))
-						.contains("#重定向") == true)
+				else if(ContainsRedirectPage(text) == true)
 				{
 					uFunc.Alert(i, PageId + " not standd redirect3!!");
 				}
@@ -85,8 +88,7 @@ public class RediPageExtraction {
 			else{
 				// there are some cases that "#重定向" exist in a full page's context
 				if(page.getText().length() < 200 && 
-						uFunc.ReplaceBoundSpace(uFunc.Simplify(page.getText()))
-						.contains("#重定向") == true)
+						ContainsRedirectPage(text) == true)
 				{
 					uFunc.Alert(i, PageId + ":redirect extract missed4!!");
 				}
@@ -96,19 +98,52 @@ public class RediPageExtraction {
 		uFunc.addFile(uFunc.AlertOutput, uFunc.AlertPath);
 	}
 
-	private static int GetRedirectInfo(String text, String outputPath) {
+	static Pattern redirect = Pattern.compile("(#\\s*重定向)|(#\\s*redirect)");
+	static Matcher matcher;
+	private static boolean ContainsRedirectPage(String text) {
 		// TODO Auto-generated method stub
-		Pattern p = Pattern.compile("#重定向\\s*(\\[\\[[^\\]]{1,}\\]\\])");
-		Matcher m = p.matcher(text);
+		matcher = redirect.matcher(text.replaceAll(
+				"(r|R)(e|E)(d|D)(i|I)(r|R)(e|E)(c|C)(t|T)", "redirect"));
+		if(matcher.find())
+			return true;
+		return false;
+	}
+
+	static Pattern begin = Pattern.compile("(^#\\s*重定向)|(^#\\s*redirect)");
+	static Matcher matcher2;
+	private static boolean IsRedirectPage(String text) {
+		// TODO Auto-generated method stub
+		matcher = begin.matcher(text.replaceAll(
+				"(r|R)(e|E)(d|D)(i|I)(r|R)(e|E)(c|C)(t|T)", "redirect"));
+		if(matcher.find())
+			return true;
+		return false;
+	}
+
+	public static int GetRedirectInfo(String text, String outputPath) {
+		// TODO Auto-generated method stub
+		Pattern p = Pattern.compile("(#\\s*重定向\\s*:?\\s*(\\[\\[[^\\]]{1,}\\]\\]))|"
+				+ "(#\\s*redirect\\s*:?\\s*(\\[\\[[^\\]]{1,}\\]\\]))");
+		Matcher m = p.matcher(text.replaceAll(
+				"(r|R)(e|E)(d|D)(i|I)(r|R)(e|E)(c|C)(t|T)", "redirect"));
 		int matchNr = 0;
 		int lastId = 0;
 		while(m.find()){
-			
-			String s = m.group(1);
+			String s = m.group(2);
+			if(s == null)
+			{
+				s = m.group(4);
+				System.out.println(text);
+			}
 			s = GetTargetTitle(s);
 			int targetId = Zhwiki.getPageId(s);
-			
+			if(targetId == 0)
+				targetId = ExtractAPI.GetPageId(s);
+			if(targetId == 0)
+				targetId = ExtractAPI.GetPageId(
+						uFunc.PunctuationZh2En(s));
 			if(targetId > 0){
+				System.out.println("GetRedirectInfo targetId: " + targetId + "\t" + s);
 				if(targetId == lastId)
 					continue;
 				else{
@@ -124,6 +159,7 @@ public class RediPageExtraction {
 					output = "";
 				}
 			}
+
 		}
 		return matchNr;
 	}
@@ -139,6 +175,7 @@ public class RediPageExtraction {
 				else title = title.substring(index, title.length()-index);
 				if(title.contains("#"))
 					title = title.substring(0, title.indexOf("#"));
+				title = uFunc.ReplaceBoundSpace(title);
 				return title;
 			}
 			else{
