@@ -81,6 +81,7 @@ public class Extract{
 		uFunc.deleteFile(uFunc.InfoFolder + "/FailedExtractPages");
 		uFunc.deleteFile(PredExtraction.UpperTitleFeaturePath);
 		uFunc.deleteFile(PredExtraction.LinkFeaturePath);
+		uFunc.deleteFile("data/predicatetable/predicateId");
 	}
 
 

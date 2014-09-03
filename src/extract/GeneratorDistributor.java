@@ -84,7 +84,7 @@ public class GeneratorDistributor {
 		for(String ss : oString.split(ObjeStdz.splitRegex))
 			objc.addEle(new myElement(ss));
 		result = Distribute2Multi(pageid, predi, objc, upperTitle, tRTitleNr);
-		if(result.equals(""))
+		if(result != null && result.equals(""))
 			return null;
 		return result;
 	}
