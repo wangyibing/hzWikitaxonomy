@@ -30,7 +30,7 @@ public class Extract{
 		uFunc.deleteFile(PredExtraction.LinkFeaturePath);
 		uFunc.deleteFile("data/predicatetable/predicateId");
 		uFunc.AlertPath = "data/info/Extraction";
-		for(int i = 1; i <= 1; i ++)
+		for(int i = 1; i <= 1003; i ++)
 		{
 			long t1 = System.currentTimeMillis();
 			ExtractFromLocalFiles(uFunc.WebPagesFolder + "/" + i);
@@ -53,7 +53,7 @@ public class Extract{
 		File folder = new File(path);
 		if(folder.isDirectory() == false)
 		{
-			System.out.println(folder + " not a folder");
+			uFunc.Alert(i, folder + " not a folder");
 			return;
 		}
 		
@@ -105,7 +105,7 @@ public class Extract{
 			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			System.out.println("Extract.java:" + Path);
+			uFunc.Alert(i, Path);
 			e.printStackTrace();
 		}
 		return null;
