@@ -31,6 +31,8 @@ public class PageNode {
 	private Vector<String> possiTableNames;
 	private Vector<Tag> InfoboxTag;
 	private boolean hasMedalInfo;
+	private String info;
+	private String i = "PageNode";
 	
 	/**
 	 * 1:extract triples
@@ -55,17 +57,8 @@ public class PageNode {
 		{
 			if(hasMedalInfo == true)
 				return "";
-			//System.out.println("PageNode.java:" + PageId + " extract triples failed!");
-			if(possiTableNames.size() > 0)
-			{
-				/*
-				String output = "\t";
-				for(int i = 0 ; i < possiTableNames.size(); i ++)
-					output += possiTableNames.get(i) + ";";
-				System.out.println(output);
-				*/
-			}
-			uFunc.addFile(PageId + "\n", uFunc.InfoFolder + "/FailedExtractPages");
+			info = "FailedExtractPages:" + PageId;
+			uFunc.Alert(i , info);
 			return "";
 		}
 		else
@@ -152,7 +145,7 @@ public class PageNode {
 					if(lastTagName != null && lastEndTagName != null && 
 							lastTagName.equals("td") && lastEndTagName.equals("td") == false)
 					{
-						System.out.println("PageNode.java: tables in td!" + pageid);
+						uFunc.Alert(i, "PageNode.java: tables in td!" + pageid);
 						return;
 					}
 					for(int i = 0 ; i < InfoboxTag.size(); i ++)
