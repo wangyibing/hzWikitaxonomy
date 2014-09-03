@@ -50,6 +50,15 @@ public class Entity {
 		if(Id2TitMap.containsKey(pageid) == false){
 			if(RediPage.getTargetPageid(pageid) <= 0)
 			{
+				if(pageid == 1011204){
+					System.out.println(Id2TitMap.get(1011204));
+					try{
+						Integer.parseInt(Id2TitMap.remove(1011204));
+					}catch(Exception e)
+					{
+						e.printStackTrace();
+					}
+				}
 				System.out.println("Entity.java:page title not exist:" + pageid);
 			}
 			pageid = RediPage.getTargetPageid(pageid);

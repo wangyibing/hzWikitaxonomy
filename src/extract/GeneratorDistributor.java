@@ -15,19 +15,47 @@ public class GeneratorDistributor {
 	public static String distribute(int pageid, myObj predi, myObj objc,
 			myElement upperTitle, int tRTitleNr) {
 		// TODO Auto-generated method stub
-		String result = TripleGenerator.GetTriples(
-				pageid, predi, objc, upperTitle, tRTitleNr);
+		String result = "";
 		if(result == null || result.equals(""))
 			return null;
 		if(predi.eleNr == objc.eleNr && objc.eleNr > 1)
 		{
-			info = pageid + " has multi-predi:";
+			info = pageid + " has multi-predi:\n";
 			for(int i = 0 ; i < predi.eleNr; i ++)
-				info += predi.eles.get(i).context + ";" + objc.eles.get(i).context + " ";
-			
+				info += "\t" + predi.eles.get(i).context + ";" + objc.eles.get(i).context + "\n";
 			uFunc.Alert(i, info);
+			String oneLine = "";
+			for(int i = 0 ; i < predi.eleNr; i ++)
+			{
+				myObj tPred = new myObj();
+				tPred.addEle(predi.eles.get(i));
+				myObj tObjc = new myObj();
+				tObjc.addEle(objc.eles.get(i));
+				/**
+				 * oneLine
+				 */
+				oneLine = TripleGenerator.GetTriples(
+						pageid, tPred, tObjc, upperTitle, tRTitleNr);
+				if(oneLine != null){
+					result += oneLine;
+					PredIdGenerator.generator(predi, pageid, 
+							"data/predicatetable/predicateId");
+				}
+			}
 		}
-		PredIdGenerator.generator(predi.eles.get(0).context, pageid, "data/predicatetable/predicateId");
+		else
+		{
+			/**
+			 * oneLine
+			 */
+			result = TripleGenerator.GetTriples(
+					pageid, predi, objc, upperTitle, tRTitleNr);
+			PredIdGenerator.generator(predi, pageid, 
+					"data/predicatetable/predicateId");
+		}
+		if(result == null || result.equals(""))
+			return null;
+		result += "\n";
 		
 		return result;
 	}
@@ -43,9 +71,19 @@ public class GeneratorDistributor {
 		// TODO Auto-generated method stub
 		String result = TripleGenerator.
 				getTripleFromSgl(context, pageid);
-		
+		/**
+		 * oneLine
+		 */
+		PredIdGenerator.generator(context, pageid,
+				"data/predicatetable/predicateId");
 		if(result == null || result.equals(""))
 			return null;
+		else
+		{
+			PredIdGenerator.generator(result.split("\t")[1], pageid,
+					"data/predicatetable/predicateId");
+			result += "\n";
+		}
 		return result;
 	}
 }

@@ -102,7 +102,7 @@ public class TripleGenerator {
 		String result = "";
 		if(cont.split(":|：").length < 2){
 			System.out.println("SecondStandardize.java: error");
-			return "";
+			return null;
 		}
 		int index = cont.indexOf(":");
 		if(index < 0 || (index > cont.indexOf("：") && cont.indexOf("：") > 0))
@@ -115,10 +115,9 @@ public class TripleGenerator {
 		o = new myObj();
 		for(String ss : objc.split(ObjeStdz.splitRegex))
 			o.addEle(new myElement(ss));
-		result += GetTriples(PageId, p, o, null, 0);
-		if(result.contains("经纬") == false){
-			//System.out.print("SecondStandardize.java:\n\t" + result);
-		}
+		result = GetTriples(PageId, p, o, null, 0);
+		if(result == null)
+			return null;
 		return result;
 	}
 
