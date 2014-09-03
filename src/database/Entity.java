@@ -30,7 +30,7 @@ public class Entity {
 	public static int getEntityId(String title)
 	{
 		initTitsIdMap();
-		title = title.replaceAll("_| ", "");
+		title = title.replaceAll("_| ", "").toLowerCase();
 		if(TitsIdMap.containsKey(simConvt.convert(title)) == false)
 		{
 			title = title.replaceAll("《|》", "");
@@ -48,23 +48,13 @@ public class Entity {
 			return null;
 		initId2TitMap();
 		if(Id2TitMap.containsKey(pageid) == false){
-			if(RediPage.getTargetPageid(pageid) <= 0)
+			if(RediPage.getTargetPageid(pageid) > 0)
 			{
-				if(pageid == 1011204){
-					System.out.println(Id2TitMap.get(1011204));
-					try{
-						Integer.parseInt(Id2TitMap.remove(1011204));
-					}catch(Exception e)
-					{
-						e.printStackTrace();
-					}
-				}
-				System.out.println("Entity.java:page title not exist:" + pageid);
+				pageid = RediPage.getTargetPageid(pageid);
 			}
-			pageid = RediPage.getTargetPageid(pageid);
 			if(Id2TitMap.containsKey(pageid) == false)
 			{
-				System.out.println("Entity.java:page title not exist:" + pageid);
+				//System.out.println("Entity.java:page title not exist:" + pageid);
 				return null;
 			}
 			else

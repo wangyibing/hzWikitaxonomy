@@ -413,7 +413,7 @@ public class uFunc {
 		if(contP == null)
 			return false;
 		// 200x年
-		return contP.matches("[0-9\\-–−_– —年月日\\.x\\?]{1,}");
+		return contP.matches("[0-9\\-–−_ —年月日\\.x\\?]{1,}");
 	}
 
 	private static HashMap<String, Integer> tmp = new HashMap<String, Integer>();

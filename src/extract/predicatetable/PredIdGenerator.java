@@ -1,8 +1,9 @@
 package extract.predicatetable;
 
-import com.tag.myObj;
+import com.tag.myElement;
 
 import tools.uFunc;
+import triple.extract.TripleGenerator;
 
 public class PredIdGenerator {
 
@@ -10,8 +11,8 @@ public class PredIdGenerator {
 	static int PagePredNr = 0;
 	static int MaxPagePredNr = 0;
 	
-	public static void generator(myObj predi, int pageid,
-			String outputpath, String triple)
+	public static void generator(int pageid,
+			String outputpath, myElement upperTitle, String triple)
 	{
 		if(pageid != PageId)
 		{
@@ -25,11 +26,16 @@ public class PredIdGenerator {
 			PagePredNr ++;
 		}
 		String prediId = PagePredNr + "";
-		for(int i = 0; i < 3 - prediId.length(); i ++)
+		int zeroNr = 3 - prediId.length();
+		for(int i = 0; i < zeroNr; i ++)
 			prediId = "0" + prediId;
 		prediId = PageId + prediId;
-		output += prediId + "\t" + predi + "\n";
+		output += prediId +  "\n";
+		String upperInfo = TripleGenerator.
+				getStringFromMyelement(upperTitle, true);
+		output += "UpperTitle:" + upperInfo + "\n";
 		output += triple;
+		output += "\n";
 		outNr ++;
 		if(outNr % 1000 == 0)
 		{
