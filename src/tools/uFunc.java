@@ -439,12 +439,31 @@ public class uFunc {
 		System.out.println(className + ":" + info);
 		AlertNr ++;
 		AlertOutput += className + ":" + info + "\n";
-		if(AlertNr % 10 == 0)
+		if(AlertNr % 100 == 0)
 		{
 			uFunc.addFile(AlertOutput, AlertPath);
 			AlertOutput = "";
 		}
 			
+	}
+
+
+	public static void Alert(boolean outputOnSreen, String className, String info) {
+		// TODO Auto-generated method stub
+		if(outputOnSreen == false)
+		{
+			AlertNr ++;
+			AlertOutput += className + ":" + info + "\n";
+			if(AlertNr % 100 == 0)
+			{
+				uFunc.addFile(AlertOutput, AlertPath);
+				AlertOutput = "";
+			}
+		}
+		else{
+			Alert(className, info);
+		}
+		
 	}
 
 }

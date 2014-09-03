@@ -41,7 +41,7 @@ public class PageNode {
 	public static int Mode = 1;
 	
 	
-	public String GetTriples()
+	public String GetTriples(boolean alert)
 	{
 		if(Page == null)
 		{
@@ -58,7 +58,8 @@ public class PageNode {
 			if(hasMedalInfo == true)
 				return "";
 			info = "FailedExtractPages:" + PageId;
-			uFunc.Alert(i , info);
+			if(alert)
+				uFunc.Alert(i , info);
 			return "";
 		}
 		else
@@ -110,7 +111,7 @@ public class PageNode {
 							lastEndTagName.equals("div"))
 					{
 						String title = Entity.getEntityTitle(pageid);
-						if(title != null ){
+						if(title != null && uFunc.hasChineseCharactor(tag.toPlainTextString())){
 							//System.out.println("#######firs para:" + tag.toPlainTextString());
 							TextApprd = true;
 						}
