@@ -22,7 +22,11 @@ public class myObj {
 	}
 	public void addEle(myElement e)
 	{
-		eles.add(e);
+		myElement e2;
+		if(e.link != null)
+			e2 = new myElement(e.context, e.link);
+		else e2 = new myElement(e.context);
+		eles.add(e2);
 		eleNr ++;
 	}
 	public void addEle(Vector<myElement> es)

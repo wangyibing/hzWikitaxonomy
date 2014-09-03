@@ -2,7 +2,9 @@ package triple.predicate;
 
 import org.htmlparser.Tag;
 
+import com.tag.TagShape;
 import com.tag.myElement;
+import com.tag.myObj;
 import com.tag.myTag;
 
 import database.Entity;
@@ -24,18 +26,22 @@ public class PredStdz {
 		result = standardize(mtag_pred.tag.toPlainTextString());
 		// predicate is current entity's title, 
 		// mustn't be a correct triple
-		if(Entity.getEntityId(result) == pageid)
+		if(uFunc.isPunctuations(result) ||
+				Entity.getEntityId(result) == pageid)
 		{
 			//System.out.println("PredStdz.java:" + result + ";" + pageid);
 			return null;
 		}
-		//System.out.println("PredStdz.java:result:" + result);
-		if(uFunc.isPunctuations(result))
+		myTag mytag = TagShape.isA(mtag_pred.tag);
+		myElement e;
+		if(mytag != null)
 		{
-			//System.out.println("PredStdz.java:empty predi:" + mtag_pred.tag.toPlainTextString());
-			return null;
+			e = new myElement(mytag.context, 
+					mytag.tag.getAttribute("HREF"));
 		}
-		myElement e = new myElement(result);
+		else{
+			e = new myElement(result);
+		}
 		return e;
 	}
 

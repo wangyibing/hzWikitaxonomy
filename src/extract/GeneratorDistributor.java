@@ -17,14 +17,13 @@ public class GeneratorDistributor {
 			myElement upperTitle, int tRTitleNr) {
 		// TODO Auto-generated method stub
 		String result = "";
-		if(result == null || result.equals(""))
-			return null;
+		if(predi == null || objc == null)
+				return null;
+		// has multi-predi, e.g.
+		// pred = {身高, 体重} 
+		// objc = {162 厘米, 44 公斤}
 		if(predi.eleNr == objc.eleNr && objc.eleNr > 1)
 		{
-			info = pageid + " has multi-predi:\n";
-			for(int i = 0 ; i < predi.eleNr; i ++)
-				info += "\t" + predi.eles.get(i).context + ";" + objc.eles.get(i).context + "\n";
-			uFunc.Alert(i, info);
 			String oneLine = "";
 			for(int i = 0 ; i < predi.eleNr; i ++)
 			{
@@ -43,7 +42,7 @@ public class GeneratorDistributor {
 		else
 		{
 			/////////////////////////////////////////////////////
-			result = TripleGenerator.GetTriples(
+			result = Distribute2Multi(
 					pageid, predi, objc, upperTitle, tRTitleNr);
 			/////////////////////////////////////////////////////
 			
@@ -84,7 +83,7 @@ public class GeneratorDistributor {
 		for(String ss : oString.split(ObjeStdz.splitRegex))
 			objc.addEle(new myElement(ss));
 		result = Distribute2Multi(pageid, predi, objc, upperTitle, tRTitleNr);
-		if(result != null && result.equals(""))
+		if(result == null || result.equals(""))
 			return null;
 		return result;
 	}
@@ -95,12 +94,15 @@ public class GeneratorDistributor {
 		// TODO Auto-generated method stub
 		String result = TripleGenerator.GetTriples(
 				pageid, predi, objc, upperTitle, tRTitleNr);
-		if(result != null)
+		//System.out.println(result);
+		if(result != null && result.equals("") == false)
 		{
-			PredIdGenerator.generator(predi, pageid, 
-					"data/predicatetable/predicateId", result);
-			
+			PredIdGenerator.generator(pageid, 
+					"data/predicatetable/predicateId", upperTitle, result);
 		}
+		// else is considered
+		if(result == null || result.equals(""))
+			return null;
 		return result;
 	}
 

@@ -68,6 +68,7 @@ public class RecordGenerator {
 			case 1:
 				myObj predi = ObjeStdz.standardize(tagPre);
 				myObj objc = ObjeStdz.standardize(tagObj);
+				// normal triple exist, namely subtitle exist
 				if(InfoboxNode.infoboxIMG == false &&
 						predi != null && objc != null)
 				{
@@ -75,7 +76,7 @@ public class RecordGenerator {
 					InfoboxNode.TRTitleNr ++;
 					//System.out.println("TripleGenerator.java:" + InfoboxNode.TRTitleNr);
 				}
-				//System.out.println("TripleGenerator.java:" + tagPre.outputInfo() + "\t" + SecondStandardize.GetTriples(pageid, predi, objc, null));
+				//System.out.println("TripleGenerator.java:" + tagPre.outputInfo() + "\t" +  GeneratorDistributor.distribute(pageid, predi, objc, null, 2));
 				return GeneratorDistributor.distribute(
 						pageid, predi, objc, InfoboxNode.UpperTitle, InfoboxNode.TRTitleNr);
 			case 2:
@@ -130,6 +131,12 @@ public class RecordGenerator {
 				if(Entity.getEntityId(tUpperTitle.context) == PageId)
 					return null;
 				InfoboxNode.UpperTitle = tUpperTitle;
+				/*
+				if(InfoboxNode.TRTitleNr == 1)
+					System.out.println(InfoboxNode.TRTitleNr + "\t" + 
+						pageid + "\t" + TripleGenerator.
+						getStringFromMyelement(InfoboxNode.UpperTitle, true));
+						*/
 			}
 			// content
 			else if(tName.equals("td"))
@@ -137,7 +144,8 @@ public class RecordGenerator {
 				RemoveUpperTitleElement(tags.get(0).tag);
 				if(TagChild.containDescendantTag(tags.get(0).tag, "tr"))
 					return null;
-				if(InfoboxNode.TRTitleNr > 1)
+				if(InfoboxNode.TRTitleNr > 1 && 
+						InfoboxNode.UpperTitle != null)
 				{
 					myObj predi = new myObj();
 					predi.addEle(InfoboxNode.UpperTitle);

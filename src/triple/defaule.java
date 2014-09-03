@@ -17,7 +17,7 @@ public class defaule {
 		String re = uFunc.OutputProjectInfo();
 		System.out.println(re);
 		OutputTripleNr();
-		
+		System.out.println(uFunc.isPeriod("20x1981 - 2003年"));
 		String s2 = "/wiki/%F0%A8%A7%80";
 		System.out.println("chinese:" + URL2UTF8.unescape(s2));
 		

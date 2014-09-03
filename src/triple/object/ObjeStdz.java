@@ -232,6 +232,8 @@ public class ObjeStdz {
 			Vector<myTag> child = TagChild.getChildren(tag);
 			if(child.size() == 1){
 				tag = child.get(0).tag;
+				if(tag == null)
+					return null;
 				tName = tag.getTagName().toLowerCase();
 			}
 			else return null;
