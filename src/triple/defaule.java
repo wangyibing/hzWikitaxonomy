@@ -22,7 +22,7 @@ public class defaule {
 		System.out.println("chinese:" + URL2UTF8.unescape(s2));
 		
 		String ssss01 = "网站：[中国重庆武隆网%20%20http://www.cqwulong.cn/ www.cqwulong.cn]";
-		System.out.println((TripleGenerator.getTripleFromSgl(ssss01, 100)));
+		
 	}
 	private static void OutputTripleNr() {
 		// TODO Auto-generated method stub

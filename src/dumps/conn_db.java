@@ -40,7 +40,7 @@ public class conn_db {
 
 		String title = "百合子Ω‎‎";
 		
-		Page page = wiki.getPage(title);
+		Page page = wiki.getPage(4123224);
 		System.out.println("Page title           : "+ wiki.existsPage(title) + page.getTitle());
 		System.out.println("Page id              : "+ page.getPageId());
 		System.out.println("getPlainText:        : "+ "\"" + page.getText() + "\"");

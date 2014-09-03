@@ -102,7 +102,8 @@ public class RecordGenerator {
 					TagChild.containDescendantTag(tags.get(0).tag, "tr") == false)
 			{
 				//System.out.println("TripleGenerator.java:single tr containing \":\", " + pageid + ":" + context);
-				return GeneratorDistributor.distribute(context, pageid);
+				return GeneratorDistributor.distribute(context, pageid, 
+						InfoboxNode.UpperTitle, InfoboxNode.TRTitleNr);
 			}
 			// subTitle
 			if(tName.equals("th"))

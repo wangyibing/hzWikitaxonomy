@@ -27,7 +27,7 @@ public class RediPageExtraction {
 		long time = System.currentTimeMillis();
 		for(Page page : Zhwiki.wiki.getPages())
 		{
-			page = Zhwiki.getPage(617541);
+			//page = Zhwiki.getPage(617541);
 			PageNr ++;
 			PageId = page.getPageId();
 			PageTitle = Zhwiki.getTitle(PageId);
@@ -35,7 +35,7 @@ public class RediPageExtraction {
 				uFunc.Alert(i, "pageid null:" + page.getText());
 				continue;
 			}
-			if(PageNr % 5 == 0)
+			if(PageNr % 10000 == 0)
 			{
 				info = "PageNumPast:" + PageNr + "\t" + "RediNr:" + RediNr + 
 						"\tcost:" + (System.currentTimeMillis() - time)/1000
@@ -43,7 +43,7 @@ public class RediPageExtraction {
 				time = System.currentTimeMillis();
 				uFunc.addFile(info, infoPath);
 				System.out.print(info);
-				break;
+				//break;
 			}
 			String text = page.getText();
 			if(page.isRedirect() == true)
@@ -105,7 +105,6 @@ public class RediPageExtraction {
 					uFunc.Alert(i, PageId + ":redirect extract missed4!!");
 				}
 			}
-			break;
 		}
 		uFunc.addFile(output, outputPath);
 		uFunc.addFile(uFunc.AlertOutput, uFunc.AlertPath);
