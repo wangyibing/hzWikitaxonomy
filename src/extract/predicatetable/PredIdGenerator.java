@@ -1,5 +1,7 @@
 package extract.predicatetable;
 
+import com.tag.myObj;
+
 import tools.uFunc;
 
 public class PredIdGenerator {
@@ -8,7 +10,7 @@ public class PredIdGenerator {
 	static int PagePredNr = 0;
 	static int MaxPagePredNr = 0;
 	
-	public static void generator(String predicate, int pageid,
+	public static void generator(myObj predi, int pageid,
 			String outputpath)
 	{
 		if(pageid != PageId)
@@ -26,7 +28,7 @@ public class PredIdGenerator {
 		for(int i = 0; i < 3 - prediId.length(); i ++)
 			prediId = "0" + prediId;
 		prediId = PageId + prediId;
-		output += prediId + "\t" + predicate + "\n";
+		output += prediId + "\t" + predi + "\n";
 		outNr ++;
 		if(outNr % 1000 == 0)
 		{

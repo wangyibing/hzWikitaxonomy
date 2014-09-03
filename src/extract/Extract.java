@@ -11,6 +11,7 @@ import database.InfoboxIdList;
 import tools.uFunc;
 
 public class Extract{
+	private static String i = "Extract";
 
 	public static String TriplePath = 
 			"/home/hanzhe/Public/result_hz/zhwiki/Infobox/Triple/Web/triple";
@@ -48,6 +49,8 @@ public class Extract{
 		{
 			int pageid = Integer.parseInt(file.getName().substring(
 					0, file.getName().indexOf("_")));
+			if(pageid == 1011204)
+				uFunc.Alert(i , "fileName:" + file.getName());
 			
 			//if(pageid != 1001309)continue;
 			
