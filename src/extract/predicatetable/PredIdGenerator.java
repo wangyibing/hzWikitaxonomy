@@ -50,6 +50,8 @@ public class PredIdGenerator {
 	
 	public static void close(String outputpath){
 		uFunc.addFile(output, outputpath);
+		if(PagePredNr > MaxPagePredNr)
+			MaxPagePredNr = PagePredNr; 
 		System.out.println("max page's predicate nr is:" + MaxPagePredNr);
 	}
 	static String output = "";

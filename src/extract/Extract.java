@@ -37,7 +37,8 @@ public class Extract{
 			long t2 = System.currentTimeMillis();
 			long sec = (t2 - t1)/1000;
 			info = ("folder" + i + " cost: " + sec + "sec;"
-					+ " total inofboxNr:" + InfoboxNr);
+					+ " total inofboxNr:" + InfoboxNr 
+					+ " NewInfoboxNr:" + NewInfoboxNr);
 			uFunc.Alert("Extract", info);
 		}
 		uFunc.addFile(triples, TriplePath);
@@ -49,6 +50,7 @@ public class Extract{
 	static int fileNr = 0;
 	private static int testFileNr = 0;
 	private static int InfoboxNr = 0;
+	private static int NewInfoboxNr = 0;
 	private static void ExtractFromLocalFiles(String path) {
 		File folder = new File(path);
 		if(folder.isDirectory() == false)
@@ -62,15 +64,33 @@ public class Extract{
 			int pageid = Integer.parseInt(file.getName().substring(
 					0, file.getName().indexOf("_")));
 			////////////////////////////////
-			//if(pageid != 1001309)continue;
+			//if(pageid != 1042704)continue;
 			////////////////////////////////
 			fileNr ++;
 			if(testFileNr > 0 && fileNr > testFileNr)
 				break;
+			String result = "";
+			boolean Alert = true;
 			if(InfoboxIdList.InfoboxIdList.containsKey(pageid))
 			{
 				//System.out.println("\t pageid:" + pageid + "\t" + InfoboxNr);
-				ExtractTriplefromOneFile(pageid, file.getAbsolutePath());
+				result  = ExtractTriplefromOneFile(
+						pageid, file.getAbsolutePath(), Alert);
+			}
+			else
+			{
+				result = ExtractTriplefromOneFile(
+						pageid, file.getAbsolutePath(), !Alert);
+				if(result != null && result.equals("") == false)
+				{
+					NewInfoboxNr ++;
+					uFunc.Alert(false, i, "new infobox:" + pageid);
+				}
+				triples += result;
+			}
+			if(result != null && result.equals("") == false)
+			{
+				triples += result;
 				InfoboxNr  ++;
 				if(InfoboxNr % 100 == 0)
 				{
@@ -83,9 +103,10 @@ public class Extract{
 
 
 	public static String triples = "";
-	public static String ExtractTriplefromOneFile(int pageid, String Path)
+	public static String ExtractTriplefromOneFile(int pageid, String Path, boolean alert)
 	{
 		Parser pageParser ;
+		String PageTriples = "";
 		File file = new File(Path);
 		// for empty file, may be extract null
 		if(file.exists() == false || file.length() < 10)
@@ -101,13 +122,12 @@ public class Extract{
 			
 			//System.out.println("Extract.java:pageNodeList:\"" + pageNodeList.toHtml() + "\"" + pageParser.getURL());
 			PageNode pageNode = new PageNode(pageid, pageNodeList);
-			triples += pageNode.GetTriples();
-			
+			PageTriples = pageNode.GetTriples(alert);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			uFunc.Alert(i, Path);
 			e.printStackTrace();
 		}
-		return null;
+		return PageTriples;
 	}
 }
