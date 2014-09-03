@@ -2,6 +2,7 @@ package extract;
 
 import tools.uFunc;
 import triple.extract.TripleGenerator;
+import triple.object.ObjeStdz;
 
 import com.tag.myElement;
 import com.tag.myObj;
@@ -31,32 +32,24 @@ public class GeneratorDistributor {
 				tPred.addEle(predi.eles.get(i));
 				myObj tObjc = new myObj();
 				tObjc.addEle(objc.eles.get(i));
-				/**
-				 * oneLine
-				 */
-				oneLine = TripleGenerator.GetTriples(
+				/////////////////////////////////////////////////////
+				oneLine = Distribute2Multi(
 						pageid, tPred, tObjc, upperTitle, tRTitleNr);
-				if(oneLine != null){
+				if(oneLine != null)
 					result += oneLine;
-					PredIdGenerator.generator(predi, pageid, 
-							"data/predicatetable/predicateId");
-				}
+				/////////////////////////////////////////////////////
 			}
 		}
 		else
 		{
-			/**
-			 * oneLine
-			 */
+			/////////////////////////////////////////////////////
 			result = TripleGenerator.GetTriples(
 					pageid, predi, objc, upperTitle, tRTitleNr);
-			PredIdGenerator.generator(predi, pageid, 
-					"data/predicatetable/predicateId");
+			/////////////////////////////////////////////////////
+			
 		}
 		if(result == null || result.equals(""))
 			return null;
-		result += "\n";
-		
 		return result;
 	}
 
@@ -65,25 +58,50 @@ public class GeneratorDistributor {
 	 * such as :"经纬度：32E -100N"
 	 * @param context
 	 * @param pageid
+	 * @param tRTitleNr 
+	 * @param upperTitle 
 	 * @return
 	 */
-	public static String distribute(String context, int pageid) {
+	public static String distribute(String context, int pageid, myElement upperTitle, int tRTitleNr) {
 		// TODO Auto-generated method stub
-		String result = TripleGenerator.
-				getTripleFromSgl(context, pageid);
-		/**
-		 * oneLine
-		 */
-		PredIdGenerator.generator(context, pageid,
-				"data/predicatetable/predicateId");
-		if(result == null || result.equals(""))
+		String result = "";
+		if(context.split(":|：").length < 2){
+			uFunc.Alert(i, "single triple distribute failed:" + context);
 			return null;
-		else
+		}
+		int index = context.indexOf(":");
+		if(index < 0 || (index > context.indexOf("：") 
+				&& context.indexOf("：") > 0))
+			index = context.indexOf("：");
+		String pString = uFunc.
+				ReplaceBoundSpace(context.substring(0, index));
+		String oString = uFunc.
+				ReplaceBoundSpace(context.substring(index + 1));
+		myObj predi, objc;
+		predi = new myObj();
+		predi.addEle(new myElement(pString));
+		objc = new myObj();
+		for(String ss : oString.split(ObjeStdz.splitRegex))
+			objc.addEle(new myElement(ss));
+		result = Distribute2Multi(pageid, predi, objc, upperTitle, tRTitleNr);
+		if(result.equals(""))
+			return null;
+		return result;
+	}
+	
+
+	private static String Distribute2Multi(int pageid, myObj predi,
+			myObj objc, myElement upperTitle, int tRTitleNr) {
+		// TODO Auto-generated method stub
+		String result = TripleGenerator.GetTriples(
+				pageid, predi, objc, upperTitle, tRTitleNr);
+		if(result != null)
 		{
-			PredIdGenerator.generator(result.split("\t")[1], pageid,
-					"data/predicatetable/predicateId");
-			result += "\n";
+			PredIdGenerator.generator(predi, pageid, 
+					"data/predicatetable/predicateId", result);
+			
 		}
 		return result;
 	}
+
 }

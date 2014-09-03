@@ -11,7 +11,7 @@ public class PredIdGenerator {
 	static int MaxPagePredNr = 0;
 	
 	public static void generator(myObj predi, int pageid,
-			String outputpath)
+			String outputpath, String triple)
 	{
 		if(pageid != PageId)
 		{
@@ -29,6 +29,7 @@ public class PredIdGenerator {
 			prediId = "0" + prediId;
 		prediId = PageId + prediId;
 		output += prediId + "\t" + predi + "\n";
+		output += triple;
 		outNr ++;
 		if(outNr % 1000 == 0)
 		{

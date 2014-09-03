@@ -4,6 +4,7 @@ import com.tag.myElement;
 import com.tag.myObj;
 
 import database.Entity;
+import extract.GeneratorDistributor;
 import tools.URL2UTF8;
 import tools.uFunc;
 import triple.object.ObjeStdz;
@@ -72,13 +73,23 @@ public class TripleGenerator {
 				//System.out.println("SecondStandardize.java:is Entity:" + pageid + ":" + contP);
 				continue;
 			}
-			//System.out.println(contP + ":" + Entity.getEntityId(uFunc.Simplify(contP.replaceAll(" |_", ""))));
+			// 郭泓志\t打击：左\t投球：左
 			if(contP.contains(":") == true)
 			{
 				if(contO.contains(":") == true)
 				{
-					result += getTripleFromSgl(contP, pageid);
-					result += getTripleFromSgl(contO, pageid);
+					if(objc.eleNr > 1)
+					{
+						uFunc.Alert("TripleGenerator", "not standarad triple:" 
+								+ pageid + "\t" + contP);
+					}
+					else
+					{
+						GeneratorDistributor.
+							distribute(contP, PageId, UpperTitle, tRTitleNr);
+						GeneratorDistributor.
+							distribute(contO, PageId, UpperTitle, tRTitleNr);
+					}
 				}
 				else
 				{
@@ -94,31 +105,6 @@ public class TripleGenerator {
 			return result;
 		//System.out.println("not in my cases!" + objc.eles.size());
 		return null;
-	}
-
-	public static String getTripleFromSgl(String cont, int pageid2) {
-		// TODO Auto-generated method stub
-		PageId = pageid2;
-		String result = "";
-		if(cont.split(":|：").length < 2){
-			System.out.println("SecondStandardize.java: error");
-			return null;
-		}
-		int index = cont.indexOf(":");
-		if(index < 0 || (index > cont.indexOf("：") && cont.indexOf("：") > 0))
-			index = cont.indexOf("：");
-		String predi = uFunc.ReplaceBoundSpace(cont.substring(0, index));
-		String objc = uFunc.ReplaceBoundSpace(cont.substring(index + 1));
-		myObj p, o;
-		p = new myObj();
-		p.addEle(new myElement(predi));
-		o = new myObj();
-		for(String ss : objc.split(ObjeStdz.splitRegex))
-			o.addEle(new myElement(ss));
-		result = GetTriples(PageId, p, o, null, 0);
-		if(result == null)
-			return null;
-		return result;
 	}
 
 	private static boolean isNotPredicate(String contP) {
