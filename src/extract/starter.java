@@ -15,9 +15,9 @@ public class starter {
 	public static void main(String [] args)
 	{
 		//ExtractDis();
-		//EntityTitleExtraction.Extract(Entity.CanonicalPath_titles, 
-		//		Folder + "EntityExtractionInfo");
-		ExtractRedi();
+		EntityTitleExtraction.Extract(Entity.CanonicalPath_titles, 
+				Folder + "EntityExtractionInfo");
+		//ExtractRedi();
 		//test();
 	}
 
