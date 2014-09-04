@@ -7,6 +7,8 @@ import java.util.HashMap;
 import tools.uFunc;
 
 public class DisPage {
+	public static String i = "DisPage";
+	private static String info = "";
 	public static final String ExceptionListPath = 
 			"data/DisPageExcepList";
 	public static final String CanonicalPath_pagelist = 
@@ -45,33 +47,23 @@ public class DisPage {
 				CanonicalPath_pagelist);
 		String oneLine = "";
 		try {
-			int lastId = 0;
 			int pageid = 0;
-			String lastLinks = "";
 			while((oneLine = br.readLine()) != null)
 			{
 				String [] ss = oneLine.split("\t");
 				pageid = Integer.parseInt(ss[0]);
-				if(pageid != lastId)
+				if(DispageList.containsKey(pageid))
 				{
-					if(lastLinks.equals("") == false)
-					{
-						DisOutLinks.put(lastId, lastLinks);
-					}
-					lastLinks = ss[1];
+					info = "pageid repeated:" + pageid ;
+					uFunc.Alert(true, i, info);
 				}
 				else
 				{
-					lastLinks += ";" + ss[1];
+					DispageList.put(pageid, ss[1]);
 				}
-				lastId = pageid;
-			}
-			if(lastLinks.equals("") == false)
-			{
-				DisOutLinks.put(pageid, lastLinks);
 			}
 			System.out.println("Disambiguation pagelist loaded, size:"
-					+ DisOutLinks.size());
+					+ DispageList.size());
 			listInited = true;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

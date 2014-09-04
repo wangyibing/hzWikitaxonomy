@@ -52,7 +52,7 @@ public class EntityTitleExtraction {
 			PageId = page.getPageId();
 			PageTitle = Zhwiki.getTitle(PageId);
 			if(PageId <= 0){
-				uFunc.Alert(i , "pageid null:" + page.getText());
+				//uFunc.Alert(i , "pageid null:" + page.getText());
 				continue;
 			}
 			if(PageTitle == null)
@@ -92,8 +92,9 @@ public class EntityTitleExtraction {
 			{
 				if(simTitle2Id.containsKey(uFunc.Simplify(PageTitle)))
 				{
-					System.out.println("simplify entity repeated:" + uFunc.Simplify(PageTitle)
+					info = ("simplify entity repeated:" + uFunc.Simplify(PageTitle)
 							+ "\t" + simTitle2Id.get(uFunc.Simplify(PageTitle)) + ";" + PageId);
+					uFunc.Alert(false, i, info);
 				}
 				else{
 					simTitle2Id.put(uFunc.Simplify(PageTitle), PageId);
@@ -104,8 +105,9 @@ public class EntityTitleExtraction {
 				{
 					if(traTitle2Id.containsKey(PageTitle))
 					{
-						System.out.println("tradition entity repeated:" + PageTitle + "\t" + 
+						info = ("tradition entity repeated:" + PageTitle + "\t" + 
 								traTitle2Id.get(PageTitle) + ";" + PageId);
+						uFunc.Alert(true, i, info);
 					}
 					else{
 						traTitle2Id.put(PageTitle, PageId);
