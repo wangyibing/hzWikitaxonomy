@@ -3,6 +3,7 @@ package extract.pageinfo;
 import java.io.BufferedReader;
 import java.io.IOException;
 
+import tools.QsortPair;
 import tools.uFunc;
 import database.Zhwiki;
 import de.tudarmstadt.ukp.wikipedia.api.Category;
@@ -10,11 +11,13 @@ import de.tudarmstadt.ukp.wikipedia.api.Page;
 
 public class CateidPageidPair {
 	public static String CateidPageidPair = 
-			"data/CateidPageidPair";
+			"/home/hanzhe/Public/result_hz/wiki_count2/pageinfo/CateidPageidPair";
 	public static String CateidCateTitlePair = 
-			"data/CateidCateTitlePair";
+			"/home/hanzhe/Public/result_hz/wiki_count2/pageinfo/CateidCateTitlePair";
 	public static String categorySrc = 
-			"/home/hanzhe/Public/result_hz/zhwiki/Category/Category.txt";
+			"/home/hanzhe/Public/result_hz/wiki_count2/SourceFiles/Category.txt";
+	public static String CatePageSrc = 
+			"/home/hanzhe/Public/result_hz/wiki_count2/SourceFiles/category_pages.txt";
 	private static String info;
 	private static String i = "CateidPageidPair";
 
@@ -22,6 +25,9 @@ public class CateidPageidPair {
 	{
 		uFunc.AlertOutput = "data/info/CategoryInfo";
 		GetCateidCateTitlePair(categorySrc, CateidCateTitlePair);
+		QsortPair.SortPair(CatePageSrc, 
+				CateidPageidPair, 
+				true, true, 3300000);
 		//GetCateidPageidPair(CateidPageidPair);
 	}
 
@@ -31,6 +37,7 @@ public class CateidPageidPair {
 		String oneLine = "";
 		int outNr = 0;
 		String output = "";
+		uFunc.deleteFile(cateidCateTitlePair2);
 		BufferedReader br = uFunc.getBufferedReader(srcPath);
 		try {
 			while ((oneLine = br.readLine()) != null)
@@ -50,6 +57,7 @@ public class CateidPageidPair {
 					}
 				}
 			}
+			System.out.println("outNr:" + outNr);
 			uFunc.addFile(output, cateidCateTitlePair2);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

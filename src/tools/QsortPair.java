@@ -9,7 +9,7 @@ class SIpair{
 	public String s;
 	public int i;
 }
-class AscComp implements Comparator<SIpair>{
+class DescComp implements Comparator<SIpair>{
 	public final int compare(SIpair p1, SIpair p2){
 		if(p1.i > p2.i)
 			return -1;
@@ -18,7 +18,7 @@ class AscComp implements Comparator<SIpair>{
 		return 0;
 	}
 }
-class DescComp implements Comparator<SIpair>{
+class AscComp implements Comparator<SIpair>{
 	public final int compare(SIpair p1, SIpair p2){
 		if(p1.i < p2.i)
 			return -1;
@@ -29,12 +29,6 @@ class DescComp implements Comparator<SIpair>{
 }
 
 public class QsortPair {
-	static String TemplateDFPath =
-			"H:/result_hz/zhwiki/Infobox/Template/TemplateDF.txt";
-	static String ReapeatedTemplatePath =
-			"H:/result_hz/zhwiki/Infobox/Template/ReapeatedTemplate";
-	public static void main(String [] args){
-	}
 
 	public static void SortPair(String srcPath,
 			String targetPath, boolean SecColComp,
@@ -69,11 +63,12 @@ public class QsortPair {
 						}
 						index++;
 					}
-					System.out.println("QsortPair:pair loaded, siez:" + index);
+					
 				}catch(Exception e){
 					e.printStackTrace();
 				}
 			}
+			System.out.println("QsortPair:pair loaded, siez:" + index);
 		} catch (NumberFormatException e) {
 			// TODO Auto-generated catch block
 			System.out.println("\""+s+"\"");
