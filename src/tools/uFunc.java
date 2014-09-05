@@ -463,7 +463,11 @@ public class uFunc {
 		else{
 			Alert(className, info);
 		}
-		
 	}
-
+	
+	public static void AlertClose()
+	{
+		if(AlertPath != null)
+			uFunc.addFile(AlertOutput, AlertPath);
+	}
 }
