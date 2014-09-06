@@ -32,24 +32,35 @@ public class WikitextPredicate {
 		outputPath = PrediAddFile;
 		outNr = 0;
 		brP = uFunc.getBufferedReader(PredIdFile);
-		//*********Get Fir predicate begin************
 		String oneLine = "";
-		oneLine = brP.readLine();
-		long lastPId = Long.parseLong(oneLine);
-		pageidP = Integer.parseInt(
-				oneLine.substring(0, oneLine.length() - 3));
-		myPredicate pred = new myPredicate(lastPId, pageidP);
-		//********* Get Fir predicate end ************
+		try {
+			//*********Get Fir predicate begin************
+			oneLine = brP.readLine();
+			long lastPId = Long.parseLong(oneLine);
+			pageidP = Integer.parseInt(
+					oneLine.substring(0, oneLine.length() - 3));
+			lastPred = new myPredicate(lastPId, pageidP);
+			lastPred.CompleteInfo(brP);
+			//********* Get Fir predicate end ************
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		brD = uFunc.getBufferedReader(DumpsTripleFile);
-		lastLineD = brD.readLine();
+		try {
+			lastLineD = brD.readLine();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
 		
 		
 		while(true)
 		{
+			if(lastLineD == null && lastPred == null)
+				break;
 			if(pageidP < pageidD)
 			{
-				GetNextPagePredInfo(PrediAddFile);
+				GetNextPagePredInfo();
 			}
 			else if(pageidP > pageidD)
 			{
@@ -63,6 +74,11 @@ public class WikitextPredicate {
 			}
 		}
 		uFunc.addFile(output, outputPath);
+	}
+
+	private static void Align() {
+		// TODO Auto-generated method stub
+		
 	}
 
 	private static void GetNextPageDumpTplsInfo() {
@@ -100,16 +116,33 @@ public class WikitextPredicate {
 	 * @param prediAddFile 
 	 */
 	private static void GetNextPagePredInfo() {
-		// TODO Auto-generated method stub
 		SaveLastPagePred();
-		if(lastLineP == null)
+		if(lastPred == null)
 		{
-			info = "lastLineP is null" + pageidP;
+			info = "lastPred is null" + pageidP;
 			uFunc.Alert(true, i, info);
 			return;
 		}
 		PagePred.clear();
-		pred.CompleteInfo(brP);
+		PagePred.add(lastPred);
+		String oneLine = ""; 
+		myPredicate next = null;
+		try {
+			while((oneLine = brP.readLine()) != null)
+			{
+				long lastPredId = Long.parseLong(oneLine);
+				int lastPageId = Integer.parseInt(
+						oneLine.substring(0, oneLine.length() - 3));
+				next = new myPredicate(lastPredId, lastPageId);
+				next.CompleteInfo(brP);
+				if(next.Pageid != lastPred.Pageid)
+					break;
+			}
+			if(next != null)
+				lastPred = next;
+		} catch (NumberFormatException | IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 
@@ -117,11 +150,10 @@ public class WikitextPredicate {
 	private static String output;
 	private static int outNr = 0;
 	private static void SaveLastPagePred() {
-		// TODO Auto-generated method stub
 		for(int j = 0; j < PagePred.size(); j ++)
 		{
 			myPredicate pred = PagePred.get(j);
-			output += PredInfo2String(pred);
+			output += pred.toString();
 			outNr  ++;
 			if(outNr % 200 == 0)
 			{
@@ -130,20 +162,5 @@ public class WikitextPredicate {
 			}
 		}
 		PagePred.clear();
-	}
-
-	private static String PredInfo2String(myPredicate pred) {
-		// TODO Auto-generated method stub
-		info = pred.Predid + "\n" + 
-				"Contnt:" + pred.Content + "\n" +
-				"Link:" + pred.Link + "\n" + 
-				"UpperTitle:" + pred.UpperTitle + "\n";
-		info += "Objcs:";
-		for(String tr : pred.Objs)
-			info += "\t" + tr;
-		info += "InfoboxName:" + pred.InfoboxName + "\n";
-		info += "WikitextCont:" + pred.WikitextContent + "\n";
-		info += "\n";
-		return info;
 	}
 }
