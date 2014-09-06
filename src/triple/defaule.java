@@ -16,13 +16,8 @@ public class defaule {
 	public static void main(String [] args){
 		String re = uFunc.OutputProjectInfo();
 		System.out.println(re);
-		OutputTripleNr();
+		//OutputTripleNr();
 		System.out.println(uFunc.isPeriod("20x1981 - 2003年"));
-		String s2 = "/wiki/%F0%A8%A7%80";
-		System.out.println("chinese:" + URL2UTF8.unescape(s2));
-		
-		String ssss01 = "网站：[中国重庆武隆网%20%20http://www.cqwulong.cn/ www.cqwulong.cn]";
-		
 	}
 	private static void OutputTripleNr() {
 		// TODO Auto-generated method stub
