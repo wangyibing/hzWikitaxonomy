@@ -93,4 +93,19 @@ public class myPredicate {
 			e.printStackTrace();
 		}
 	}
+	
+	public String toString(){
+		String info = "";
+		info = Predid + "\n" + 
+				"Contnt:" + Content + "\n" +
+				"Link:" + Link + "\n" + 
+				"UpperTitle:" + UpperTitle + "\n";
+		info += "Objcs:";
+		for(String tr : Objs)
+			info += "\t" + tr;
+		info += "InfoboxName:" + InfoboxName + "\n";
+		info += "WikitextCont:" + WikitextContent + "\n";
+		info += "\n";
+		return info;
+	}
 }
