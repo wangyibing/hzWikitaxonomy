@@ -283,7 +283,7 @@ public class uFunc {
 	public static String OutputProjectInfo()
 	{
 		String result = "";
-		File src = new File("/home/hanzhe/github/hzWikitaxonomy");
+		File src = new File("/home/hanzhe/git/hzWikitaxonomy");
 		uFunc.fileNr = 0;
 		uFunc.CodelineNr = 0;
 		
@@ -319,7 +319,7 @@ public class uFunc {
 		}
 		else if(file.isDirectory() == true)
 		{
-			if(file.getName().equals("com"))
+			if(file.getName().equals("ansj"))
 				return;
 			for(File file1 : file.listFiles())
 			{

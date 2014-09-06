@@ -7,7 +7,7 @@ import java.util.Comparator;
 
 class SIpair{
 	public String s;
-	public int i;
+	public long i;
 }
 class DescComp implements Comparator<SIpair>{
 	public final int compare(SIpair p1, SIpair p2){
@@ -55,11 +55,11 @@ public class QsortPair {
 						if(SecColComp == true)
 						{
 							pairs[index].s = ss[0];
-							pairs[index].i = Integer.parseInt(ss[1]);
+							pairs[index].i = Long.parseLong(ss[1]);
 						}
 						else{
 							pairs[index].s = ss[1];
-							pairs[index].i = Integer.parseInt(ss[0]);
+							pairs[index].i = Long.parseLong(ss[0]);
 						}
 						index++;
 					}
@@ -68,7 +68,7 @@ public class QsortPair {
 					e.printStackTrace();
 				}
 			}
-			System.out.println("QsortPair:pair loaded, siez:" + index);
+			System.out.println("QsortPair:pair loaded, size:" + index);
 		} catch (NumberFormatException e) {
 			// TODO Auto-generated catch block
 			System.out.println("\""+s+"\"");
@@ -82,8 +82,9 @@ public class QsortPair {
 			Arrays.sort(pairs, 0, index, new AscComp());
 		else
 			Arrays.sort(pairs, 0, index, new DescComp());
+		System.out.println("QsortPair: qsort finished!");
 		String output = "";
-		for(int i =0 ; i < index; i++){
+		for(int i = 0 ; i < index; i++){
 			if(SecColComp == true)
 				output += pairs[i].s + "\t" + pairs[i].i + "\n";
 			else
