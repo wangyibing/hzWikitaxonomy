@@ -1,4 +1,4 @@
-package triple;
+
 public class StringToAscii {
     
     private static String toHexUtil(int n){
