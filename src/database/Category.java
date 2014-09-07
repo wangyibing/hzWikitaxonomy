@@ -9,9 +9,6 @@ import tools.uFunc;
 public class Category {
 	private static String info;
 	private static String i = "Category";
-	private static boolean FathersInited = false;
-	private static HashMap<Integer, String> Fathers = 
-			new HashMap<Integer, String>();
 	
 	public static boolean IsFather(int fatherCateId, int subCateId)
 	{
@@ -19,51 +16,6 @@ public class Category {
 			InitFathers();
 		// recursive search
 		return IsFather2(fatherCateId, subCateId);
-	}
-	
-	private static boolean IsFather2(int fatherCateId, int subCateId) {
-		// TODO Auto-generated method stub
-		if(fatherCateId == subCateId)
-			return true;
-		if(Fathers.containsKey(subCateId) == false)
-		{
-			System.out.println("father not exist, cateid:" + subCateId);
-			return false;
-		}
-		for(String f : Fathers.get(subCateId).split(","))
-		{
-			int subfatherid = Integer.parseInt(f);
-			if(IsFather2(subfatherid, subCateId) == true)
-				return true;
-		}
-		return false;
-	}
-
-	private static void InitFathers() {
-		// TODO Auto-generated method stub
-		BufferedReader br = uFunc.getBufferedReader(CateFatherFile);
-		String oneLine = "";
-		try {
-			while((oneLine = br.readLine()) != null)
-			{
-				String [] ss = oneLine.split("\t");
-				int cateid = Integer.parseInt(ss[0]);
-				int fatherid = Integer.parseInt(ss[1]);
-				String fathers = "";
-				if(Fathers.containsKey(cateid))
-				{
-					fathers = Fathers.remove(cateid) + "," + fatherid;
-				}
-				else{
-					fathers = fatherid + "";
-				}
-				Fathers.put(cateid, fathers);
-			}
-			System.out.println("father category map inited, size:" + 
-					Fathers.size());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 
 	public static String GetCateName(int cateId)
@@ -84,7 +36,58 @@ public class Category {
 		return null;
 	}
 	
+	
 
+	private static boolean FathersInited = false;
+	private static HashMap<Integer, String> Fathers = 
+			new HashMap<Integer, String>();
+	private static boolean IsFather2(int fatherCateId, int subCateId) {
+		// TODO Auto-generated method stub
+		if(fatherCateId == subCateId)
+			return true;
+		if(Fathers.containsKey(subCateId) == false)
+		{
+			System.out.println("father not exist, cateid:" + subCateId);
+			return false;
+		}
+		for(String f : Fathers.get(subCateId).split(","))
+		{
+			int subfatherid = Integer.parseInt(f);
+			if(IsFather2(subfatherid, subCateId) == true)
+				return true;
+		}
+		return false;
+	}
+	private static void InitFathers() {
+		// TODO Auto-generated method stub
+		if(FathersInited = true)
+			return;
+		BufferedReader br = uFunc.getBufferedReader(CateFatherFile);
+		String oneLine = "";
+		try {
+			while((oneLine = br.readLine()) != null)
+			{
+				String [] ss = oneLine.split("\t");
+				int cateid = Integer.parseInt(ss[0]);
+				int fatherid = Integer.parseInt(ss[1]);
+				String fathers = "";
+				if(Fathers.containsKey(cateid))
+				{
+					fathers = Fathers.remove(cateid) + "," + fatherid;
+				}
+				else{
+					fathers = fatherid + "";
+				}
+				Fathers.put(cateid, fathers);
+			}
+			System.out.println("father category map inited, size:" + 
+					Fathers.size());
+			FathersInited = true;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	private static String CateFatherFile = 
 			"/home/hanzhe/git/hzWikitaxonomy/data/pageinfo/CateFather";
 	private static boolean SonsInited = false;
