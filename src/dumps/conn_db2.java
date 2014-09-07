@@ -29,7 +29,7 @@ public class conn_db2 {
 			Wikipedia wiki = new Wikipedia(dbConfig);
 			String title = "地理";
 			// 创建类对象
-			Category cat = wiki.getCategory(title);
+			Category cat = wiki.getCategory(4086834);
 			StringBuilder sb = new StringBuilder();
 			// 类别名
 			sb.append("Title : " + cat.getTitle() + LF);
