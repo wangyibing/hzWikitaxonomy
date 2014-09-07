@@ -8,4 +8,9 @@ public class CateTest {
 				"";
 		getTopCates(3, Top3Cates);
 	}
+
+	private static void getTopCates(int i, String top3Cates) {
+		// TODO Auto-generated method stub
+		
+	}
 }
