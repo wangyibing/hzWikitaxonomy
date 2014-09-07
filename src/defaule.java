@@ -1,4 +1,4 @@
-package triple;
+
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -7,16 +7,14 @@ import java.io.InputStreamReader;
 
 import database.InfoboxNameList;
 import extract.Extract;
-import tools.URL2UTF8;
 import tools.uFunc;
-import triple.extract.TripleGenerator;
 
 public class defaule {
 
 	public static void main(String [] args){
 		String re = uFunc.OutputProjectInfo();
 		System.out.println(re);
-		//OutputTripleNr();
+		OutputTripleNr();
 		System.out.println(uFunc.isPeriod("20x1981 - 2003年"));
 	}
 	private static void OutputTripleNr() {

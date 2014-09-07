@@ -4,7 +4,6 @@ import org.htmlparser.Tag;
 
 import com.tag.TagShape;
 import com.tag.myElement;
-import com.tag.myObj;
 import com.tag.myTag;
 
 import database.Entity;

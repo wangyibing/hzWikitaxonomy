@@ -1,28 +1,14 @@
 package normalization.predicate;
 
-import java.util.Vector;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.htmlparser.Tag;
-import org.htmlparser.util.NodeList;
-import org.htmlparser.util.ParserException;
-import org.htmlparser.visitors.NodeVisitor;
-
 import tools.URL2UTF8;
 import tools.uFunc;
-import triple.extract.TripleGenerator;
 import triple.object.ObjeStdz;
-import triple.predicate.PredStdz;
 import triple.standardize.HTMLStdz;
 
-import com.tag.TagChild;
 import com.tag.myElement;
 import com.tag.myObj;
-import com.tag.myTag;
 
 import database.Entity;
-import extract.InfoboxNode;
 
 public class PredIdGenerator {
 	public static boolean NoLink = false;

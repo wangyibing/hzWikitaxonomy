@@ -1,10 +1,13 @@
-package extract.pageinfo;
+package extract.predicatetable;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Scanner;
 import java.util.Vector;
 
+import database.Zhwiki;
+import extract.pageinfo.myPredicate;
 import tools.uFunc;
 
 public class WikitextPredicate {
@@ -76,9 +79,82 @@ public class WikitextPredicate {
 		uFunc.addFile(output, outputPath);
 	}
 
+	/**
+	 * PagePred <=>  PageTpls
+	 * one Predicate may correspond with multi dumpsTriples,
+	 * mainly based on content of objects.
+	 */
 	private static void Align() {
 		// TODO Auto-generated method stub
-		
+		Scanner sc = new Scanner(System.in);
+		System.out.println("press any key to continue");
+		sc.nextLine();
+		while( PagePred.size() > 0 && PageTpls.size() > 0)
+		{
+			String dTriple = PageTpls.get(PageTpls.size() -1);
+			int MaxIndex = 0;
+			double MaxSim = 0;
+			String dPred = dTriple.split("####")[0];
+			String dObjc = dTriple.split("####")[1];
+			for(int j = 0 ; j < PagePred.size(); j ++)
+			{
+				double tSim = GetSim(PagePred.get(j), dPred, dObjc);
+				if(tSim > MaxSim)
+				{
+					MaxSim = tSim;
+					MaxIndex = j;
+				}
+			}
+			info = 
+		}
+	}
+
+	/**
+	 * dPred and dObjc may contain "[[id]]"
+	 * @param myPredicate
+	 * @param dPred
+	 * @param dObjc
+	 * @return
+	 */
+	private static double GetSim(myPredicate predi, String dPred,
+			String dObjc) {
+		// TODO Auto-generated method stub
+		double score = 0;
+		int linkOD = -1;
+		if(dObjc.matches("\\[\\[.+\\]\\]"))
+		{
+			linkOD = Zhwiki.getPageId(dObjc.substring(2, dObjc.length() - 2));
+			dObjc = dObjc.substring(2, dObjc.length() - 2);
+		}
+		dObjc = dObjc.toLowerCase();
+		String whole = "";
+		for(String objP : predi.Objs)
+		{
+			String contOP = objP;
+			int linkOP = 0;
+			if(objP.contains("->") == true)
+			{
+				contOP = objP.substring(0, objP.indexOf("->"));
+				linkOP = Zhwiki.getPageId(objP.substring(objP.indexOf("->") + 2));
+				if(linkOP == linkOD)
+					score += 5;
+			}
+			if(contOP.toLowerCase().equals(dObjc))
+			{
+				score += 3;
+			}
+			whole += contOP.toLowerCase();
+		}
+		int charSim = 0;
+		for(int j = 0; j < dObjc.length(); j ++)
+			if(whole.contains(dObjc.charAt(j) + ""))
+				charSim ++;
+		if(charSim > dObjc.length() * 0.8)
+			score += 1;
+		if(predi.WikitextContent != null && 
+				predi.WikitextContent.equals("") == false)
+			score -= 0.5;
+		return score;
 	}
 
 	private static void GetNextPageDumpTplsInfo() {
@@ -117,13 +193,13 @@ public class WikitextPredicate {
 	 */
 	private static void GetNextPagePredInfo() {
 		SaveLastPagePred();
+		PagePred.clear();
 		if(lastPred == null)
 		{
 			info = "lastPred is null" + pageidP;
 			uFunc.Alert(true, i, info);
 			return;
 		}
-		PagePred.clear();
 		PagePred.add(lastPred);
 		String oneLine = ""; 
 		myPredicate next = null;
@@ -137,6 +213,8 @@ public class WikitextPredicate {
 				next.CompleteInfo(brP);
 				if(next.Pageid != lastPred.Pageid)
 					break;
+				PagePred.add(next);
+				lastPred = next;
 			}
 			if(next != null)
 				lastPred = next;
