@@ -470,4 +470,32 @@ public class uFunc {
 		if(AlertPath != null)
 			uFunc.addFile(AlertOutput, AlertPath);
 	}
+	
+
+	public static int GetEditDist(String s1, String s2) {
+		// TODO Auto-generated method stub
+		char [] c1 = (' ' + s1).toCharArray();
+		char [] c2 = (' ' + s2).toCharArray();
+		int [][] dis = new int[c1.length][c2.length];
+		for(int i = 0 ; i < c1.length; i ++)
+			for(int j = 0 ; j < c2.length; j ++)
+				dis[i][j] = 0;
+		for(int i = 0 ; i < c1.length; i ++)
+			dis[i][0] = i;
+		for(int j = 0; j < c2.length; j ++)
+			dis[0][j] = j;
+		for(int i = 1; i < c1.length; i ++)
+			for(int j = 1; j < c2.length; j ++)
+			{
+				int min = dis[i-1][j-1];
+				if(c1[i] != c2[j])
+					min ++;
+				if(min > dis[i-1][j] + 1)
+					min = dis[i-1][j] + 1;
+				if(min > dis[i][j-1] + 1)
+					min = dis[i][j-1] + 1;
+				dis[i][j] = min;
+			}
+		return dis[c1.length-1][c2.length-1];
+	}
 }

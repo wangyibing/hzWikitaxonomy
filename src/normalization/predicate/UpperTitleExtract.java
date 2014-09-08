@@ -57,7 +57,7 @@ public class UpperTitleExtract {
 								//uFunc.OutputTagInfo(tag, "");
 								return;
 							}
-							if(Entity.getEntityId(tUpperTitle.context) == PageId)
+							if(Entity.getId(tUpperTitle.context) == PageId)
 								return;
 							UpperTitle = tUpperTitle;
 							//System.out.println("oo");

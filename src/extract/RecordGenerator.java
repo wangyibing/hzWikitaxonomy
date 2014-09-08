@@ -125,10 +125,10 @@ public class RecordGenerator {
 					return null;
 				}
 				// subtitle is not the entity's name
-				String pageTitle = Entity.getEntityTitle(pageid);
+				String pageTitle = Entity.getTitle(pageid);
 				if(pageTitle != null && tUpperTitle.context.contains(pageTitle))
 					return null;
-				if(Entity.getEntityId(tUpperTitle.context) == PageId)
+				if(Entity.getId(tUpperTitle.context) == PageId)
 					return null;
 				InfoboxNode.UpperTitle = tUpperTitle;
 				/*

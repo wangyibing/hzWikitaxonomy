@@ -39,7 +39,7 @@ public class DataPurge {
 					if(PageLines > 10)
 					{
 						if(("" + id).startsWith("10"))
-							System.out.println(id + "\t" + Entity.getEntityTitle(id));
+							System.out.println(id + "\t" + Entity.getTitle(id));
 					}
 					PageLines = 0;
 				}
@@ -49,7 +49,7 @@ public class DataPurge {
 						continue;
 					PageLines ++;
 				}
-				String title = Entity.getEntityTitle(id);
+				String title = Entity.getTitle(id);
 				
 				if(title == null || title.equals(""))
 					continue;
@@ -92,7 +92,7 @@ public class DataPurge {
 		if(ss[0].startsWith("null") == false)
 		{
 			pageid = Integer.parseInt(ss[0]);
-			String title = Entity.getEntityTitle(pageid);
+			String title = Entity.getTitle(pageid);
 			if(title.contains("浙江") || ss[2].contains("浙江")||
 					title.contains("杭州") || ss[2].contains("杭州")||
 					title.contains("萧山") || ss[2].contains("萧山")||

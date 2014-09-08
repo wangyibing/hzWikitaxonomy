@@ -5,6 +5,7 @@ import database.RediPage;
 import extract.pageinfo.DisaPageExtraction;
 import extract.pageinfo.EntityTitleExtraction;
 import extract.pageinfo.RediPageExtraction;
+import extract.predicatetable.WikitextPredicate;
 import tools.uFunc;
 
 
@@ -15,8 +16,12 @@ public class starter {
 	public static void main(String [] args)
 	{
 		//ExtractDis();
-		EntityTitleExtraction.Extract(Entity.CanonicalPath_titles, 
-				Folder + "EntityExtractionInfo");
+		//EntityTitleExtraction.Extract(Entity.CanonicalPath_titles, 
+		//		Folder + "EntityExtractionInfo");
+		WikitextPredicate.Extract(
+				"/home/hanzhe/Public/result_hz/wiki_count2/predicate/predicateId.sorted",
+				"/home/hanzhe/Public/result_hz/wiki_count2/predicate/dumpsTriples",
+				"/home/hanzhe/Public/result_hz/wiki_count2/predicate/predicateId2");
 		//ExtractRedi();
 		//test();
 	}
@@ -24,13 +29,13 @@ public class starter {
 	public static void ExtractDis() {
 		// TODO Auto-generated method stub
 		DisaPageExtraction.ExtracDisPages("", 
-				"data/DisPageExtractionInfo");
+				"data/pageinfo/DisPageExtractionInfo");
 	}
 
 	public static void ExtractRedi() {
 
 		RediPageExtraction.ExtracRedirectPages(RediPage.CanonicalPath, 
-				"data/RediPageExtractionInfo");
+				"data/pageinfo/RediPageExtractionInfo");
 	}
 
 	public static void test() {

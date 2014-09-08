@@ -3,6 +3,9 @@ package tools;
 import java.io.BufferedReader;
 import java.io.IOException;
 
+import database.DisPage;
+import database.Entity;
+import database.RediPage;
 import database.Zhwiki;
 
 public class DataSampling {
@@ -13,7 +16,7 @@ public class DataSampling {
 				"/home/hanzhe/Public/result_hz/zhwiki/Infobox/Triple/Triple.txt";
 		String tarPath = 
 				"/home/hanzhe/Public/result_hz/wiki_count2/predicate/dumpsTriples";
-		int lineNr = 10000;
+		int lineNr = 100000;
 		DumpsTripleSampling(dumpsFile, tarPath, lineNr);
 	}
 
@@ -25,10 +28,11 @@ public class DataSampling {
 		String oneLine = "";
 		int lNr = 0;
 		String output = "";
-		Zhwiki.init();
 		try {
 			while((oneLine = br.readLine()) != null)
 			{
+				while(oneLine.startsWith("null"))
+					oneLine = oneLine.substring(4);
 				String [] ss = oneLine.split("\t");
 				if(ss.length < 3)
 					continue;
@@ -44,14 +48,24 @@ public class DataSampling {
 				{
 					int objId = Integer.parseInt(ss[2].substring(2, 
 							ss[2].length() - 2));
-					if(Zhwiki.getTitle(objId) == null)
+					if(Entity.getTitle(objId) == null && 
+							RediPage.getTargetPageid(objId) <= 0 &&
+							DisPage.GetTitle(objId) == null)
 					{
-						System.out.println("objId error:" + oneLine);
+						//System.out.println("objId error:" + oneLine);
 						continue;
 					}
-					ss[2] = "[[" + Zhwiki.getTitle(objId) + "]]";
+					String title = Entity.getTitle(objId);
+					if(title == null)
+						title = Entity.getTitle(RediPage.getTargetPageid(objId));
+					if(title == null)
+						title = DisPage.GetTitle(objId);
+					if(title == null)
+						continue;
+					ss[2] = "[[" + title + "]]";
 				}
-					
+				else if(ss[2].matches("\\[.+\\]"))
+					ss[2] = ss[2].substring(1, ss[2].length() -1);
 				String info = ss[0] + "\t" + ss[1] + "\t" + ss[2] + "\n";
 				output += info;
 				lNr ++;

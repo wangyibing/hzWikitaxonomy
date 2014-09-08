@@ -1,6 +1,7 @@
 package database;
 
 
+import tools.uFunc;
 import de.tudarmstadt.ukp.wikipedia.api.Category;
 import de.tudarmstadt.ukp.wikipedia.api.DatabaseConfiguration;
 import de.tudarmstadt.ukp.wikipedia.api.Page;
@@ -50,9 +51,15 @@ public class Zhwiki {
 	public static int getPageId(String title){
 		ConnectToDB();
 		try {
-			if(wiki.existsPage(title) == false)
-				return 0;
-			return wiki.getPage(title).getPageId();
+			if(wiki.existsPage(title))
+				return wiki.getPage(title).getPageId();
+			else if(wiki.existsPage(uFunc.TraConverter.convert(title)))
+				return wiki.getPage(uFunc.TraConverter.convert(title))
+						.getPageId();
+			else if(wiki.existsPage(uFunc.Simplify((title))))
+				return wiki.getPage(uFunc.Simplify((title)))
+						.getPageId();
+			return 0;
 		} catch (Exception e) {
 			//e.printStackTrace();
 			//uFunc.Alert("Zhwiki", "getId error " + title);

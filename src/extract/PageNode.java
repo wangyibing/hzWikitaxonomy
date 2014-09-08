@@ -110,7 +110,7 @@ public class PageNode {
 					if(lastEndTagName.equals("table") ||
 							lastEndTagName.equals("div"))
 					{
-						String title = Entity.getEntityTitle(pageid);
+						String title = Entity.getTitle(pageid);
 						if(title != null && uFunc.hasChineseCharactor(tag.toPlainTextString())){
 							//System.out.println("#######firs para:" + tag.toPlainTextString());
 							TextApprd = true;

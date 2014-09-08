@@ -72,12 +72,12 @@ public class EntityTitleExtraction {
 			{
 				type = "redi";
 				RediNr ++;
-				if(DisPage.isDisaPage(PageId) != null)
+				if(DisPage.GetTitle(PageId) != null)
 				{
 					uFunc.Alert(i, PageId + "is redirect and disambiguation page");
 				}
 			}
-			else if(DisPage.isDisaPage(PageId) != null)
+			else if(DisPage.GetTitle(PageId) != null)
 			{
 				type = "Disa";
 				DisaNr ++;

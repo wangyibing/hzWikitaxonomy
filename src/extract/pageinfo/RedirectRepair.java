@@ -14,7 +14,7 @@ import tools.uFunc;
 public class RedirectRepair {
 	public static void main(String [] args)
 	{
-		Repair("data/RediPageExtractionInfo2", 
+		Repair("data/pageinfo/RediPageExtractionInfo2", 
 				RediPage.CanonicalPath);
 	}
 
