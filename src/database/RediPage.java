@@ -8,7 +8,7 @@ import tools.uFunc;
 public class RediPage {
 
 	public static String CanonicalPath = 
-			"data/RediPage";
+			"data/pageinfo/RediPage";
 
 	public static int getTargetPageid(int redirectPageid)
 	{

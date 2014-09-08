@@ -29,7 +29,7 @@ public class TripleGenerator {
 		String contP = getStringFromMyelement(predi.eles.get(0), NoLink);
 		if(contP == null || contP.equals("") || isNotPredicate(contP) ||
 				// page's title can't be predicate
-				Entity.getEntityId(contP) == pageid)
+				Entity.getId(contP) == pageid)
 		{
 			//System.out.println("SecondStandardize.java:" + "conP empty:pageid:" + pageid);
 			return null;
@@ -136,10 +136,10 @@ public class TripleGenerator {
 						(link.indexOf("/wiki/") + 6));
 				if(entity.contains("#"))
 					entity = entity.substring(0,  entity.indexOf("#"));
-				int pageid = Entity.getEntityId(entity);
+				int pageid = Entity.getId(entity);
 				if(pageid > 0)
 				{
-					return cont + "->" + "[" + Entity.getEntityTitle(pageid) + "]";
+					return cont + "->" + "[" + Entity.getTitle(pageid) + "]";
 				}
 			}
 		}

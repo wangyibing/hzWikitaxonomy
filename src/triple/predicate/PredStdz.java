@@ -26,7 +26,7 @@ public class PredStdz {
 		// predicate is current entity's title, 
 		// mustn't be a correct triple
 		if(uFunc.isPunctuations(result) ||
-				Entity.getEntityId(result) == pageid)
+				Entity.getId(result) == pageid)
 		{
 			//System.out.println("PredStdz.java:" + result + ";" + pageid);
 			return null;

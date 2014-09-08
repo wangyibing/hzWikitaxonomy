@@ -14,8 +14,8 @@ public class defaule {
 	public static void main(String [] args){
 		String re = uFunc.OutputProjectInfo();
 		System.out.println(re);
-		OutputTripleNr();
-		System.out.println(uFunc.isPeriod("20x1981 - 2003年"));
+		//OutputTripleNr();
+		System.out.println(uFunc.TraConverter.convert("赵鸿‎‎"));
 	}
 	private static void OutputTripleNr() {
 		// TODO Auto-generated method stub

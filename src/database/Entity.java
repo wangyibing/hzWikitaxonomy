@@ -11,23 +11,10 @@ import com.spreada.utils.chinese.ZHConverter;
 
 public class Entity {
 	public static String CanonicalPath_titles = 
-			"data/EntityTitles";
+			"data/pageinfo/EntityTitles";
 
-	// <13, 数学;数学科学;数学系;>
-	private static HashMap<Integer, String> Id2TitMap = 
-			new HashMap<Integer, String>();
-	private static boolean IdTitInited = false;
-	// <数学, 13>
-	private static HashMap<String, Integer> TitsIdMap = 
-			new HashMap<String, Integer>();
-	private static boolean TitIdInited = false;
 
-	
-	private static ZHConverter simConvt = 
-			ZHConverter.getInstance(ZHConverter.SIMPLIFIED);
-	
-
-	public static int getEntityId(String title)
+	public static int getId(String title)
 	{
 		initTitsIdMap();
 		title = title.replaceAll("_| ", "").toLowerCase();
@@ -42,7 +29,7 @@ public class Entity {
 		return TitsIdMap.get(simConvt.convert(title));
 	}
 	
-	public static String getEntityTitle(int pageid)
+	public static String getTitle(int pageid)
 	{
 		if(pageid == 0)
 			return null;
@@ -65,7 +52,11 @@ public class Entity {
 		else
 			return Id2TitMap.get(pageid);
 	}
- 
+
+	// <13, 数学;数学科学;数学系;>
+	private static HashMap<Integer, String> Id2TitMap = 
+			new HashMap<Integer, String>();
+	private static boolean IdTitInited = false;
 	private static void initId2TitMap() {
 		if(IdTitInited == true)
 			return;
@@ -93,7 +84,11 @@ public class Entity {
 		IdTitInited = true;
 	}
 
-	
+
+	// <数学, 13>
+	private static HashMap<String, Integer> TitsIdMap = 
+			new HashMap<String, Integer>();
+	private static boolean TitIdInited = false;
 	private static void initTitsIdMap() {
 		if(TitIdInited == true)
 			return;
@@ -107,8 +102,9 @@ public class Entity {
 				if(ts[2].equals("title"))
 				{
 					int Eid = Integer.parseInt(ts[0]);
-					// 抽取的title都不含空字符，已经简体了
-					String title = uFunc.Simplify(ts[1]).replaceAll("_| ", "").toLowerCase();
+					String title = ts[1];
+					if(title == null || title.equals("null"))
+						continue;
 					if(TitsIdMap.containsKey(title))
 					{
 						int id = TitsIdMap.get(title);
@@ -128,4 +124,8 @@ public class Entity {
 		}
 		TitIdInited = true;
 	}
+
+	
+	private static ZHConverter simConvt = 
+			ZHConverter.getInstance(ZHConverter.SIMPLIFIED);
 }

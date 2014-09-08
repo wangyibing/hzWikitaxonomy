@@ -45,7 +45,6 @@ public class PredicateIdSort {
 				}
 			}
 			uFunc.addFile(output, tarFile + ".tmp");
-			br.close();
 			System.out.println("PreId format finided");
 			
 			QsortPair.SortPair(tarFile + ".tmp", tarFile + ".tmp2", false,

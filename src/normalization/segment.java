@@ -94,9 +94,9 @@ public class segment {
 				oneLine = uFunc.Simplify(oneLine);
 				for(String word : oneLine.split(" |\t"))
 				{
-					if(Entity.getEntityId(word) > 0)
+					if(Entity.getId(word) > 0)
 					{
-						System.out.println("segment.java:" + Entity.getEntityId(word) + ":" + word);
+						System.out.println("segment.java:" + Entity.getId(word) + ":" + word);
 						int freq = 1;
 						if(EntityFreq.containsKey(word) == true)
 						{

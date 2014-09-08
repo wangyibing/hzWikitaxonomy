@@ -38,7 +38,7 @@ public class conn_db {
 		Wikipedia wiki = new Wikipedia(dbConfig);
 		
 
-		String title = "权力分立‎‎";
+		String title = "整块性核心‎‎";
 		
 		Page page = wiki.getPage(title);
 		System.out.println("Page title           : "+ wiki.existsPage(title) + page.getTitle());

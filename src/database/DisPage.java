@@ -10,11 +10,11 @@ public class DisPage {
 	public static String i = "DisPage";
 	private static String info = "";
 	public static final String ExceptionListPath = 
-			"data/DisPageExcepList";
+			"data/pageinfo/DisPageExcepList";
 	public static final String CanonicalPath_pagelist = 
-			"data/DisPages";
+			"data/pageinfo/DisPages";
 	public static final String CanonicalPath_pageoutlinks = 
-			"data/DisPageOutLinks";
+			"data/pageinfo/DisPageOutLinks";
 	
 	/**
 	 * <291, 411122,880679,3219576>
@@ -29,7 +29,7 @@ public class DisPage {
 			return null;
 	}
 
-	public static String isDisaPage(int pageid)
+	public static String GetTitle(int pageid)
 	{
 		if(listInited == false)
 			InitDisList();

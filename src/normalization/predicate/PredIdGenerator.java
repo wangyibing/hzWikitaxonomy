@@ -58,12 +58,12 @@ public class PredIdGenerator {
 			if(isNotPredicate(contP))
 				continue;
 			// page's title can't be predicate
-			if(Entity.getEntityId(uFunc.Simplify(contP.replaceAll(" |_", "").toLowerCase())) == pageid)
+			if(Entity.getId(uFunc.Simplify(contP.replaceAll(" |_", "").toLowerCase())) == pageid)
 			{
 				//System.out.println("SecondStandardize.java:is Entity:" + pageid + ":" + contP);
 				continue;
 			}
-			//System.out.println(contP + ":" + Entity.getEntityId(uFunc.Simplify(contP.replaceAll(" |_", ""))));
+			//System.out.println(contP + ":" + Entity.getId(uFunc.Simplify(contP.replaceAll(" |_", ""))));
 			if(contP.contains(":") == true)
 			{
 				if(contO.contains(":") == true)
@@ -165,10 +165,10 @@ public class PredIdGenerator {
 						(link.indexOf("/wiki/") + 6));
 				if(entity.contains("#"))
 					entity = entity.substring(0,  entity.indexOf("#"));
-				int pageid = Entity.getEntityId(entity);
+				int pageid = Entity.getId(entity);
 				if(pageid > 0)
 				{
-					return "[" + Entity.getEntityTitle(pageid) + "]";
+					return "[" + Entity.getTitle(pageid) + "]";
 				}
 				else
 				{

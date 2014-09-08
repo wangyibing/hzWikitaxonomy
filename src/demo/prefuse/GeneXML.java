@@ -74,7 +74,7 @@ public class GeneXML {
 				{
 					if(ss[i].startsWith("[") && ss[i].endsWith("]"))
 					{
-						int id = Entity.getEntityId(ss[i].replaceAll("(?m)^\\[+", "").replaceAll("(?m)\\]+$", ""));
+						int id = Entity.getId(ss[i].replaceAll("(?m)^\\[+", "").replaceAll("(?m)\\]+$", ""));
 						if(id <= 0)
 						{
 							exit = true;
@@ -117,14 +117,14 @@ public class GeneXML {
 				int pageid = Integer.parseInt(ss[0]);
 				if(RediPage.getTargetPageid(pageid) > 0)
 					pageid = RediPage.getTargetPageid(pageid);
-				EntityTits.put(pageid, Entity.getEntityTitle(pageid));
+				EntityTits.put(pageid, Entity.getTitle(pageid));
 				if(pageid == 103352)
-					System.out.println(Entity.getEntityTitle(pageid));
+					System.out.println(Entity.getTitle(pageid));
 				
 				if(ss[2].matches("(?m)^\\[.+\\]$") == true)
 				{
 					String title = ss[2].substring(1, ss[2].length() - 1);
-					int id = Entity.getEntityId(title);
+					int id = Entity.getId(title);
 					if(id > 0)
 						EntityTits.put(id, title);
 				}
@@ -190,7 +190,7 @@ public class GeneXML {
 			String [] ss = oneLine.split("\t");
 			ss[1] = ss[1].replaceAll("(?m)^\\[+", "").replaceAll("(?m)\\]+$", "");
 			if(ss[2].contains("[")){
-				if(Entity.getEntityId(ss[2].replaceAll("(?m)^\\[+", "").replaceAll("(?m)\\]+$", "")) <= 0)
+				if(Entity.getId(ss[2].replaceAll("(?m)^\\[+", "").replaceAll("(?m)\\]+$", "")) <= 0)
 					return false;
 			}
 			//tripleIdlist.put(ss[0].substring(2, ss[0].length()-2), 0);
@@ -220,7 +220,7 @@ public class GeneXML {
 			int ObjId = nodeNr;
 			nodeNr ++;
 			if(ss[2].contains("[") && ss[2].contains("]")){
-				ObjId = Entity.getEntityId(ss[2].replaceAll("(?m)^\\[+", "")
+				ObjId = Entity.getId(ss[2].replaceAll("(?m)^\\[+", "")
 						.replaceAll("(?m)\\]+$", ""));
 				if(ObjId <= 0)
 				{
