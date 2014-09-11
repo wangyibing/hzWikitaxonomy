@@ -498,4 +498,26 @@ public class uFunc {
 			}
 		return dis[c1.length-1][c2.length-1];
 	}
+	
+
+	public static int GetLongestCommonSubsequence(String s1,
+			String s2) {
+		// TODO Auto-generated method stub
+		char [] c1 = (' ' + s1).toCharArray();
+		char [] c2 = (' ' + s2).toCharArray();
+		int [][] len = new int [c1.length][c2.length];
+		for(int j = 0 ;j < c1.length; j ++)
+			for(int k = 0; k < c2.length; k ++)
+				len[j][k] = 0;
+		for(int j = 1; j < c1.length; j ++)
+			for(int k = 1; k < c2.length; k ++)
+			{
+				if(c1[j] == c2[k])
+					len[j][k] = len[j - 1][ k - 1] + 1;
+				else
+					len[j][k] = Math.max(len[j][k-1], len[j - 1][k]);
+				//System.out.println(j +"\t"+ k + "\t" + len[j][k]);
+			}
+		return len[c1.length -1 ][c2.length - 1];
+	}
 }

@@ -101,6 +101,9 @@ public class WikitextPredicate {
 			double MaxSim = 0;
 			String dPred = dTriple.split("####")[0];
 			String dObjc = dTriple.split("####")[1];
+			String infoboxName = dTriple.split("####")[2];
+			if(infoboxName != null && infoboxName.equals("null"))
+				infoboxName = null;
 			if(dPred.contains("caption") || dObjc.endsWith(".png") ||
 					dObjc.endsWith(".jpg") || dObjc.endsWith("jpeg"))
 			{
@@ -117,7 +120,7 @@ public class WikitextPredicate {
 					MaxIndex = j;
 				}
 			}
-			if(MaxSim <= 0)
+			if(MaxSim < 0.1)
 			{
 				PageTpls.remove(PageTpls.size() - 1);
 				continue;
@@ -125,11 +128,22 @@ public class WikitextPredicate {
 			info = "align:" + MaxIndex + ";" + MaxSim + "\t" +  dTriple + "\n" + 
 					PagePred.get(MaxIndex).toString();
 			uFunc.Alert(true, i, info);
+			
 			if(PagePred.get(MaxIndex).WikitextContent == null || 
 					PagePred.get(MaxIndex).WikitextContent.equals(""))
 				PagePred.get(MaxIndex).WikitextContent = dPred;
 			else
 				PagePred.get(MaxIndex).WikitextContent += "####" + dPred;
+			
+			if(infoboxName != null)
+			{
+				if(PagePred.get(MaxIndex).InfoboxName == null ||
+						PagePred.get(MaxIndex).InfoboxName.equals(""))
+					PagePred.get(MaxIndex).InfoboxName = infoboxName;
+				else
+					PagePred.get(MaxIndex).InfoboxName += "####" + infoboxName;
+			}
+			
 			PageTpls.remove(PageTpls.size() - 1);
 		}
 	}
@@ -160,6 +174,7 @@ public class WikitextPredicate {
 		}
 		dObjc = dObjc.toLowerCase();
 		String whole = "";
+		String each = "";
 		for(String objP : predi.Objs)
 		{
 			String contOP = objP;
@@ -176,7 +191,9 @@ public class WikitextPredicate {
 				score += 3;
 			}
 			whole += contOP.toLowerCase();
+			each += "####" + contOP;
 		}
+		whole += each;
 		String tits = "";
 		if(Page.getTitles(linkOD) != null)
 		{
@@ -185,41 +202,68 @@ public class WikitextPredicate {
 		}
 		else tits = dObjc;
 		double maxPerc = 0;
-		tits = uFunc.Simplify(tits).toLowerCase().replaceAll(" |_", "");
-		whole = uFunc.Simplify(whole.toLowerCase().replaceAll(" |_", ""));
-		for(String title : tits.split("####"))
+		tits = uFunc.RemovePunctuations(
+				uFunc.Simplify(tits).replaceAll("#", "\0").toLowerCase().replaceAll("\\s|_", ""));
+		whole = uFunc.RemovePunctuations(
+				uFunc.Simplify(whole.replaceAll("#", "\0").toLowerCase().replaceAll("\\s|_", "")));
+		
+		tits = tits.replaceAll("\0", "#");
+		whole = whole.replaceAll("\0", "#");
+		for(String wholeEach : whole.split("####"))
 		{
-			int charSim = 0;
-			for(int j = 0; j < title.length(); j ++)
-				if(whole.contains(title.charAt(j) + ""))
-					charSim ++;
-			double perc = (1.0 * charSim/title.length() * charSim/whole.length());
-			if(whole.length() < title.length())
-				perc /= 2;
-			// if object in dumps is normal English word, should contain them all
-			if(title.matches("[a-zA-Z]{1,}"))
+			if(wholeEach.startsWith("等") == false && wholeEach.contains("等"))
+				wholeEach = wholeEach.substring(0, wholeEach.indexOf("等"));
+			for(String title : tits.split("####"))
 			{
-				if(whole.toLowerCase().contains(title.toLowerCase()))
-					perc = 1;
-				else perc = 0;
+				if(title.startsWith("等") == false && title.contains("等"))
+					title = title.substring(0, title.indexOf("等"));
+				int charSim = 0;
+				for(int j = 0; j < title.length(); j ++)
+					if(wholeEach.contains(title.charAt(j) + ""))
+					{
+						if(uFunc.hasChineseCharactor(title.charAt(j) + ""))
+							charSim += 2;
+						charSim ++;
+					}
+				if(charSim == 0)
+					continue;
+				int charDiff = uFunc.GetEditDist(title, wholeEach);
+				double perc = 0;
+				if(charDiff == 0)
+					perc = charSim * title.length();
+				else perc = (1.0 * charSim * title.length()/ (charDiff * wholeEach.length()));
+				// if object in dumps is normal English word, should contain them all
+				if(title.matches("[a-zA-Z]{1,}"))
+				{
+					if(wholeEach.contains(title) == false)
+						perc = Math.min(0.1, perc);
+				}
+				// if one is website, the corresponding objc should also have website
+				if(title.contains("http") || title.contains("www") ||
+						wholeEach.contains("http") || wholeEach.contains("www"))
+				{
+					if(((title.contains("http") || title.contains("www")) &&
+							(wholeEach.contains("http") || wholeEach.contains("www"))) == false)
+						perc = 0;
+				}
+				// multiply the longest substring length
+				perc *= uFunc.GetLongestCommonSubsequence(wholeEach, title);
+				// contain !
+				if(wholeEach.contains(title))
+					perc *= 3;
+				
+				
+				
+				if(perc > maxPerc)
+					maxPerc = perc;
+				System.out.println(perc + "\t" + charDiff + "\t" + title + "\t" + wholeEach);
+				
 			}
-			if(linkOD > 0)
-				perc = perc > 0.7 ? 1:0;
-			if(perc > maxPerc)
-				maxPerc = perc;
-			
 		}
 		score += maxPerc;
-		if(maxPerc > 0.7)
-			score += 1;
-		if(score == 0)
-		{
-			if(tits.contains(whole))
-				score += 0.4 * whole.length()/tits.length();
-		}
 		if(predi.WikitextContent != null &&
 				predi.WikitextContent.equals("") == false)
-			score -= 0.5;
+			score -= 0.01;
 		return score;
 	}
 
@@ -235,15 +279,37 @@ public class WikitextPredicate {
 		ss = lastLineD.split("\t");
 		pageidD = Integer.parseInt(ss[0]);
 		PageTpls.add(ss[1] + "####" + ss[2]);
-		
+		String lastPred = ss[1];
+		String lastObj = ss[2];
+		String infoboxName = null;
 		try {
 			while((lastLineD = brD.readLine()) != null)
 			{
+				if(lastLineD.startsWith("InfoboxName:"))
+					infoboxName = lastLineD.substring(12);
 				ss = lastLineD.split("\t");
+				if(ss[1].equals("name") || ss[1].contains("image") ||
+						ss[1].contains("caption") || ss[2].endsWith(".png") ||
+						ss[2].endsWith(".jpg") || ss[2].endsWith(".jpeg"))
+				{
+					continue;
+				}
+				
 				int pageid = Integer.parseInt(ss[0]);
 				if(pageid != pageidD)
+				{
+					//System.out.println("&&&&" + lastPred + "\t" + lastObj);
+					PageTpls.add(lastPred + "####" + lastObj + "####" + infoboxName);
 					break;
-				PageTpls.add(ss[1] + "####" + ss[2]);
+				}
+				if(lastPred.equals(ss[1]))
+					lastObj += ", " + ss[2];
+				else {
+					//System.out.println("&&&&" + lastPred + "\t" + lastObj);
+					PageTpls.add(lastPred + "####" + lastObj + "####" + infoboxName);
+					lastPred = ss[1];
+					lastObj = ss[2];
+				}
 			}
 			if(lastLineD == null)
 				uFunc.Alert(true, i, "dumpFile reached ending");
@@ -281,6 +347,7 @@ public class WikitextPredicate {
 				if(next.Pageid != lastPred.Pageid)
 					break;
 				PagePred.add(next);
+				//System.out.println(next);
 				lastPred = next;
 			}
 			if(next != null)

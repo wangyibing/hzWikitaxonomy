@@ -102,7 +102,7 @@ public class myPredicate {
 				"UpperTitle:" + UpperTitle + "\n";
 		info += "Objcs:";
 		for(String tr : Objs)
-			info += "\t" + tr;
+			info += "####" + tr;
 		info += "\n";
 		info += "InfoboxName:" + InfoboxName + "\n";
 		info += "WikitextCont:" + WikitextContent + "\n";
