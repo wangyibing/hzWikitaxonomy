@@ -10,6 +10,6 @@ CREATE TABLE `hzTriple` (
 	`ObjId` int(11) NOT NULL,
 	`Subject` varchar(255) NOT NULL,
 	`Predicate` varchar(255) NOT NULL,
-	`Object` text default NULL,
+	`Object` longtext default NULL,
 	PRIMARY KEY  (`id`)
 )ENGINE=MyISAM DEFAULT CHARSET=utf8;

@@ -13,7 +13,7 @@ if( ! $con )
 	return;
 }
 $database = mysql_select_db($database_name , $con);
-$result = mysql_query("select predicate, object from hzTriple where PageTitle = " + $PageTitle, $con);
+$result = mysql_query("select Predicate, Object from hzTriple where Subject = " + $PageTitle, $con);
 mysql_data_seek($result, 0);
 $row
 while($row = mysql_fetch_row($result)) 
@@ -22,5 +22,6 @@ while($row = mysql_fetch_row($result))
 }
 // 'w' mode will delete the exist file
 $outputFile = fopen("triple.data", "w");
-
+fwrite($outputFile, $output);
+fclose($outputFile);
 ?>

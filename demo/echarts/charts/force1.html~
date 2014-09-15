@@ -24,8 +24,8 @@
     <script src="../asset/js/codemirror.js"></script>
     <script src="../asset/js/javascript.js"></script>
 
-    <link href="../asset/css/codemirror.css" rel="stylesheet">
-    <link href="../asset/css/monokai.css" rel="stylesheet">
+    <!--<link href="../asset/css/codemirror.css" rel="stylesheet"> -->
+    <!--<link href="../asset/css/monokai.css" rel="stylesheet">-->
     
 </head>
 
@@ -35,7 +35,7 @@
     
     <div class="container-fluid">
         <div class="row-fluid example">
-            <div id="sidebar-code" class="col-md-4">
+            <div id="sidebar-code" class="col-md-4" style="display:none">
                 <div class="well sidebar-nav">
                     <textarea id="code" name="code">
 option = {
@@ -165,12 +165,7 @@ myChart.on(ecConfig.EVENT.CLICK, focus)
               </div><!--/.well -->
             </div><!--/span-->
             <div id="graphic" class="col-md-8">
-                <div id="main" class="main"></div>
-            </div><!--/span-->
-        </div><!--/row-->
-        
-        </div><!--/.fluid-container-->
-
+                <div id="main" class="main" style="height:800px;border:1px solid #ccc;padding:1px;"></div>
                 <div>
                     <button type="button" class="btn btn-sm btn-success" onclick="refresh(true)">刷 新</button>
                     <span class="text-primary">切换主题</span>
@@ -178,6 +173,12 @@ myChart.on(ecConfig.EVENT.CLICK, focus)
 
                     <span id='wrong-message' style="color:red"></span>
                 </div>
+            </div><!--/span-->
+        </div><!--/row-->
+        
+        </div><!--/.fluid-container-->
+
+                
     <footer id="footer"></footer>
     <!-- Le javascript
     ================================================== -->

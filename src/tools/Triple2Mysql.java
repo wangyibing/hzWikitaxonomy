@@ -8,6 +8,8 @@ import database.Entity;
 import database.Zhwiki;
 
 public class Triple2Mysql {
+	static String i = "Triple2Mysql";
+	static String info = "";
 	public static void main(String [] args)
 	{
 		AddTriples2Mysql("/home/hanzhe/Public/result_hz/zhwiki/Infobox/Triple/Web/triple",
@@ -17,6 +19,9 @@ public class Triple2Mysql {
 	public static void AddTriples2Mysql(String triplePath,
 			String dbName, String tableName, String CreateSQLFile)
 	{
+		uFunc.AlertOutput = "info/sql/AddTriples2Mysql";
+		uFunc.deleteFile(uFunc.AlertOutput);
+		
 		Mysql db = new Mysql();
 		db.Connect2DB(dbName);
 		db.execute(CreateSQLFile);
@@ -36,6 +41,7 @@ public class Triple2Mysql {
 		int TripleId = 1;
 		int longestObj = 0;
 		int wrongNr = 0;
+		long t1 = System.currentTimeMillis();
 		try {
 			while((oneLine = br.readLine()) != null)
 			{
@@ -80,23 +86,26 @@ public class Triple2Mysql {
 					db.Query.setString(6, cont[0]);
 					db.Query.setString(7, cont[1]);
 					db.Query.addBatch();
-					if(TripleId % 1000 == 0)
+					if(TripleId % 1 == 0)
 					{
 						db.Query.executeBatch();
-						if(TripleId % 100000 == 0)
+						if(TripleId % 500000 == 0)
 						{
-							String info = "wrongNr:" + wrongNr + "\t" + 
-									"totalTriples:" + TripleId + "\n" + 
+							info = "cost:" + (System.currentTimeMillis() - t1)/1000 + "sec" + "\t" +
+									"wrongNr:" + wrongNr + "\t" + 
+									"totalTriples:" + TripleId + "\t" + 
 									"longest obj:" + longestObj; 
-							System.out.println(info);
+							t1 = System.currentTimeMillis();
+							uFunc.Alert(true, i, info);
 						}
 					}
 					TripleId ++;
 					//System.out.println(TripleId);
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
-					break;
+					uFunc.Alert(true, i, oneLine);
+					//e.printStackTrace();
+					continue;
 				}
 			}
 			try {
@@ -105,14 +114,14 @@ public class Triple2Mysql {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			String info = "wrongNr:" + wrongNr + "\t" + 
+			info = "wrongNr:" + wrongNr + "\t" + 
 					"totalTriples:" + TripleId + "\n" + 
 					"longest obj:" + longestObj; 
-			System.out.println();
+			uFunc.Alert(true, i, info);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		uFunc.AlertClose();
 	}
-
 }
