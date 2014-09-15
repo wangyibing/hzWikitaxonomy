@@ -2,8 +2,8 @@ USE hzwikitaxonomy;
 -- 
 -- Table structure for table `MetaData`
 -- 
-DROP TABLE IF EXISTS `HzTriple`;
-CREATE TABLE `HzTriple` (
+DROP TABLE IF EXISTS `hzTriple`;
+CREATE TABLE `hzTriple` (
 	`id` bigint(20) NOT NULL auto_increment,
 	`SubId` int(11) NOT NULL,
 	`PredId` int(11) NOT NULL,

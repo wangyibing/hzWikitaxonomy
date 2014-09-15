@@ -18,6 +18,10 @@ import tools.uFunc;
  *
  */
 public class ExtracERandEST {
+	public static void main(String [] args)
+	{
+		Extract("E:/Hanzhe/entityPairs");
+	}
 
 	private static int outNr = 0;
 	public static void Extract(String sourceFile)
@@ -25,6 +29,8 @@ public class ExtracERandEST {
 		String oneLine = "";
 		int pageid = 0;
 		BufferedReader br = uFunc.getBufferedReader(sourceFile);
+		connectToMysql();
+		uFunc.deleteFile(sourceFile + ".out");
 		try {
 			while( (oneLine = br.readLine()) != null)
 			{
@@ -35,31 +41,43 @@ public class ExtracERandEST {
 					continue;
 				}
 				pageid = Integer.parseInt(ss[3]);
+				String number = ss[2];
+				if(number.contains("."))
+					number = number.substring(0, number.indexOf("."));
+				if(number.contains("-"))
+					number = number.substring(0, number.indexOf("-"));
+				int id = Integer.parseInt(number);
 				try {
 					Query.setInt(1, pageid);
+					PageId = pageid;
+					PageTitle = ss[0];
 					Query.addBatch();
 					ResultSet result = Query.executeQuery();
-					String cont = result.getString("text");
-					PageAdj = "";
-					RegexContent(cont);
-					if(PageAdj.equals("") == false)
+					if(result.next())
 					{
-						output += pageid + "\t" + PageAdj + "\n";
-						outNr  ++;
-						if(outNr % 100 == 0)
+						String cont = result.getString(1);
+						PageAdj = "";
+						RegexContent(cont, id);
+						//System.out.println(PageAdj);
+						if(PageAdj.equals("") == false)
 						{
-							uFunc.addFile(output, sourceFile + ".out");
-							output = "";
+							output += oneLine + "\n" + PageAdj;
+							outNr  ++;
+							if(outNr % 100 == 0)
+							{
+								System.out.println(outNr);
+								uFunc.addFile(output, sourceFile + ".out");
+								output = "";
+							}
 						}
-						uFunc.addFile(output, sourceFile + ".out");
 					}
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				String number = ss[2];
-				
 			}
+			uFunc.addFile(output, sourceFile + ".out");
+			disconnectToMysql();
 		} catch (NumberFormatException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -68,33 +86,56 @@ public class ExtracERandEST {
 
 	static Pattern p = Pattern.compile("( |\\.|-)(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)( |\\.|-)");
 	static Pattern p2 = Pattern.compile("January|February|March|April|May|June|July"
-			+ "|Augest|September|October|November|December");
+			+ "|Augest|September|October|November|December".toLowerCase());
+	static Pattern p3 = Pattern.compile("january|february|march|april|may|june|july"
+			+ "|augest|september|october|november|december|over|"
+			+ "number|chapter|other|however".toLowerCase());
 	
 	static String output = "";
 	static String PageAdj = "";
-	private static void RegexContent(String cont) {
+	static int PageId;
+	static String PageTitle;
+	private static void RegexContent(String cont, int id) {
 		// TODO Auto-generated method stub
+		String cont2 = "";
 		int level = 0;
-		cont = cont.replaceAll("\\{\\{[^\\{^\\}]{1,}\\}\\}", "")
-				.replaceAll("\\{\\{[^\\{^\\}]{1,}\\}\\}", "");
-		for(String sent : cont.split("\n|\\.|\\?|!|"))
+		for(char c : cont.toCharArray())
+		{
+			if(c == '{' || c == '<' || c == '[')
+				level ++;
+			if(level == 0)
+				cont2 = cont2 + c;
+			if(c == '}' || c == '>' || c == ']')
+				level --;
+		}
+		for(String sent : cont2.split("\n|\\.|\\?|!"))
 		{
 			Matcher matcher1 = p.matcher(sent);
 			Matcher matcher2 = p2.matcher(sent);
-			if(matcher1.find() || matcher2.find() || uFunc.containNumber(sent))
+			if(sent.contains(id + ""))
 			{
 				String [] ss = sent.split("\\.|\\,|\\:|\\!|\\s");
+				//System.out.println(sent);
+				String adj = "";
 				for(int i = 0 ; i < ss.length ; i ++)
 				{
 					String word = ss[i];
+					if(p3.matcher(word.toLowerCase()).find())
+							continue;
 					if(word.endsWith("er") || word.endsWith("est"))
-						PageAdj += word + ";";
+						adj += word + ";";
 					else if((word.equals("most") || word.equals("more") ||
 							word.equals("less") || word.equals("least")) && i < ss.length - 1)
 					{
-						PageAdj += word + " " + ss[i + 1] + ";";
+						adj += word + " " + ss[i + 1] + ";";
 					}
 				}
+				if(adj.equals("") == false)
+				{
+					PageAdj += PageId + "\t" + PageTitle + "\n" + 
+							sent + "\n"  + "\t" + adj + "\n\n";
+				}
+				
 			}
 				
 		}
@@ -114,7 +155,7 @@ public class ExtracERandEST {
         }
 		
 		//JDBC的URL
-        String url="jdbc:mysql://localhost:3306/wikipedia";    
+        String url="jdbc:mysql://localhost:3306/enwiki";    
         //调用DriverManager对象的getConnection()方法，获得一个Connection对象
         try {
             conn = DriverManager.getConnection(url,    "root","19920326");
