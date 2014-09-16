@@ -203,6 +203,7 @@ hr {
 }
 .main {
     height: 400px;
+    width : 80%;
     overflow: hidden;
     padding : 10px;
     margin-bottom: 10px;

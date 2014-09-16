@@ -10,9 +10,10 @@
 
     <link rel="shortcut icon" href="../asset/ico/favicon.png">
 
-    <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+    <!--<link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">-->
     <link href="../asset/css/bootstrap.css" rel="stylesheet">
-    <link href="../asset/css/carousel.css" rel="stylesheet">
+    <link href="../asset/css/bootstrap.css" rel="stylesheet">
+    <!--<link href="../asset/css/carousel.css" rel="stylesheet">-->
     <link href="../asset/css/echartsHome.css" rel="stylesheet">
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -23,6 +24,8 @@
     <script src="../asset/js/esl/esl.js"></script>
     <script src="../asset/js/codemirror.js"></script>
     <script src="../asset/js/javascript.js"></script>
+    <script src="../hzJS.js"></script>
+    <script>var pageTitle = "习近平"</script>
 
     <!--<link href="../asset/css/codemirror.css" rel="stylesheet"> -->
     <!--<link href="../asset/css/monokai.css" rel="stylesheet">-->
@@ -41,13 +44,15 @@
 option = {
     title : {
         text: '人物关系：乔布斯',
-        subtext: '数据来自人立方',
+        subtext: '数据来自hzwikitaxonomy',
         x:'right',
         y:'bottom'
     },
     tooltip : {
         trigger: 'item',
-        formatter: '{a} : {b}'
+        // 鼠标悬停时显示的信息“pred: obj"
+        formatter: '{a} :<br> {b}',
+        textStyle: {  color:'#901010'},
     },
     toolbox: {
         show : true,
@@ -63,16 +68,19 @@ option = {
     series : [
         {
             type:'force',
-            name : "人物关系",
+            name : "实体类别",
             categories : [
                 {
-                    name: '人物'
+                    name: '检索人物'
                 },
                 {
-                    name: '家人'
+                    name: '实体'
                 },
                 {
-                    name:'朋友'
+                    name: ''
+                },
+                {
+                    name:'字符串'
                 }
             ],
             itemStyle: {
@@ -101,12 +109,13 @@ option = {
                 }
             },
             useWorker: false,
-            minRadius : 15,
-            maxRadius : 25,
+            minRadius : 10,
+            maxRadius : 35,
             gravity: 1.1,
             scaling: 1.1,
             linkSymbol: 'arrow',
             nodes:[
+            	// category 表示谓词， value表示节点的大小
                 {category:0, name: '乔布斯', value : 10},
                 {category:1, name: '丽萨-乔布斯',value : 2},
                 {category:1, name: '保罗-乔布斯',value : 3},
@@ -120,12 +129,13 @@ option = {
                 {category:2, name: '龙-韦恩',value : 1},
             ],
             links : [
+            // weight 表示节点间的距离
                 {source : '丽萨-乔布斯', target : '乔布斯', weight : 1},
                 {source : '保罗-乔布斯', target : '乔布斯', weight : 2},
                 {source : '克拉拉-乔布斯', target : '乔布斯', weight : 1},
                 {source : '劳伦-鲍威尔', target : '乔布斯', weight : 2},
                 {source : '史蒂夫-沃兹尼艾克', target : '乔布斯', weight : 3},
-                {source : '奥巴马', target : '乔布斯', weight : 6},
+                {source : '奥巴马', target : '乔布斯', weight : 60},
                 {source : '比尔-盖茨', target : '乔布斯', weight : 6},
                 {source : '乔纳森-艾夫', target : '乔布斯', weight : 1},
                 {source : '蒂姆-库克', target : '乔布斯', weight : 1},
@@ -137,7 +147,7 @@ option = {
                 {source : '奥巴马', target : '史蒂夫-沃兹尼艾克', weight : 1},
                 {source : '比尔-盖茨', target : '奥巴马', weight : 6},
                 {source : '比尔-盖茨', target : '克拉拉-乔布斯', weight : 1},
-                {source : '蒂姆-库克', target : '奥巴马', weight : 1}
+                {source : '蒂姆-库克', target : '奥巴马', weight : 100}
             ]
         }
     ]
@@ -154,6 +164,7 @@ function focus(param) {
         var sourceNode = nodes[data.source];
         var targetNode = nodes[data.target];
         console.log("选中了边 " + sourceNode.name + ' -> ' + targetNode.name + ' (' + data.weight + ')');
+        document.getElementById("log").innerHTML = "选中了边 " + sourceNode.name + ' -> ' + targetNode.name + ' (' + data.weight + ')';
     } else { // 点击的是点
         console.log("选中了" + data.name + '(' + data.value + ')');
     }
@@ -165,9 +176,15 @@ myChart.on(ecConfig.EVENT.CLICK, focus)
               </div><!--/.well -->
             </div><!--/span-->
             <div id="graphic" class="col-md-8">
-                <div id="main" class="main" style="height:800px;border:1px solid #ccc;padding:1px;"></div>
-                <div>
-                    <button type="button" class="btn btn-sm btn-success" onclick="refresh(true)">刷 新</button>
+                <div id="main" class="main" style="height:800px;border:1px solid #ccc;padding:1px"></div>
+                <div id="log">this is log!</div>
+                <div> 
+                	请输入待查名称
+						<input type="text" tabIndex = "1" id="pagetitle" name="pagetitle" value="习近平" 
+							onfocus="hzClearValue(this)" onblur = "hzShowTitle(this)" />
+                	<input value="查询" 	type="Submit" class = "btn btn-danger" onclick="hzUpdate()" />    
+                	<br>            
+                    <button type="button" class="btn btn-sm btn-danger" onclick="refresh(true)">刷 新</button>
                     <span class="text-primary">切换主题</span>
                     <select id="theme-select"></select>
 
