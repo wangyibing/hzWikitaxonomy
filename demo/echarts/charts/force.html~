@@ -108,7 +108,7 @@
                 {category:1, name: '克拉拉-乔布斯',value : 3},
                 {category:1, name: '劳伦-鲍威尔',value : 7},
                 {category:2, name: '史蒂夫-沃兹尼艾克',value : 5},
-                {category:2, name: '奥巴马',value : 8, shapeType:'rectangle'},
+                {category:2, name: '奥巴马',value : 8,shapeType:'rectangle'},
                 {category:2, name: '比尔-盖茨',value : 9},
                 {category:2, name: '乔纳森-艾夫',value : 4},
                 {category:2, name: '蒂姆-库克',value : 4},
