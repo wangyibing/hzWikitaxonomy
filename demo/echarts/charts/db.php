@@ -10,13 +10,13 @@ if(is_array($_GET) && count($_GET) > 0)
 		$sql .= "SubId = " . $_GET["id"] . "; ";
 	}
 	elseif(isset($_GET["title"])) {
-		$sql .= "Subject = " . $_GET["title"] . "; ";
+		$sql .= "Subject = " . iconv("gb2312","utf-8", $_GET["title"]) . "; ";
 	}
 	else {
 		$sql .= "SubId = 130; ";
 	}
 }
-echo $sql;
+echo "php." . $sql;
 $link = mysqli_connect("localhost", "root", "19920326", "hzwikitaxonomy");
 // this enables Chinese char
 mysqli_query($link, "SET NAMES 'utf8'");

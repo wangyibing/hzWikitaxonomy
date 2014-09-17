@@ -63,7 +63,7 @@ option = {
     },
     legend: {
         x: 'left',
-        data:['家人','朋友']
+        data:['实体','谓词']
     },
     series : [
         {
@@ -126,7 +126,7 @@ option = {
                 {category:2, name: '比尔-盖茨',value : 9},
                 {category:2, name: '乔纳森-艾夫',value : 4},
                 {category:2, name: '蒂姆-库克',value : 4},
-                {category:2, name: '龙-韦恩',value : 1},
+                {category:3, name: '龙-韦恩',value : 1},
             ],
             links : [
             // weight 表示节点间的距离
@@ -181,8 +181,8 @@ myChart.on(ecConfig.EVENT.CLICK, focus)
                 <div> 
                 	请输入待查名称
 						<input type="text" tabIndex = "1" id="pagetitle" name="pagetitle" value="习近平" 
-							onfocus="hzClearValue(this)" onblur = "hzShowTitle(this)" />
-                	<input value="查询" 	type="Submit" class = "btn btn-danger" onclick="hzUpdate()" />    
+							onfocus="hzClearValue(this)"  />
+                	<input value="查询" 	type="Submit" id = "inputEnter" class = "btn btn-danger" onclick="hzUpdate()" />    
                 	<br>            
                     <button type="button" class="btn btn-sm btn-danger" onclick="refresh(true)">刷 新</button>
                     <span class="text-primary">切换主题</span>
@@ -194,7 +194,15 @@ myChart.on(ecConfig.EVENT.CLICK, focus)
         </div><!--/row-->
         
         </div><!--/.fluid-container-->
-
+    <script type="text/javascript">
+    $(document).ready(
+function () {
+	alert($("#inputEnter")[0].attr("value"));
+	$("#inputEnter").click(function () {
+		alert($("#pagetitle").val());
+	})
+});
+    </script>
                 
     <footer id="footer"></footer>
     <!-- Le javascript
