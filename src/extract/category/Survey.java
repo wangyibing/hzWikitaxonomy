@@ -3,6 +3,8 @@ package extract.category;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map.Entry;
 
 import database.Category;
 import database.Zhwiki;
@@ -20,12 +22,22 @@ public class Survey {
 	/**
 	 * level 1 : 1
 	 * level 2 : 22
-	 * level 3 : 562 
-	 * level 4 : 4151 
+	 * level 3 : 589 
+	 * level 4 : 5011 
+	 * level 5 : 19981 
+	 * level 6 : 76056 
+	 * level 7 : 158638 
+	 * level 8 : 168724 
+	 * level 9 : 172013 
+	 * level 10 : 173964 
+	 * level 11 : 174081 
+	 * level 12 : 174093 
 	 * 
 	 */
+	static int MaxL = 0;
 	public static void CateLevel() {
 		// TODO Auto-generated method stub
+		Category.GetName(4086834);
 		String cateid;
 		// 幫助	4086834
 		cateid = "4086834";
@@ -37,8 +49,9 @@ public class Survey {
 		cateid = "254517";
 		HashMap<String, Integer> CateLevel = 
 				new HashMap<String, Integer>();
+		CateLevel.put(cateid, 1);
 		int level = 1;
-		int MaxLevel = 4;
+		int MaxLevel = 3;
 		AddAllCate(MaxLevel, cateid, level, CateLevel, helpCate);
 		System.out.println("catelevel(" + MaxLevel + ") " +
 				"size:" + CateLevel.size());
@@ -47,6 +60,8 @@ public class Survey {
 		String targetFile = cateFolder + "Catelevel";
 		AddCateName(srcFile, targetFile );
 		uFunc.deleteFile(srcFile);
+		// 97
+		System.out.println("MaxLevel:" + MaxL);
 	}
 
 	private static void AddAllCate(int MaxLevel, 
@@ -54,8 +69,39 @@ public class Survey {
 			HashMap<String, Integer> cateLevel,
 			HashMap<String, Integer> helpCate) {
 		// TODO Auto-generated method stub
-		if(level > MaxLevel)
+		if(level > MaxL)
+			MaxL = level;
+		if(level >= MaxLevel)
 			return;
+		HashMap<String, Integer> nextLevel = 
+				new HashMap<String, Integer>();
+		Iterator<Entry<String, Integer>> it = 
+				cateLevel.entrySet().iterator();
+		while((it.hasNext()))
+		{
+			Entry<String, Integer> next = it.next();
+			//System.out.println(next.getKey() + "\t" + next.getValue());
+			if(next.getValue() == level)
+			{
+				int id = Integer.parseInt(next.getKey());
+				if(Category.GetSubCates(id) == null)
+				{
+					continue;
+				}
+				for(String subCate : Category.GetSubCates(id).split(","))
+				{
+					if(cateLevel.containsKey(subCate) == false &&
+							helpCate.containsKey(subCate) == false)
+						nextLevel.put(subCate, level + 1);
+				}
+			}
+		}
+		if(nextLevel.size() == 0)
+			return;
+		cateLevel.putAll(nextLevel);
+		System.out.println("level:" + level + "\t" + "size:" + cateLevel.size());
+		AddAllCate(MaxLevel, cateid, level + 1, cateLevel, helpCate);
+		/*
 		if(helpCate.containsKey(cateid) || 
 				cateLevel.containsKey(cateid))
 			return;
@@ -70,6 +116,7 @@ public class Survey {
 			AddAllCate(MaxLevel, subCate, 
 					level + 1, cateLevel, helpCate);
 		}
+		*/
 	}
 
 	private static void AddAllCate(String cateid,
