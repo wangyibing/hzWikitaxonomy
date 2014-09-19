@@ -2,8 +2,7 @@ package extract.predicatetable;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Scanner;
+import java.text.DecimalFormat;
 import java.util.Vector;
 
 import database.Entity;
@@ -21,21 +20,33 @@ public class WikitextPredicate {
 	private static Vector<myPredicate> PagePred =  
 			new Vector<myPredicate>();
 	private static myPredicate lastPred;
+	private static int pageNrP = 0;
+	private static int TripleNrP = 0;
+	private static int AlignNrP = 0;
 	
 	private static BufferedReader brD;
 	private static int pageidD;
+	private static int pageNrD = 0;
+	private static int TripleNrD = 0;
+	private static int AlignNr = 0;
 	// "predicate####object"
 	private static Vector<String> PageTpls = 
 			new Vector<String>();
 	private static String lastLineD;
+	private static String infoboxName;
+	private static long time;
+	private static long AlignTime = 0;
 
 	public static void Extract(String PredIdFile, String DumpsTripleFile,
 			String PrediAddFile)
 	{
 		uFunc.AlertPath = PrediAddFile.substring(0, 
-				PrediAddFile.lastIndexOf("/") + 1);
-		uFunc.deleteFile(PrediAddFile);
+				PrediAddFile.lastIndexOf("/") + 1) + "WikitextPredicateInfo";
+		time = System.currentTimeMillis();
 		outputPath = PrediAddFile;
+		uFunc.deleteFile(outputPath);
+		outputDMissPath = DumpsTripleFile + ".miss";
+		uFunc.deleteFile(outputDMissPath);
 		outNr = 0;
 		brP = uFunc.getBufferedReader(PredIdFile);
 		String oneLine = "";
@@ -62,8 +73,8 @@ public class WikitextPredicate {
 		
 		while(true)
 		{
-			System.out.println(pageidP + "\t" + pageidD);
-			if(lastLineD == null && lastPred == null)
+			//System.out.println(pageidP + "\t" + pageidD);
+			if(lastLineD == null || lastPred == null)
 				break;
 			if(pageidP < pageidD)
 			{
@@ -75,12 +86,20 @@ public class WikitextPredicate {
 			}
 			// pageidP == pageidD
 			else{
+				long t1 = System.currentTimeMillis();
 				Align();
+				long t2 = System.currentTimeMillis();
+				AlignTime += (t2 - t1);
 				GetNextPagePredInfo();
 				GetNextPageDumpTplsInfo();
 			}
 		}
+		while(lastPred != null)
+		{
+			GetNextPagePredInfo();
+		}
 		uFunc.addFile(output, outputPath);
+		DumpsMissAlignment(null);
 	}
 
 	/**
@@ -90,21 +109,21 @@ public class WikitextPredicate {
 	 */
 	private static void Align() {
 		// TODO Auto-generated method stub
-		Scanner sc = new Scanner(System.in);
-		System.out.println("***********************press any key to continue*************************");
-		sc.nextLine();
+		//Scanner sc = new Scanner(System.in);
+		//System.out.println("***********************press any key to continue*************************");
+		//sc.nextLine();
 		while( PagePred.size() > 0 && PageTpls.size() > 0)
 		{
 			String dTriple = PageTpls.get(PageTpls.size() -1);
-			System.out.println("dumpsTriple:" + dTriple);
 			int MaxIndex = 0;
 			double MaxSim = 0;
 			String dPred = dTriple.split("####")[0];
 			String dObjc = dTriple.split("####")[1];
-			String infoboxName = dTriple.split("####")[2];
-			if(infoboxName != null && infoboxName.equals("null"))
-				infoboxName = null;
+			String tmpInfobox = dTriple.split("####")[2];
+			if(tmpInfobox != null && tmpInfobox.equals("null"))
+				tmpInfobox = null;
 			if(dPred.contains("caption") || dObjc.endsWith(".png") ||
+					dPred.contains("title") ||
 					dObjc.endsWith(".jpg") || dObjc.endsWith("jpeg"))
 			{
 				PageTpls.remove(PageTpls.size() - 1);
@@ -113,38 +132,74 @@ public class WikitextPredicate {
 			for(int j = 0 ; j < PagePred.size(); j ++)
 			{
 				double tSim = GetSim(PagePred.get(j), dPred, dObjc);
-				System.out.println(tSim + "\t" + PagePred.get(j).Content);
+				//System.out.println(tSim + "\t" + PagePred.get(j).Content);
 				if(tSim > MaxSim)
 				{
 					MaxSim = tSim;
 					MaxIndex = j;
 				}
 			}
-			if(MaxSim < 0.1)
+			if(MaxSim < 1)
 			{
 				PageTpls.remove(PageTpls.size() - 1);
+				DumpsMissAlignment(pageidD + "\t" + dTriple);
 				continue;
 			}
-			info = "align:" + MaxIndex + ";" + MaxSim + "\t" +  dTriple + "\n" + 
-					PagePred.get(MaxIndex).toString();
-			uFunc.Alert(true, i, info);
+			if(MaxSim < 3)
+			{
+				info = "align:" + MaxIndex + ";" + MaxSim + "\t" +  dTriple + "\n" + 
+						PagePred.get(MaxIndex).toString();
+				//uFunc.Alert(true, i, info);
+			}
+			
 			
 			if(PagePred.get(MaxIndex).WikitextContent == null || 
 					PagePred.get(MaxIndex).WikitextContent.equals(""))
+			{
 				PagePred.get(MaxIndex).WikitextContent = dPred;
+				AlignNrP ++;
+			}
 			else
 				PagePred.get(MaxIndex).WikitextContent += "####" + dPred;
 			
-			if(infoboxName != null)
+			if(tmpInfobox != null)
 			{
-				if(PagePred.get(MaxIndex).InfoboxName == null ||
-						PagePred.get(MaxIndex).InfoboxName.equals(""))
-					PagePred.get(MaxIndex).InfoboxName = infoboxName;
-				else
-					PagePred.get(MaxIndex).InfoboxName += "####" + infoboxName;
+				String infoboxes = PagePred.get(MaxIndex).InfoboxName; 
+				if(infoboxes == null || infoboxes.equals(""))
+					PagePred.get(MaxIndex).InfoboxName = tmpInfobox;
+				else{
+					boolean exist = false;
+					for(String infobox : infoboxes.split("####"))
+						if(infobox.equals(tmpInfobox))
+						{
+							exist = true;
+							break;
+						}
+					if(exist == false)
+						PagePred.get(MaxIndex).InfoboxName += "####" + tmpInfobox;
+				}
 			}
-			
+			AlignNr ++;
 			PageTpls.remove(PageTpls.size() - 1);
+		}
+	}
+
+	static String outputDMiss = "";
+	static String outputDMissPath = "";
+	static int outputDMissNr = 0;
+	private static void DumpsMissAlignment(String string) {
+		// TODO Auto-generated method stub
+		if(string == null)
+		{
+			uFunc.addFile(outputDMiss, outputDMissPath);
+			return;
+		}
+		outputDMiss += string + "\n";
+		outputDMissNr ++;
+		if(outputDMissNr % 1000 == 0)
+		{
+			uFunc.addFile(outputDMiss, outputDMissPath);
+			outputDMiss = "";
 		}
 	}
 
@@ -160,17 +215,17 @@ public class WikitextPredicate {
 		// TODO Auto-generated method stub
 		double score = 0;
 		int linkOD = -1;
-		if(dObjc.matches("\\[\\[.+\\]\\]"))
+		if(dObjc.matches("\\[\\[[0-9]{1,}\\]\\]"))
 		{
-			if(Entity.getId(dObjc.substring(2, dObjc.length() - 2)) > 0)
-				linkOD = Entity.getId(dObjc.substring(2, dObjc.length() - 2));
-			else{
-				linkOD = Zhwiki.getPageId(dObjc.substring(2, dObjc.length() - 2));
-				if(linkOD <= 0)
-					linkOD = -1;
+			linkOD = Integer.parseInt(dObjc.substring(2, dObjc.length() - 2));
+			dObjc = Entity.getTitle(linkOD);
+			if(dObjc == null)
+				dObjc = Zhwiki.getTitle(linkOD);
+			if(dObjc == null)
+			{
+				uFunc.Alert(true, i, "dObjc is null:" + pageidD + "\t" + dPred);
+				return 0;
 			}
-			
-			dObjc = dObjc.substring(2, dObjc.length() - 2);
 		}
 		dObjc = dObjc.toLowerCase();
 		String whole = "";
@@ -198,7 +253,6 @@ public class WikitextPredicate {
 		if(Page.getTitles(linkOD) != null)
 		{
 			tits = Page.getTitles(linkOD) + "####" + dObjc;
-			//System.out.println(tits + "\t" + Page.getTitles(linkOD));
 		}
 		else tits = dObjc;
 		double maxPerc = 0;
@@ -245,7 +299,22 @@ public class WikitextPredicate {
 					if(((title.contains("http") || title.contains("www")) &&
 							(wholeEach.contains("http") || wholeEach.contains("www"))) == false)
 						perc = 0;
+					else perc *= 10;
 				}
+				if(uFunc.isNumeric(title) && wholeEach.contains(title))
+				{
+					int Index = wholeEach.indexOf(title) + title.length();
+					if((Index >= wholeEach.length() || 
+							uFunc.containNumber(wholeEach.charAt(Index) + "") == false)
+						&& (Index - title.length() - 1 < 0 || 
+								uFunc.containNumber(wholeEach.charAt(Index -title.length() - 1) + "") == false))
+						perc *= 10;
+					else perc /= 2;
+				}
+				else if(uFunc.isNumeric(title) && wholeEach.contains(title) == false)
+					perc /= 5;
+				if(linkOD > 0 && wholeEach.contains(title) == false)
+					perc /= 3;
 				// multiply the longest substring length
 				perc *= uFunc.GetLongestCommonSubsequence(wholeEach, title);
 				// contain !
@@ -256,7 +325,7 @@ public class WikitextPredicate {
 				
 				if(perc > maxPerc)
 					maxPerc = perc;
-				System.out.println(perc + "\t" + charDiff + "\t" + title + "\t" + wholeEach);
+				//System.out.println(perc + "\t" + charDiff + "\t" + title + "\t" + wholeEach);
 				
 			}
 		}
@@ -275,27 +344,47 @@ public class WikitextPredicate {
 			return;
 		}
 		PageTpls.clear();
+		infoboxName = null;
+		pageNrD ++;
+		if(lastLineD.startsWith("InfoboxName:"))
+		{
+			infoboxName = lastLineD.substring(12);
+			try {
+				lastLineD = brD.readLine();
+				while(lastLineD.startsWith("null"))
+					lastLineD = lastLineD.substring(4);
+				TripleNrD ++;
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 		String [] ss ;
 		ss = lastLineD.split("\t");
-		pageidD = Integer.parseInt(ss[0]);
-		PageTpls.add(ss[1] + "####" + ss[2]);
+		pageidD = Integer.parseInt(ss[0].substring(2, ss[0].length() - 2));
+		PageTpls.add(ss[1] + "####" + ss[2] + "####" + infoboxName);
 		String lastPred = ss[1];
 		String lastObj = ss[2];
-		String infoboxName = null;
 		try {
 			while((lastLineD = brD.readLine()) != null)
 			{
+				while(lastLineD.startsWith("null"))
+					lastLineD = lastLineD.substring(4);
+				TripleNrD ++;
 				if(lastLineD.startsWith("InfoboxName:"))
+				{
 					infoboxName = lastLineD.substring(12);
+					continue;
+				}
 				ss = lastLineD.split("\t");
-				if(ss[1].equals("name") || ss[1].contains("image") ||
+				if(ss.length < 3 || ss[1].equals("name") || ss[1].contains("image") ||
 						ss[1].contains("caption") || ss[2].endsWith(".png") ||
-						ss[2].endsWith(".jpg") || ss[2].endsWith(".jpeg"))
+						ss[2].endsWith(".jpg") || ss[2].endsWith(".jpeg") || 
+						ss[2].matches("[0-9]{1,}px"))
 				{
 					continue;
 				}
 				
-				int pageid = Integer.parseInt(ss[0]);
+				int pageid = Integer.parseInt(ss[0].substring(2, ss[0].length() - 2));
 				if(pageid != pageidD)
 				{
 					//System.out.println("&&&&" + lastPred + "\t" + lastObj);
@@ -313,7 +402,8 @@ public class WikitextPredicate {
 			}
 			if(lastLineD == null)
 				uFunc.Alert(true, i, "dumpFile reached ending");
-		} catch (NumberFormatException | IOException e) {
+		} catch (Exception e) {
+			System.out.println("ERROR:" + lastLineD);
 			e.printStackTrace();
 		}
 		
@@ -324,13 +414,27 @@ public class WikitextPredicate {
 	 * @param prediAddFile 
 	 */
 	private static void GetNextPagePredInfo() {
-		SaveLastPagePred();
-		PagePred.clear();
 		if(lastPred == null)
 		{
-			info = "lastPred is null:" + pageidP;
-			uFunc.Alert(true, i, info);
+			info = "lastPredP is null:" + pageidP;
+			//uFunc.Alert(true, i, info);
 			return;
+		}
+		SaveLastPagePred();
+		PagePred.clear();
+		pageNrP ++;
+		if(pageNrP % 1000 == 0)
+		{
+			DecimalFormat df = new DecimalFormat(".00");
+			info = pageNrP + " pageNrP;\t" + pageNrD + " pageNrD\tAlignNr:" + AlignNr + "\tcost:" +
+					(System.currentTimeMillis() - time)/1000 + "sec\n" +
+					"\ttriple in P aligned:" + df.format((1.0*AlignNrP/TripleNrP)) +
+					" (" + AlignNrP + "/" +TripleNrP + ")" + "\n" +
+					"\ttriple in D aligned:" + df.format((1.0*AlignNr/TripleNrD)) +
+					" (" + AlignNr + "/" +TripleNrD + ")" + "\n" + 
+					"AlignTime:" + AlignTime;
+			time = System.currentTimeMillis();
+			uFunc.Alert(true, i, info);
 		}
 		PagePred.add(lastPred);
 		pageidP = lastPred.Pageid;
@@ -339,27 +443,30 @@ public class WikitextPredicate {
 		try {
 			while((oneLine = brP.readLine()) != null)
 			{
+				TripleNrP ++;
 				long lastPredId = Long.parseLong(oneLine);
 				int lastPageId = Integer.parseInt(
 						oneLine.substring(0, oneLine.length() - 3));
 				next = new myPredicate(lastPredId, lastPageId);
 				next.CompleteInfo(brP);
 				if(next.Pageid != lastPred.Pageid)
+				{
+					lastPred = next;
 					break;
+				}
 				PagePred.add(next);
 				//System.out.println(next);
 				lastPred = next;
 			}
-			if(next != null)
-				lastPred = next;
 		} catch (NumberFormatException | IOException e) {
 			e.printStackTrace();
 		}
+		lastPred = next;
 	}
 
 
 	private static String outputPath;
-	private static String output;
+	private static String output = "";
 	private static int outNr = 0;
 	private static void SaveLastPagePred() {
 		for(int j = 0; j < PagePred.size(); j ++)
@@ -367,7 +474,7 @@ public class WikitextPredicate {
 			myPredicate pred = PagePred.get(j);
 			output += pred.toString();
 			outNr  ++;
-			if(outNr % 200 == 0)
+			if(outNr % 1000 == 0)
 			{
 				uFunc.addFile(output, outputPath);
 				output = "";
