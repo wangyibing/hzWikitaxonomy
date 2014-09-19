@@ -60,6 +60,8 @@ public class myPredicate {
 				else if((oneLine.charAt(0) + "").matches("[0-9]"))
 				{
 					String [] ss = oneLine.split("\t");
+					if(ss.length < 2)
+						continue;
 					String link = null;
 					String cont = null;
 					if(ss[1].contains("->"))

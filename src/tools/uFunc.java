@@ -141,7 +141,7 @@ public class uFunc {
 		return str.matches("\\[http([^]]{1,})\\]");
 	}
 	public static boolean isNumeric(String str) {
-		return str.replaceAll(",", "").matches("[\\+-]?[0-9]+((.)[0-9])*[0-9]*");
+		return str.replaceAll(",|_|\\s", "").matches("[\\+-]?[0-9]+((.)[0-9])*[0-9]*[万亿]{0,1}");
 	}
 	
 	public static String PunctuationZh2En(String string){

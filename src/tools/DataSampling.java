@@ -2,6 +2,7 @@ package tools;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.HashMap;
 
 import database.DisPage;
 import database.Entity;
@@ -17,7 +18,74 @@ public class DataSampling {
 		String tarPath = 
 				"/home/hanzhe/Public/result_hz/wiki_count2/predicate/dumpsTriples";
 		int lineNr = 100000;
-		DumpsTripleSampling(dumpsFile, tarPath, lineNr);
+		DumpsTripleSampling2("/home/hanzhe/Public/result_hz/wiki_count2/predicate/dumpsTriples",
+				"/home/hanzhe/Public/result_hz/wiki_count2/predicate/predicateId2Select", lineNr);
+	}
+
+	private static void DumpsTripleSampling2(String srcFile, String tarPath,
+			int lineNr) {
+		// TODO Auto-generated method stub
+		BufferedReader br = uFunc.getBufferedReader(srcFile);
+		String oneLine = "";
+		String output = "";
+		int linenr = 0;
+		HashMap<String, Integer> predId = new HashMap<String, Integer>();
+		try {
+			boolean flag = false;
+			int extra = 0;
+			int pagid = 0;
+			while((oneLine = br.readLine()) != null)
+			{
+				if(oneLine.contains("3686542"))
+				{
+					flag = true;
+				}
+				if(flag)
+				{
+					extra ++;
+					if(oneLine.split("\t").length < 2)
+						continue;
+					String st = oneLine.split("\t")[0];
+					st = st.substring(2, st.length() - 2);
+					int pageid = Integer.parseInt(st);
+					if(pageid != pagid)
+					{
+						System.out.println(pageid);
+						pagid = pageid;
+					}
+				}
+				if(oneLine.equals(""))
+				{
+					linenr ++;
+					oneLine = br.readLine();
+					try{
+						long pred = Long.parseLong(oneLine);	
+						if(pred > 0)
+						{
+							int freq = 1;
+							if(predId.containsKey(oneLine))
+							{
+								freq += predId.remove(oneLine);
+							}
+							predId.put(oneLine, freq);
+							if(freq > 2)
+								break;
+						}
+						if(predId.size() % 1000000 == 0)
+							System.out.println("size:" + predId.size());
+						if(linenr % 1000000 == 0)
+							System.out.println("linenr:" + linenr);
+					}catch(Exception e){
+						System.out.println(oneLine);
+					}
+				}
+			}System.out.println(extra);
+			System.out.println("linenr:" + linenr);
+			uFunc.SaveHashMap(predId, "data/info/predidfreq");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	private static void DumpsTripleSampling(String srcFile, 
