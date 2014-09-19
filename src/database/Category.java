@@ -18,7 +18,7 @@ public class Category {
 		return IsFather2(fatherCateId, subCateId);
 	}
 
-	public static String GetCateName(int cateId)
+	public static String GetName(int cateId)
 	{
 		if(id2titInited == false)
 			InitId2Tit();
