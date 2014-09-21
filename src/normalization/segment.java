@@ -22,11 +22,11 @@ public class segment {
 
 	public static void main(String [] args)
 	{
-		//ANSJsegment(TextMerge.Data2TextPath, ANSJSegPath);
+		//ANSJsegment("/home/hanzhe/Public/result_hz/zhwiki/data2/text", ANSJSegPath + "_2");
 		//CalculateWords(ANSJSegPath, WordsListPath);
 		//CalculateEntityFreq(ANSJSegPath);
-		CalculatePrediFreq(ANSJSegPath);
-		
+		CalculatePrediFreq(ANSJSegPath + "_2");
+		//RemoveExtraSpace(ANSJSegPath + "_2", ANSJSegPath);
 	}
 
 	public static String PrediFreqPath = 
@@ -76,6 +76,10 @@ public class segment {
 			"/home/hanzhe/Public/result_hz/zhwiki/info/EntityFreq";
 	public static String EntityDistributionPath = 
 			"/home/hanzhe/Public/result_hz/zhwiki/info/EntityDistribution";
+	/**
+	 * ANSJ: 25500000 lines parsed;Entity size:134520
+	 * @param aNSJSegPath2
+	 */
 	public static void CalculateEntityFreq(String aNSJSegPath2) {
 		// TODO Auto-generated method stub
 		BufferedReader br = uFunc.getBufferedReader(aNSJSegPath2);
@@ -96,7 +100,7 @@ public class segment {
 				{
 					if(Entity.getId(word) > 0)
 					{
-						System.out.println("segment.java:" + Entity.getId(word) + ":" + word);
+						//System.out.println("segment.java:" + Entity.getId(word) + ":" + word);
 						int freq = 1;
 						if(EntityFreq.containsKey(word) == true)
 						{
@@ -182,15 +186,46 @@ public class segment {
 				outNr ++;
 				if(outNr % 1000 == 0)
 				{
-					uFunc.addFile(output, savePath);
+					uFunc.addFile(output, savePath + ".tmp");
 					output = "";
-					if(outNr % 100000 == 0)
+					if(outNr % 500000 == 0)
 					{
 						System.out.println(outNr + " lines passed");
 					}
 				}																								
 			}
+			uFunc.addFile(output, savePath + ".tmp");
 			System.out.println(outNr + " lines total");
+			System.out.println("Removing extra space");
+			RemoveExtraSpace(savePath + ".tmp", savePath);
+			uFunc.deleteFile(savePath + ".tmp");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public static void RemoveExtraSpace(String srcPath, String savePath) {
+		// TODO Auto-generated method stub
+		BufferedReader br = uFunc.getBufferedReader(srcPath);
+		String oneLine = "";
+		String output = "";
+		int outNr = 0;
+		try {
+			while((oneLine = br.readLine())!= null)
+			{
+				oneLine = oneLine.replaceAll(" +", " ");
+				outNr ++;
+				output += oneLine + "\n";
+				if(outNr % 1000 == 0)
+				{
+					uFunc.addFile(output, savePath);
+					output = "";
+					if(outNr % 1000000 == 0)
+						System.out.println(outNr + " lines passed!");
+				}
+			}
+			uFunc.addFile(output, savePath);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

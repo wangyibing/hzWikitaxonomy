@@ -8,8 +8,9 @@ public class MoveFile {
 	{
 		String srcPath = "/home/hanzhe/Public/result_hz/zhwiki/ZhwikiWebPages/ZhWebPages";
 		String targetPath = "/home/hanzhe/Public/result_hz/zhwiki/ZhwikiWebPages/ZhWebPages";
-		for(int i = 1; i < 4; i ++)
-			RemoveAll(srcPath + i, targetPath);
+		//for(int i = 1; i < 4; i ++)
+		//	RemoveAll(srcPath + i, targetPath);
+		FileRename("/home/hanzhe/Public/result_hz/zhwiki/ZhwikiWebPages/FileSplit");
 	}
 
 	private static void RemoveAll(String srcPath, String targetPath) {
@@ -34,5 +35,33 @@ public class MoveFile {
 			if(Nr % 2000 == 0)
 				System.out.println(Nr + " moved");
 		}
+	}
+	
+	private static void FileRename(String folderPath)
+	{
+		File folder = new File(folderPath);
+		if(folder.exists()== false || folder.isDirectory() == false)
+		{
+			System.out.println(folderPath + " is not a folder");
+		}
+		int folderNr = 0;
+		for(File subFolder : folder.listFiles())
+		{
+			folderNr ++;
+			if(folderNr % 100 == 0)
+				System.out.println(folderNr + " folders stdd");
+			for(File file : subFolder.listFiles())
+			{
+				String fileName = file.getName().replaceAll(
+						"[`~!@#$^&\\*=\\|{}':;',\\[\\].<>/?￥%]", "_");
+				if(fileName.equals(file.getName()) == false)
+				{
+					//System.out.println(fileName + "\t" + file.getName());
+					file.renameTo(new File(subFolder.getAbsolutePath(), fileName));
+				}
+				
+			}
+		}
+		System.out.println(folderNr + " folders stdd");
 	}
 }
