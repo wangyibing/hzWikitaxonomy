@@ -197,7 +197,12 @@ public class uFunc {
 		return outStrBuf.toString();
 	}
 	
-	public static String UnifiedSentence(String string){
+	/**
+	 * replace all the Chinese punctuation to English punctuation
+	 * @param string
+	 * @return
+	 */
+	public static final String UnifiedSentenceZh2En(String string){
 		String s1 = string
 				.replaceAll("，", ",").replaceAll("？", "?")
 				.replaceAll("！", "!").replaceAll("；", ";")
@@ -210,10 +215,32 @@ public class uFunc {
 				.replaceAll("﹁", "'").replaceAll("（", "(")
 				.replaceAll("）", ")").replaceAll("——", "--")
 				.replaceAll("──", "--").replaceAll("—", "--")
-				.replaceAll("《 ", "<<").replaceAll("》", ">>")
-				.replaceAll("〈 ", "<").replaceAll("〉", ">")
+				.replaceAll("《", "<<").replaceAll("》", ">>")
+				.replaceAll("〈", "<").replaceAll("〉", ">")
 				.replaceAll("【", "[").replaceAll("】", "]")
 				.replaceAll("～", "~");
+		String result = s1;
+		result = full2HalfChange(s1);
+		return result;
+	}
+
+	public static final String UnifiedSentenceEn2Zh(String string){
+		String s1 = string
+				.replaceAll(",", "，").replaceAll("?", "？")
+				.replaceAll("!","！").replaceAll(";", "；")
+				.replaceAll(":", "：").replaceAll("\"", "”")
+				.replaceAll("\"", "“").replaceAll("'", "‘")
+				.replaceAll("'", "’").replaceAll("\"", "『")
+				.replaceAll("\"", "』").replaceAll("\"", "﹄")
+				.replaceAll("\"", "﹃").replaceAll("'", "「")
+				.replaceAll("'", "」").replaceAll("'", "﹂")
+				.replaceAll("'", "﹁").replaceAll("(", "（")
+				.replaceAll(")", "）").replaceAll("--", "——")
+				.replaceAll("--", "──").replaceAll("--", "—")
+				.replaceAll("<<", "《").replaceAll(">>", "》")
+				.replaceAll("<", "〈").replaceAll(">", "〉")
+				.replaceAll("[", "【").replaceAll("]", "】")
+				.replaceAll("~", "～");
 		String result = s1;
 		result = full2HalfChange(s1);
 		return result;
