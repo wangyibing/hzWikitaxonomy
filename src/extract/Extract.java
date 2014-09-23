@@ -64,7 +64,7 @@ public class Extract{
 			int pageid = Integer.parseInt(file.getName().substring(
 					0, file.getName().indexOf("_")));
 			////////////////////////////////
-			//if(pageid != 1042704)continue;
+			//if(pageid != 355771)continue;
 			////////////////////////////////
 			fileNr ++;
 			if(testFileNr > 0 && fileNr > testFileNr)

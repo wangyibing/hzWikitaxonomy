@@ -40,8 +40,8 @@ public class WikitextPredicate {
 	public static void Extract(String PredIdFile, String DumpsTripleFile,
 			String PrediAddFile)
 	{
-		uFunc.AlertPath = PrediAddFile.substring(0, 
-				PrediAddFile.lastIndexOf("/") + 1) + "WikitextPredicateInfo";
+		uFunc.AlertPath = "data/info/WikitextPredicateInfo";
+		uFunc.deleteFile(uFunc.AlertPath);
 		time = System.currentTimeMillis();
 		outputPath = PrediAddFile;
 		uFunc.deleteFile(outputPath);
@@ -57,7 +57,7 @@ public class WikitextPredicate {
 			pageidP = Integer.parseInt(
 					oneLine.substring(0, oneLine.length() - 3));
 			lastPred = new myPredicate(lastPId, pageidP);
-			lastPred.CompleteInfo(brP);
+			lastPred.CompleteInfo_Triple(brP);
 			//********* Get Fir predicate end ************
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -423,10 +423,10 @@ public class WikitextPredicate {
 		SaveLastPagePred();
 		PagePred.clear();
 		pageNrP ++;
-		if(pageNrP % 1000 == 0)
+		if(pageNrP % 3000 == 0)
 		{
 			DecimalFormat df = new DecimalFormat(".00");
-			info = pageNrP + " pageNrP;\t" + pageNrD + " pageNrD\tAlignNr:" + AlignNr + "\tcost:" +
+			info = pageNrP + " pageNrP;\t" + pageNrD + " pageNrD\tAlignNr:" + AlignNr + "\t cost:" +
 					(System.currentTimeMillis() - time)/1000 + "sec\n" +
 					"\ttriple in P aligned:" + df.format((1.0*AlignNrP/TripleNrP)) +
 					" (" + AlignNrP + "/" +TripleNrP + ")" + "\n" +
@@ -448,7 +448,7 @@ public class WikitextPredicate {
 				int lastPageId = Integer.parseInt(
 						oneLine.substring(0, oneLine.length() - 3));
 				next = new myPredicate(lastPredId, lastPageId);
-				next.CompleteInfo(brP);
+				next.CompleteInfo_Triple(brP);
 				if(next.Pageid != lastPred.Pageid)
 				{
 					lastPred = next;

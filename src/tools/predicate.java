@@ -17,15 +17,15 @@ public class predicate {
 	public static void main(String [] args)
 	{
 		//FindDuplicatePredi(Extract.TriplePath);
-		PredDistribution(Extract.TriplePath + "2");
+		PredDistribution(Extract.TriplePath + "_9_23_Titlecleaning");
 	}
 
-	public static boolean isPred(String content)
+	public static int PredFreq(String content)
 	{
 		Init();
 		if(Predicate.containsKey(content))
-			return true;
-		return false;
+			return Predicate.get(content);
+		return 0;
 	}
 	
 	private static void Init() {
@@ -47,6 +47,8 @@ public class predicate {
 				int freq = Integer.parseInt(oneLine.split("\t")[1]);
 				pred = pred.replaceAll("(?m)^(•|\\s)+", "")
 						.replaceAll("((?m)^\\[)|((?m)\\]$)|((?m)^ +)|((?m) +$)|", "");
+				if(Predicate.containsKey(pred))
+					System.out.println(pred + "\t" + Predicate.get(pred));
 				Predicate.put(pred, freq);
 			}
 		} catch (IOException e) {
@@ -59,8 +61,22 @@ public class predicate {
 
 	private static void PredDistribution(String triplePath) {
 		// TODO Auto-generated method stub
-		BufferedReader br = uFunc.getBufferedReader(triplePath);
 		String oneLine = "";
+		HashMap<String, Integer> SinglePred = new HashMap<String, Integer>();
+		BufferedReader br = uFunc.getBufferedReader(PrediDistributionPath);
+		try {
+			while((oneLine = br.readLine()) != null)
+			{
+				String [] ss = oneLine.split("\t");
+				if(ss[1].equals("1"))
+					SinglePred.put(ss[0], 1);
+			}
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		System.out.println("SinglePred size:" + SinglePred.size());
+		
+		br = uFunc.getBufferedReader(triplePath);
 		HashMap<String, Integer> PredFreq = new HashMap<String, Integer>();
 		
 		try {
@@ -71,17 +87,22 @@ public class predicate {
 					continue;
 				int freq = 1;
 				ss[1] = uFunc.Simplify(uFunc.ReplaceBoundSpace(ss[1]));
+				if(ss[1].contains("->"))
+					ss[1] = ss[1].substring(0, ss[1].indexOf("->"));
 				if(ss[1].length() > 30)
 					continue;
+				ss[1] = ss[1].replaceAll("(?m)^(•|\\s)+", "")
+						.replaceAll("((?m)^\\[)|((?m)\\]$)|((?m)^ +)|((?m) +$)|", "");
 				if(PredFreq.containsKey(ss[1]))
 					freq += PredFreq.remove(ss[1]);
-				//if(ss[1].length() > 15)
-				//	System.out.println(oneLine);
+				//if(ss[1].equals("国家"))
+				//	System.out.println(ss[1] + "\t" + freq);
 				PredFreq.put(ss[1], freq);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		System.out.println("predi size:" + PredFreq.size());
 		uFunc.SaveHashMap(PredFreq, PrediDistributionPath);
 	}
 
@@ -120,7 +141,6 @@ public class predicate {
 				lastPred = pred;
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

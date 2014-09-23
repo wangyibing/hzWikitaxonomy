@@ -1,9 +1,7 @@
 package extract;
 
-import database.Entity;
 import database.RediPage;
 import extract.pageinfo.DisaPageExtraction;
-import extract.pageinfo.EntityTitleExtraction;
 import extract.pageinfo.RediPageExtraction;
 import extract.predicatetable.WikitextPredicate;
 import tools.uFunc;
@@ -15,13 +13,16 @@ public class starter {
 			"/home/hanzhe/Public/result_hz/wiki_count/pageinfo/";
 	public static void main(String [] args)
 	{
+		//Langlinks.GetEntityIdEnTitlePair(null);
 		//ExtractDis();
 		//EntityTitleExtraction.Extract(Entity.CanonicalPath_titles, 
 		//		Folder + "EntityExtractionInfo");
+		
 		WikitextPredicate.Extract(
 				"/home/hanzhe/Public/result_hz/wiki_count2/predicate/predicateId.sorted",
 				"/home/hanzhe/Public/result_hz/wiki_count2/predicate/dumpsTriples",
 				"/home/hanzhe/Public/result_hz/wiki_count2/predicate/predicateId2");
+				
 		//ExtractRedi();
 		//test();
 	}

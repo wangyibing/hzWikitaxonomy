@@ -43,7 +43,7 @@ public class myPredicate {
 		for(String o : objs)
 			Objs.add(o);
 	}
-	public void CompleteInfo(BufferedReader brP) {
+	public void CompleteInfo_Triple(BufferedReader brP) {
 		// TODO Auto-generated method stub
 		String oneLine = "";
 		try {
@@ -62,6 +62,11 @@ public class myPredicate {
 					String [] ss = oneLine.split("\t");
 					if(ss.length < 2)
 						continue;
+					if(ss.length < 3)
+					{
+						//System.out.println(oneLine);
+						continue;
+					}
 					String link = null;
 					String cont = null;
 					if(ss[1].contains("->"))
@@ -110,5 +115,65 @@ public class myPredicate {
 		info += "WikitextCont:" + WikitextContent + "\n";
 		info += "\n";
 		return info;
+	}
+	public void CompleteInfo(BufferedReader br) {
+		// TODO Auto-generated method stub
+		String oneLine = "";
+		try {
+			while((oneLine = br.readLine()) != null)
+			{
+				if(oneLine.equals(""))
+					break;
+				if(oneLine.startsWith("UpperTitle:"))
+				{
+					if(oneLine.equals("UpperTitle:null"))
+						UpperTitle = null;
+					else UpperTitle = oneLine.substring(11);
+				}
+				else if(oneLine.startsWith("Contnt:"))
+				{
+					Content = oneLine.substring(7);
+					if(Content.equals("null"))
+						Content = null;
+				}
+				else if(oneLine.startsWith("Link:"))
+				{
+					Link = oneLine.substring(5);
+					if(Link.equals("null"))
+						Link = null;
+				}
+				else if(oneLine.startsWith("Objcs:"))
+				{
+					for(String obj :oneLine.substring(6).split("####"))
+					{
+						if(obj.equals(""))
+							continue;
+						Objs.add(obj);
+					}
+				}
+				else if(oneLine.startsWith("Link:"))
+				{
+					Link = oneLine.substring(5);
+					if(Link.equals("null"))
+						Link = null;
+				}
+				else if(oneLine.startsWith("Link:"))
+				{
+					Link = oneLine.substring(5);
+					if(Link.equals("null"))
+						Link = null;
+				}
+				else if(oneLine.startsWith("WikitextCont:"))
+				{
+					WikitextContent = oneLine.substring(13);
+					if(WikitextContent.equals("null"))
+						WikitextContent = null;
+				}
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 }

@@ -102,9 +102,9 @@ public class RecordGenerator {
 			if(context.matches(".+([\\u4e00-\\u9fa5]| |_)+(\\:|：).+") &&
 					TagChild.containDescendantTag(tags.get(0).tag, "tr") == false)
 			{
-				//System.out.println("TripleGenerator.java:single tr containing \":\", " + pageid + ":" + context);
-				return GeneratorDistributor.distribute(context, pageid, 
-						InfoboxNode.UpperTitle, InfoboxNode.TRTitleNr);
+				// single tr containing ":"
+				return null;
+				//return GeneratorDistributor.distribute(context, pageid, InfoboxNode.UpperTitle, InfoboxNode.TRTitleNr);
 			}
 			// subTitle
 			if(tName.equals("th"))
@@ -131,12 +131,6 @@ public class RecordGenerator {
 				if(Entity.getId(tUpperTitle.context) == PageId)
 					return null;
 				InfoboxNode.UpperTitle = tUpperTitle;
-				/*
-				if(InfoboxNode.TRTitleNr == 1)
-					System.out.println(InfoboxNode.TRTitleNr + "\t" + 
-						pageid + "\t" + TripleGenerator.
-						getStringFromMyelement(InfoboxNode.UpperTitle, true));
-						*/
 			}
 			// content
 			else if(tName.equals("td"))

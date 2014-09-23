@@ -25,7 +25,7 @@ public class segment {
 		//ANSJsegment("/home/hanzhe/Public/result_hz/zhwiki/data2/text", ANSJSegPath + "_2");
 		//CalculateWords(ANSJSegPath, WordsListPath);
 		//CalculateEntityFreq(ANSJSegPath);
-		CalculatePrediFreq(ANSJSegPath + "_2");
+		CalculatePrediFreq(ANSJSegPath + "_1");
 		//RemoveExtraSpace(ANSJSegPath + "_2", ANSJSegPath);
 	}
 
@@ -33,6 +33,9 @@ public class segment {
 			"/home/hanzhe/Public/result_hz/zhwiki/info/predicate/PrediSegmentFreq";
 	public static String PrediDistributionPath = 
 			"/home/hanzhe/Public/result_hz/zhwiki/info/predicate/PrediSegmentDistribution";
+	/*
+	 * 25500000 lines parsed;Predi size:4039
+	 */
 	private static void CalculatePrediFreq(String aNSJSegPath2) {
 		// TODO Auto-generated method stub
 		BufferedReader br = uFunc.getBufferedReader(aNSJSegPath2);
@@ -51,7 +54,7 @@ public class segment {
 				oneLine = uFunc.Simplify(oneLine);
 				for(String word : oneLine.split(" |\t"))
 				{
-					if(predicate.isPred(word))
+					if(predicate.PredFreq(word) > 0)
 					{
 						int freq = 1;
 						if(PrediFreq.containsKey(word) == true)

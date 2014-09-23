@@ -87,6 +87,8 @@ public class uFunc {
 	}
 	public static String ReplaceBoundSpace(String string){
 		return string
+				.replaceAll("(&#160;)|(&lt;)|(&gt;)", "")
+				.replaceAll("&amp;", "&")
 				//replace the space at the beginning
 				.replaceAll("(?m)^[‡\\*\\- _\\s]+", "")
 				// replace the space at the end

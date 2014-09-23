@@ -18,8 +18,8 @@ public class DataSampling {
 		String tarPath = 
 				"/home/hanzhe/Public/result_hz/wiki_count2/predicate/dumpsTriples";
 		int lineNr = 100000;
-		DumpsTripleSampling2("/home/hanzhe/Public/result_hz/wiki_count2/predicate/dumpsTriples",
-				"/home/hanzhe/Public/result_hz/wiki_count2/predicate/predicateId2Select", lineNr);
+		DumpsTripleSampling("/home/hanzhe/Public/result_hz/wiki_count2/predicate/predicateId2",
+				"/home/hanzhe/Public/result_hz/wiki_count2/predicate/predicateId2.sample10000", lineNr);
 	}
 
 	private static void DumpsTripleSampling2(String srcFile, String tarPath,
@@ -101,6 +101,7 @@ public class DataSampling {
 			{
 				while(oneLine.startsWith("null"))
 					oneLine = oneLine.substring(4);
+				/*
 				String [] ss = oneLine.split("\t");
 				if(ss.length < 3)
 					continue;
@@ -136,6 +137,8 @@ public class DataSampling {
 					ss[2] = ss[2].substring(1, ss[2].length() -1);
 				String info = ss[0] + "\t" + ss[1] + "\t" + ss[2] + "\n";
 				output += info;
+				*/
+				output += oneLine + "\n";
 				lNr ++;
 				if(lNr >= lineNr)
 					break;

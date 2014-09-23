@@ -51,9 +51,13 @@ public class ObjeStdz {
 		String objString = TagShape.isPlainText(mtag_obj.tag);
 		if(objString != null)
 		{
-			myobj = new myObj(Text2Vector(objString));
-			//System.out.println("ObjeStdz.java:obj is plain text:" + result);
-			return myobj;
+			Vector<myElement> tmp = Text2Vector(objString);
+			if(tmp != null)
+			{
+				myobj = new myObj(tmp);
+				//System.out.println("ObjeStdz.java:obj is plain text:" + result);
+				return myobj;
+			}
 		}
 		
 		// Plaintexts + tags

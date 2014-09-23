@@ -4,6 +4,7 @@ import com.tag.myElement;
 import com.tag.myObj;
 
 import database.Entity;
+import database.Page;
 import extract.GeneratorDistributor;
 import tools.URL2UTF8;
 import tools.uFunc;
@@ -29,7 +30,7 @@ public class TripleGenerator {
 		String contP = getStringFromMyelement(predi.eles.get(0), NoLink);
 		if(contP == null || contP.equals("") || isNotPredicate(contP) ||
 				// page's title can't be predicate
-				Entity.getId(contP) == pageid)
+				isPageTitle(pageid, contP))
 		{
 			//System.out.println("SecondStandardize.java:" + "conP empty:pageid:" + pageid);
 			return null;
@@ -68,16 +69,38 @@ public class TripleGenerator {
 			contP = contP.replaceAll("(?m)( |_)?(\\(.+\\))$", "");
 		
 		String result = "";
+		contP = contP.replaceAll("(?m)^(•|\\s)+", "")
+				.replaceAll("((?m)^\\[)|((?m)\\]$)|((?m)^ +)|((?m) +$)|", "");
 		for(int i = 0; i < objc.eles.size(); i ++)
 		{
 			String contO = getStringFromMyelement(objc.eles.get(i), !NoLink);
-			if(contO == null || contO.equals(""))
+			if(contO == null || contO.equals("") ||
+					// page's title can't be predicate
+					isPageTitle(pageid, contP))
 				continue;
 			result += pageid + "\t" + contP + "\t" + contO + remark + "\n";
 		}
 		if(result.equals("") == false)
 			return result;
 		return null;
+	}
+
+	private static boolean isPageTitle(int pageid2, String contP) {
+		// TODO Auto-generated method stub
+		String titles = Page.getTitles(pageid2);
+		if(titles != null)
+		{
+			for(String title : titles.split("####"))
+			{
+				if(uFunc.Simplify(contP.toLowerCase().replaceAll(" |_", ""))
+						.equals(uFunc.Simplify(title.toLowerCase().replaceAll(" |_", ""))))
+				{
+					//uFunc.Alert(true, i, title + ":" + contP);
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	private static boolean isNotPredicate(String contP) {

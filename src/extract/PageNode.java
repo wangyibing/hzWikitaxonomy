@@ -55,11 +55,13 @@ public class PageNode {
 		}
 		if(triples.equals(""))
 		{
+			/*
 			if(hasMedalInfo == true)
 				return "";
 			info = "FailedExtractPages:" + PageId;
 			if(alert)
 				uFunc.Alert(i , info);
+				*/
 			return "";
 		}
 		else

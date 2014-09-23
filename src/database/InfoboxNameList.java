@@ -11,7 +11,7 @@ public class InfoboxNameList {
 	private static String ZhNamePath = 
 			"/home/hanzhe/Public/result_hz/zhwiki/Infobox/InfoboxNameList_category.txt";
 	private static String SimEnNamePath = 
-			"/home/hanzhe/Public/result_hz/simplewiki/infobox/SimInfoboxNameList_category.txt";
+			"/home/hanzhe/Public/result_hz/simplewiki/Infobox/SimInfoboxNameList_category.txt";
 
 	/** from zhwiki, enwiki, simplewiki
 	 * already to lowercase and simple chinese
