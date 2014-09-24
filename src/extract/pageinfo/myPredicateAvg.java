@@ -8,7 +8,7 @@ public class myPredicateAvg {
 	String Content;
 	String Pinyin;
 	float [] vectorW2V;
-	HashMap<String, Integer> Links;
+	HashMap<Integer, Integer> Links;
 	// <entityid, freq>
 	HashMap<Integer, Double> SubjectCateDistr;
 	HashMap<Integer, Double> PredCateDistr;
@@ -24,7 +24,7 @@ public class myPredicateAvg {
 		Content = cont;
 		Pinyin = null;
 		vectorW2V = null;
-		Links = new HashMap<String, Integer>();
+		Links = new HashMap<Integer, Integer>();
 		SubjectCateDistr = new HashMap<Integer, Double>();
 		PredCateDistr = new HashMap<Integer, Double>();
 		ObjCateDistr = new HashMap<Integer, Double>();

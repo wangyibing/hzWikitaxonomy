@@ -2,7 +2,6 @@ package extract;
 
 import java.util.HashMap;
 
-import tools.predicate;
 import tools.uFunc;
 import triple.extract.TripleGenerator;
 import triple.object.ObjeStdz;
@@ -77,18 +76,8 @@ public class GeneratorDistributor {
 		if(index < 0 || (index > context.indexOf("：") 
 				&& context.indexOf("：") > 0))
 			index = context.indexOf("：");
-		String pString = uFunc.UnifiedSentenceZh2En(context.substring(0, index));
-		if(pString.contains("("))
-			pString = pString.substring(0, pString.indexOf("("));
-		pString = uFunc.ReplaceBoundSpace(pString);
-		int freq = predicate.PredFreq(pString);
-		if(prediInSingle.containsKey(pString) == false)
-		{
-			//info = pString + "\t" + pageid + "\t" + freq + "\t" + context;
-			//uFunc.Alert(true, i, info);
-			prediInSingle.put(pString, freq);
-		}
-		
+		String pString = uFunc.
+				ReplaceBoundSpace(context.substring(0, index));
 		String oString = uFunc.
 				ReplaceBoundSpace(context.substring(index + 1));
 		myObj predi, objc;

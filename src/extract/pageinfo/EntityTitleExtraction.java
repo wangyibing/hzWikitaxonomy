@@ -130,7 +130,6 @@ public class EntityTitleExtraction {
 			}
 		}
 		uFunc.addFile(outputTitles, outputTitlesPath);
-		uFunc.addFile(uFunc.AlertOutput, uFunc.AlertPath);
-		
+		uFunc.AlertClose();
 	}
 }

@@ -84,7 +84,7 @@ public class TripleGenerator {
 			return result;
 		return null;
 	}
-
+	
 	private static boolean isPageTitle(int pageid2, String contP) {
 		// TODO Auto-generated method stub
 		String titles = Page.getTitles(pageid2);
@@ -102,7 +102,7 @@ public class TripleGenerator {
 		}
 		return false;
 	}
-
+	
 	private static boolean isNotPredicate(String contP) {
 		// TODO Auto-generated method stub
 		contP = uFunc.Simplify(contP);

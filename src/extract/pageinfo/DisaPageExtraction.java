@@ -50,7 +50,7 @@ public class DisaPageExtraction {
 				folder + DisPage.ExceptionListPath,
 				folder + DisPage.CanonicalPath_pageoutlinks);
 		
-		uFunc.addFile(uFunc.AlertOutput, uFunc.AlertPath);
+		uFunc.AlertClose();
 	}
 
 	private static void ResultFiltering(String srcFile, String exception, 

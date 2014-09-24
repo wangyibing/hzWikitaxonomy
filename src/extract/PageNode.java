@@ -30,8 +30,8 @@ public class PageNode {
 	private String triples = "";
 	private Vector<String> possiTableNames;
 	private Vector<Tag> InfoboxTag;
-	private boolean hasMedalInfo;
-	private String info;
+	public boolean hasMedalInfo;
+	public String info;
 	private String i = "PageNode";
 	
 	/**

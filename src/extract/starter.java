@@ -22,7 +22,6 @@ public class starter {
 				"/home/hanzhe/Public/result_hz/wiki_count2/predicate/predicateId.sorted",
 				"/home/hanzhe/Public/result_hz/wiki_count2/predicate/dumpsTriples",
 				"/home/hanzhe/Public/result_hz/wiki_count2/predicate/predicateId2");
-				
 		//ExtractRedi();
 		//test();
 	}

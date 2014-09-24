@@ -464,7 +464,7 @@ public class uFunc {
 
 	public static String AlertPath;
 	public static int AlertNr = 0;
-	public static String AlertOutput = "";
+	private static String AlertOutput = "";
 	public static void Alert(String className, String info) {
 		// TODO Auto-generated method stub
 		System.out.println(className + ":" + info);

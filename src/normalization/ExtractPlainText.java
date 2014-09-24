@@ -29,7 +29,7 @@ public class ExtractPlainText {
 				"/home/hanzhe/Public/result_hz/zhwiki/ZhwikiWebPages/FileSplit/",
 				1003,
 				"/home/hanzhe/Public/result_hz/zhwiki/data2/text");
-			*/	
+			*/
 		TextCleaning("/home/hanzhe/Public/result_hz/zhwiki/data2/tmp");
 	}
 	
@@ -75,7 +75,7 @@ public class ExtractPlainText {
 	public static void extractFromWeb(String folder, int folderNr, String tar)
 	{
 		int pageNr = 0;
-		uFunc.AlertOutput = "data/info/ExtractPlainTextInfo";
+		uFunc.AlertPath = "data/info/ExtractPlainTextInfo";
 		uFunc.deleteFile(uFunc.AlertPath);
 		long time = System.currentTimeMillis();
 		uFunc.deleteFile(tar);

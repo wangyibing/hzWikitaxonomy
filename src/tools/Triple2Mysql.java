@@ -19,7 +19,7 @@ public class Triple2Mysql {
 	public static void AddTriples2Mysql(String triplePath,
 			String dbName, String tableName, String CreateSQLFile)
 	{
-		uFunc.AlertOutput = "data/sql/AddTriples2Mysql";
+		uFunc.AlertPath = "data/sql/AddTriples2Mysql";
 		uFunc.deleteFile(uFunc.AlertPath);
 		
 		Mysql db = new Mysql();

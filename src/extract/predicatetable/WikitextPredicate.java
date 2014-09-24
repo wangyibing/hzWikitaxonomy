@@ -433,8 +433,8 @@ public class WikitextPredicate {
 		if(pageNrP % 5000 == 0)
 		{
 			DecimalFormat df = new DecimalFormat(".00");
-			info = pageNrP + " pageNrP;\t" + pageNrD + " pageNrD\tAlignNr:" + AlignNr + "\t cost:" +
-					(System.currentTimeMillis() - time)/1000 + "sec\n" +
+			info = pageNrP + " pageNrP;\t" + pageNrD + " pageNrD\tAlignNr:" + AlignNr +
+					"\t cost:" + (System.currentTimeMillis() - time)/1000 + "sec\n" +
 					"\ttriple in P aligned:" + df.format((1.0*AlignNrP/TripleNrP)) +
 					" (" + AlignNrP + "/" +TripleNrP + ")" + "\n" +
 					"\ttriple in D aligned:" + df.format((1.0*AlignNr/TripleNrD)) +

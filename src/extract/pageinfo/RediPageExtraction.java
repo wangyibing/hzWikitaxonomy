@@ -107,7 +107,7 @@ public class RediPageExtraction {
 			}
 		}
 		uFunc.addFile(output, outputPath);
-		uFunc.addFile(uFunc.AlertOutput, uFunc.AlertPath);
+		uFunc.AlertClose();
 	}
 
 	static Pattern redirect = Pattern.compile("(#\\s*重定向)|(#\\s*redirect)");

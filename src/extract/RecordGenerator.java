@@ -131,6 +131,12 @@ public class RecordGenerator {
 				if(Entity.getId(tUpperTitle.context) == PageId)
 					return null;
 				InfoboxNode.UpperTitle = tUpperTitle;
+				/*
+				if(InfoboxNode.TRTitleNr == 1)
+					System.out.println(InfoboxNode.TRTitleNr + "\t" + 
+						pageid + "\t" + TripleGenerator.
+						getStringFromMyelement(InfoboxNode.UpperTitle, true));
+						*/
 			}
 			// content
 			else if(tName.equals("td"))

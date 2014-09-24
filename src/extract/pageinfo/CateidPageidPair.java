@@ -20,11 +20,12 @@ public class CateidPageidPair {
 
 	public static void main(String [] args)
 	{
-		uFunc.AlertOutput = "data/info/CategoryInfo";
+		uFunc.AlertPath = "data/info/CategoryInfo";
 		GetCateidCateTitlePair(categorySrc, CateidCateTitlePair);
 		QsortPair.SortPair(CatePageSrc, 
 				CateidPageidPair, 
 				true, true, 3300000);
+		uFunc.AlertClose();
 	}
 
 	private static void GetCateidCateTitlePair(String srcPath,
