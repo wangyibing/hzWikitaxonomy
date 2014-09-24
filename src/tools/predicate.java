@@ -95,8 +95,8 @@ public class predicate {
 						.replaceAll("((?m)^\\[)|((?m)\\]$)|((?m)^ +)|((?m) +$)|", "");
 				if(PredFreq.containsKey(ss[1]))
 					freq += PredFreq.remove(ss[1]);
-				//if(ss[1].equals("国家"))
-				//	System.out.println(ss[1] + "\t" + freq);
+				if(ss[1].substring(0, 1).matches("[0-9]"))
+					System.out.println(oneLine);
 				PredFreq.put(ss[1], freq);
 			}
 		} catch (IOException e) {

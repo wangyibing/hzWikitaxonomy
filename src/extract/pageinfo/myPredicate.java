@@ -157,11 +157,11 @@ public class myPredicate {
 					if(Link.equals("null"))
 						Link = null;
 				}
-				else if(oneLine.startsWith("Link:"))
+				else if(oneLine.startsWith("InfoboxName:"))
 				{
-					Link = oneLine.substring(5);
-					if(Link.equals("null"))
-						Link = null;
+					InfoboxName = oneLine.substring(12);
+					if(InfoboxName.equals("null"))
+						InfoboxName = null;
 				}
 				else if(oneLine.startsWith("WikitextCont:"))
 				{

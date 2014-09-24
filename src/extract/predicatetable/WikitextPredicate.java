@@ -65,6 +65,14 @@ public class WikitextPredicate {
 		brD = uFunc.getBufferedReader(DumpsTripleFile);
 		try {
 			lastLineD = brD.readLine();
+			if(lastLineD.startsWith("InfoboxName:"))
+			{
+				infoboxName = lastLineD.substring(12);
+				lastLineD = brD.readLine();
+				while(lastLineD.startsWith("null"))
+					lastLineD = lastLineD.substring(4);
+				TripleNrD ++;
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -344,7 +352,6 @@ public class WikitextPredicate {
 			return;
 		}
 		PageTpls.clear();
-		infoboxName = null;
 		pageNrD ++;
 		if(lastLineD.startsWith("InfoboxName:"))
 		{
@@ -423,7 +430,7 @@ public class WikitextPredicate {
 		SaveLastPagePred();
 		PagePred.clear();
 		pageNrP ++;
-		if(pageNrP % 3000 == 0)
+		if(pageNrP % 5000 == 0)
 		{
 			DecimalFormat df = new DecimalFormat(".00");
 			info = pageNrP + " pageNrP;\t" + pageNrD + " pageNrD\tAlignNr:" + AlignNr + "\t cost:" +
