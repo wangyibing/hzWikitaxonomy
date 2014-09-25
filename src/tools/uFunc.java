@@ -24,6 +24,13 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.sourceforge.pinyin4j.PinyinHelper;
+import net.sourceforge.pinyin4j.format.HanyuPinyinCaseType;
+import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
+import net.sourceforge.pinyin4j.format.HanyuPinyinToneType;
+import net.sourceforge.pinyin4j.format.HanyuPinyinVCharType;
+import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombination;
+
 import org.htmlparser.Tag;
 
 import com.spreada.utils.chinese.ZHConverter;
@@ -86,6 +93,8 @@ public class uFunc {
 		return false;
 	}
 	public static String ReplaceBoundSpace(String string){
+		if(string == null)
+			return null;
 		return string
 				.replaceAll("(&#160;)|(&lt;)|(&gt;)", "")
 				.replaceAll("&amp;", "&")
@@ -147,6 +156,8 @@ public class uFunc {
 	}
 	
 	public static String PunctuationZh2En(String string){
+		if(string == null)
+			return null;
 		String s1 = string
 				.replaceAll("，", ",").replaceAll("？", "?").replaceAll("！", "!")
 				.replaceAll("；", ";").replaceAll("：", ":").replaceAll("”", "\"")
@@ -205,6 +216,8 @@ public class uFunc {
 	 * @return
 	 */
 	public static final String UnifiedSentenceZh2En(String string){
+		if(string == null)
+			return null;
 		String s1 = string
 				.replaceAll("，", ",").replaceAll("？", "?")
 				.replaceAll("！", "!").replaceAll("；", ";")
@@ -227,6 +240,8 @@ public class uFunc {
 	}
 
 	public static final String UnifiedSentenceEn2Zh(String string){
+		if(string == null)
+			return null;
 		String s1 = string
 				.replaceAll(",", "，").replaceAll("?", "？")
 				.replaceAll("!","！").replaceAll(";", "；")
@@ -550,5 +565,38 @@ public class uFunc {
 				//System.out.println(j +"\t"+ k + "\t" + len[j][k]);
 			}
 		return len[c1.length -1 ][c2.length - 1];
+	}
+
+
+	private static HanyuPinyinOutputFormat PY = 
+			new HanyuPinyinOutputFormat();
+	private static boolean PINYINInited = false;
+	public static String GetPinYin(String cont) {
+		if(PINYINInited == false)
+		{
+			 PY.setCaseType(HanyuPinyinCaseType.LOWERCASE);
+			 PY.setToneType(HanyuPinyinToneType.WITHOUT_TONE);
+			 PY.setVCharType(HanyuPinyinVCharType.WITH_U_UNICODE);
+			 PINYINInited = true;
+		}
+		String result = "";
+		for(char c : cont.toCharArray())
+		{
+			if(uFunc.hasChineseCharactor(c + ""))
+			{
+				String[] pinyin = null;
+				try {
+					pinyin = PinyinHelper.toHanyuPinyinStringArray(c, PY);
+					if(pinyin != null)
+						result += pinyin[0];
+				} catch (BadHanyuPinyinOutputFormatCombination e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		if(result.equals(""))
+			return null;
+		return result;
 	}
 }

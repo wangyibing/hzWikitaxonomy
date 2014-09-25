@@ -23,6 +23,7 @@ public class Entity {
 			title = title.replaceAll("《|》", "");
 			if(TitsIdMap.containsKey(simConvt.convert(title)) == true)
 				return TitsIdMap.get(simConvt.convert(title));
+			
 			return 0;
 			
 		}
