@@ -17,10 +17,14 @@ import triple.object.ObjeStdz;
 import triple.predicate.PredStdz;
 
 public class RecordGenerator {
+	private final static String c = "RecordGenerator";
+	private static String info;
 	private static Vector<myTag> tags = new Vector<myTag>();
 	private static int PageId ;
 	public static String GenerFromTR(int pageid, Tag tr)
 	{
+		if(TagChild.containDescendantTag(tr, "img"))
+			InfoboxNode.infoboxIMG = true;
 		if(Init(tr) == false)
 		{
 			return null;
@@ -38,6 +42,11 @@ public class RecordGenerator {
 		{
 			myTag tagPre = tags.get(0);
 			myTag tagObj = tags.get(1);
+			if(TagChild.containDescendantTag(tags.get(0).tag, "b") ||
+					tagPre.tag.getTagName().equals("TH"))
+			{
+					UpdateUpperTitle(tr, pageid, true);
+			}
 			String preName = tagPre.tag.getTagName().toLowerCase();
 			String objName = tagObj.tag.getTagName().toLowerCase();
 			
@@ -59,8 +68,22 @@ public class RecordGenerator {
 						TRformat = 1;
 					}
 				}
-				else TRformat = 0;
-				
+				else{
+					TRformat = 0;
+				}
+				// return to false only when new infobox or uppertitle exist
+				if((preName.equals("th") && objName.equals("th")) &&
+						InfoboxNode.infoboxIMG == false)
+				{
+					String h1 = uFunc.ReplaceBoundSpace(
+							tags.get(0).tag.toPlainTextString());
+					String h2 = uFunc.ReplaceBoundSpace(
+							tags.get(1).tag.toPlainTextString());
+					if(h1.equals("") == false && h2.equals("") == false)
+						InfoboxNode.ListTable = true;
+				}
+					
+
 			}
 			
 			switch(TRformat)
@@ -77,14 +100,27 @@ public class RecordGenerator {
 					//System.out.println("TripleGenerator.java:" + InfoboxNode.TRTitleNr);
 				}
 				//System.out.println("TripleGenerator.java:" + tagPre.outputInfo() + "\t" +  GeneratorDistributor.distribute(pageid, predi, objc, null, 2));
-				return GeneratorDistributor.distribute(
-						pageid, predi, objc, InfoboxNode.UpperTitle, InfoboxNode.TRTitleNr);
+				String triple = GeneratorDistributor.distribute(
+						pageid, predi, objc, InfoboxNode.UpperTitle,
+						InfoboxNode.UpperTitleMinus, InfoboxNode.TRTitleNr);
+				if(InfoboxNode.ListTable == true && triple != null &&
+						triple.equals("") == false)
+				{
+					/*
+					info = pageid + "InfoboxNode.ListTable = false" + "\n" +
+							triple;
+					uFunc.Alert(true, c, info);
+					*/
+					return "";
+				}
+				return triple;
 			case 2:
 				
 			}
 		}
 		else if(tags.size() == 1)
 		{
+			InfoboxNode.ListTable = false;
 			String tName = tags.get(0).tag.getTagName().toLowerCase();
 
 			// top img
@@ -109,37 +145,14 @@ public class RecordGenerator {
 			// subTitle
 			if(tName.equals("th"))
 			{
-				InfoboxNode.TRTitleNr ++;
-				String cont = uFunc.Simplify(tags.get(0).tag.toPlainTextString());
-				if(cont.contains("参战方") || cont.contains("交战方"))
-				{
-					//System.out.println("battle:" + pageid);
-					InfoboxNode.BattelInfo = true;
-				}
-				// it's the title in infobox, not a subtitle
-				myElement tUpperTitle = PredStdz.standardize(tags.get(0).tag, pageid);
-				
-				// there are some image or format defin on the top
-				if(tUpperTitle == null || tUpperTitle.context == null)
-				{
-					return null;
-				}
-				// subtitle is not the entity's name
-				String pageTitle = Entity.getTitle(pageid);
-				if(pageTitle != null && tUpperTitle.context.contains(pageTitle))
-					return null;
-				if(Entity.getId(tUpperTitle.context) == PageId)
-					return null;
-				InfoboxNode.UpperTitle = tUpperTitle;
-				/*
-				if(InfoboxNode.TRTitleNr == 1)
-					System.out.println(InfoboxNode.TRTitleNr + "\t" + 
-						pageid + "\t" + TripleGenerator.
-						getStringFromMyelement(InfoboxNode.UpperTitle, true));
-						*/
+				return UpdateUpperTitle(tr, pageid, false);
+			}
+			else if(TagChild.containDescendantTag(tr, "b"))
+			{
+				UpdateUpperTitle(tr, pageid, true);
 			}
 			// content
-			else if(tName.equals("td"))
+			if(tName.equals("td"))
 			{
 				RemoveUpperTitleElement(tags.get(0).tag);
 				if(TagChild.containDescendantTag(tags.get(0).tag, "tr"))
@@ -152,20 +165,68 @@ public class RecordGenerator {
 					myObj objc = ObjeStdz.standardize(new myTag(tags.get(0).tag, true));
 					//System.out.println("TripleGenerator.java:\n\t" + SecondStandardize.GetTriples(pageid, predi, objc));
 					return GeneratorDistributor.distribute(
-							pageid, predi, objc, InfoboxNode.UpperTitle, InfoboxNode.TRTitleNr);
-				}
-				else if(InfoboxNode.TRTitleNr == 1)
-				{
-					//if(InfoboxNode.UpperTitle != null)
-					//	System.out.println("TripleGenerator.java:not a stand sub-title:" + pageid + "\t" + InfoboxNode.UpperTitle.context + "&&&&" + tags.get(0).context);
+							pageid, predi, objc, InfoboxNode.UpperTitle,
+							InfoboxNode.UpperTitleMinus, InfoboxNode.TRTitleNr);
 				}
 			}
 		}
-
+		else{
+			boolean isListTable = true;
+			for(int i = 0 ; i < tags.size(); i ++)
+				if(!(tags.get(i).tag.getTagName().equals("TH") ||
+						TagChild.containDescendantTag(tags.get(i).tag, "b")))
+				{
+					isListTable = false;
+					break;
+				}
+			if(isListTable == true || tags.size() >= 3)
+				InfoboxNode.ListTable = true;
+		}
 		return null;
 	}
 	
 	
+
+	private static String UpdateUpperTitle(Tag tr, int pageid,
+			boolean forMinusSymbolUpperTitle) {
+		// TODO Auto-generated method stub
+		InfoboxNode.TRTitleNr ++;
+		String cont = uFunc.Simplify(tags.get(0).tag.toPlainTextString());
+		if(cont.contains("参战方") || cont.contains("交战方"))
+		{
+			//System.out.println("battle:" + pageid);
+			InfoboxNode.BattelInfo = true;
+		}
+		// it's the title in infobox, not a subtitle
+		myElement tUpperTitle = PredStdz.standardize(tags.get(0).tag, pageid);
+		
+		// there are some image or format defin on the top
+		if(tUpperTitle == null || tUpperTitle.context == null)
+		{
+			return null;
+		}
+		// subtitle is not the entity's name
+		String pageTitle = Entity.getTitle(pageid);
+		if(pageTitle != null && tUpperTitle.context.contains(pageTitle))
+			return null;
+		if(Entity.getId(tUpperTitle.context) == PageId)
+			return null;
+		if(forMinusSymbolUpperTitle == false)
+			InfoboxNode.UpperTitle = tUpperTitle;
+		else{
+			InfoboxNode.UpperTitleMinus = tUpperTitle;
+			/*
+			if(tr.getTagName().equals("TH") == false)
+			{
+				info = "UpperTitle:" + tUpperTitle.context + "\t" + pageid;
+				uFunc.Alert(true, c, info);
+			}*/
+		}
+		
+		return null;
+	}
+
+
 
 	private static void RemoveUpperTitleElement(Tag tag) {
 		// TODO Auto-generated method stub

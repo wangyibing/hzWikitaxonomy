@@ -99,7 +99,7 @@ public class uFunc {
 				.replaceAll("(&#160;)|(&lt;)|(&gt;)", "")
 				.replaceAll("&amp;", "&")
 				//replace the space at the beginning
-				.replaceAll("(?m)^[‡\\*\\- _\\s]+", "")
+				.replaceAll("(?m)^[‡\\*\\ _\\s]+", "")
 				// replace the space at the end
 				.replaceAll("(?m)[ _:：‡\\*\\s]+$", "")
 				// replace two or more spaces with a single space
@@ -598,5 +598,18 @@ public class uFunc {
 		if(result.equals(""))
 			return null;
 		return result;
+	}
+
+
+	public static String GetTime(long minisec) {
+		// TODO Auto-generated method stub
+		if(minisec < 0)
+			return null;
+		long sec = minisec/1000;
+		long min = sec/60;
+		sec = sec % 60;
+		if(min > 0)
+			return min + "min" + sec + "sec";
+		else return sec + "sec";
 	}
 }

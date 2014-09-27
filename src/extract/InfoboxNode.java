@@ -16,11 +16,13 @@ public class InfoboxNode {
 	private String lastTagName;
 	private String lastEndTagName;
 	private Stack<String> tags;
-	
+
 	public static myElement UpperTitle;
+	public static myElement UpperTitleMinus;
 	public static int TRTitleNr;
 	public static boolean BattelInfo;
 	public static boolean infoboxIMG;
+	public static boolean ListTable;
 	
 	private String outputTriples = "";
 	
@@ -30,9 +32,11 @@ public class InfoboxNode {
 		PageId = pageid;
 		tags = new Stack<String>();
 		UpperTitle = null;
+		UpperTitleMinus = null;
 		TRTitleNr = 0;
 		BattelInfo = false;
 		infoboxIMG = false;
+		ListTable =  false;
 		InfoboxVisitor = new NodeVisitor(){
 			public void visitTag(Tag tag){
 				String tagName = tag.getTagName().toLowerCase();
@@ -65,7 +69,7 @@ public class InfoboxNode {
 		if(infobox == null)
 		{
 			//System.out.println("infobox is null, can't get triples!");
-			return null;
+			return "";
 		}
 		//System.out.println("InfoboxNode.java:GetTriples():" + infobox.toHtml() + "InfoboxNode.java:GetTriples end");
 		outputTriples = "";

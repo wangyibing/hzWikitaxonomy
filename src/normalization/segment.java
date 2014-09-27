@@ -25,7 +25,7 @@ public class segment {
 		//ANSJsegment("/home/hanzhe/Public/result_hz/zhwiki/data2/text", ANSJSegPath + "_2");
 		//CalculateWords(ANSJSegPath, WordsListPath);
 		//CalculateEntityFreq(ANSJSegPath);
-		CalculatePrediFreq(ANSJSegPath + "_1");
+		CalculatePrediFreq(ANSJSegPath + "");
 		//RemoveExtraSpace(ANSJSegPath + "_2", ANSJSegPath);
 	}
 

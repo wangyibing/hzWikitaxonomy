@@ -1,8 +1,8 @@
 package extract;
 
+import java.util.HashMap;
 import java.util.Vector;
 
-import normalization.PredExtraction;
 
 import org.htmlparser.Remark;
 import org.htmlparser.Tag;
@@ -19,16 +19,19 @@ import tools.uFunc;
 
 
 public class PageNode {
+	private static NodeVisitor PageNodeVistor;
+	public static HashMap<String, Integer> classAttrName = 
+			new HashMap<String, Integer>();
+	
+	
 	private NodeList Page = null;
 	private int PageId;
-	private static NodeVisitor PageNodeVistor;
 	private boolean TextApprd = false;
 	private boolean inMvContentText = false;
 	private Tag lastEndTag;
 	private String lastEndTagName;
 	private String lastTagName;
 	private String triples = "";
-	private Vector<String> possiTableNames;
 	private Vector<Tag> InfoboxTag;
 	public boolean hasMedalInfo;
 	public String info;
@@ -55,13 +58,6 @@ public class PageNode {
 		}
 		if(triples.equals(""))
 		{
-			/*
-			if(hasMedalInfo == true)
-				return "";
-			info = "FailedExtractPages:" + PageId;
-			if(alert)
-				uFunc.Alert(i , info);
-				*/
 			return "";
 		}
 		else
@@ -77,7 +73,6 @@ public class PageNode {
 		PageId = pageid;
 		triples = "";
 		hasMedalInfo = false;
-		possiTableNames = new Vector<String>();
 		InfoboxTag = new Vector<Tag>();
 		PageNodeVistor = new NodeVisitor(){
 			public void visitTag(Tag tag) {
@@ -139,7 +134,10 @@ public class PageNode {
 				if(tag.getTagName().toLowerCase().equals("table"))
 				{
 					String tableClass = tag.getAttribute("CLASS");
-					if(tableClass != null && tableClass.toLowerCase().contains("navbox"))
+					if(tableClass != null && 
+							(tableClass.toLowerCase().contains("navbox") 
+									//|| tableClass.toLowerCase().contains("wikitable")
+									))
 					{
 						//System.out.println("PageNode.java: nav box!" + pageid + "\n" + tag.toPlainTextString());
 						return;
@@ -164,7 +162,7 @@ public class PageNode {
 					{
 						String possiName = uFunc.ReplaceBoundSpace(
 								tag.getAttribute("CLASS").toLowerCase());
-						possiTableNames.add(possiName);
+						
 						if(InfoboxNameList.isInfoboxName(possiName))
 						{
 							// is infobox
@@ -172,11 +170,25 @@ public class PageNode {
 							{
 							case 1:
 								InfoboxNode infobox = new InfoboxNode(PageId, tag.getChildren());
-								triples += infobox.GetTriples();
+								String triple = infobox.GetTriples();
+								triples += triple;
 								InfoboxTag.add(tag);
+								if(triple.equals("") == false)
+								{
+									int freq = 1;
+									if(classAttrName.containsKey(possiName))
+										freq += classAttrName.remove(possiName);
+									classAttrName.put(possiName, freq);
+								}
+								if(triple.equals("") == false && 
+										(possiName.contains("metadata")
+												//|| possiName.contains("wikitable")
+												))
+								{
+									info = pageid + "\t" + possiName + "\n" + infobox.GetTriples();
+									uFunc.Alert(true, i, info);
+								}
 								break;
-							case 2:
-								PredExtraction.Extract(PageId, tag.getChildren());
 							}
 							
 						}
@@ -190,10 +202,9 @@ public class PageNode {
 						case 1:
 							InfoboxNode infobox = new InfoboxNode(PageId, tag.getChildren());
 							triples += infobox.GetTriples();
+							
 							InfoboxTag.add(tag);
 							break;
-						case 2:
-							PredExtraction.Extract(PageId, tag.getChildren());
 						}
 					}
 					

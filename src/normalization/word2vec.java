@@ -4,8 +4,12 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
+
+import org.ansj.domain.Term;
+import org.ansj.splitWord.analysis.NlpAnalysis;
 
 import com.ansj.vec.Word2VEC;
 import com.ansj.vec.domain.WordEntry;
@@ -25,6 +29,49 @@ public class word2vec {
 	{
 		LoadWord2VecDic();
 	}
+	
+	public static float [] GetW2Vvector(String content)
+	{
+		if(Init() == false)
+			return null;
+		float [] result = null;
+		result = w1.getWordVector(content);
+		if(result == null)
+		{
+			List<Term> words = NlpAnalysis.parse(content);
+			int wNr = 0;
+			for(Term word : words)
+			{
+				float[] wordVec = w1.getWordVector(word.getName());
+				if(wordVec != null){
+					if(result == null)
+						result = wordVec;
+					else{
+						for(int i = 0 ; i < result.length; i ++)
+							result[i] += wordVec[i];
+					}
+					wNr ++;
+				}
+			}
+			if(wNr > 0)
+			{
+				for(int i = 0 ; i < result.length; i ++)
+					result[i] /= wNr;
+			}
+		}
+		return result;
+	}
+
+	/*
+	public static Set<WordEntry> GetSimWords(String content)
+	{
+		if(Init() == false)
+			return null;
+		Set<WordEntry> result = new HashSet<WordEntry>();
+		
+		return result;
+	}
+	*/
 	
 	private static void LoadWord2VecDic() {
 		// TODO Auto-generated method stub
@@ -54,15 +101,6 @@ public class word2vec {
 		uFunc.addFile(output, DictPath);
 	}
 	
-	public static Set<WordEntry> GetSimWords(String content)
-	{
-		if(Init() == false)
-			return null;
-		Set<WordEntry> result = new HashSet<WordEntry>();
-		
-		
-		return result;
-	}
 	
 	private static boolean Init() {
 		// TODO Auto-generated method stub

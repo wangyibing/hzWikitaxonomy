@@ -17,7 +17,7 @@ public class predicate {
 	public static void main(String [] args)
 	{
 		//FindDuplicatePredi(Extract.TriplePath);
-		PredDistribution(Extract.TriplePath + "_9_23_Titlecleaning");
+		PredDistribution(Extract.TriplePath + "2");
 	}
 
 	public static int PredFreq(String content)
@@ -80,6 +80,8 @@ public class predicate {
 		HashMap<String, Integer> PredFreq = new HashMap<String, Integer>();
 		
 		try {
+			String output = "";
+			int outNr = 0;
 			while((oneLine = br.readLine()) != null)
 			{
 				String [] ss = oneLine.split("\t");
@@ -95,10 +97,17 @@ public class predicate {
 						.replaceAll("((?m)^\\[)|((?m)\\]$)|((?m)^ +)|((?m) +$)|", "");
 				if(PredFreq.containsKey(ss[1]))
 					freq += PredFreq.remove(ss[1]);
-				if(ss[1].substring(0, 1).matches("[0-9]"))
-					System.out.println(oneLine);
+				if(ss[1].substring(0, 1).matches("[0-9]") 
+						|| SinglePred.containsKey(ss[1]))
+				{
+					output += oneLine + "\n";
+					outNr ++;
+					//System.out.println(oneLine);
+				}
 				PredFreq.put(ss[1], freq);
 			}
+			uFunc.deleteFile(PrediDistributionPath + ".error");
+			uFunc.addFile(output, PrediDistributionPath + ".error");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

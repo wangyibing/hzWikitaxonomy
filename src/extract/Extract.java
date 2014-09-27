@@ -2,55 +2,60 @@ package extract;
 
 import java.io.File;
 
-import normalization.PredExtraction;
-
 import org.htmlparser.Parser;
 import org.htmlparser.util.NodeList;
 
 import database.InfoboxIdList;
-import extract.predicatetable.PredIdGenerator;
+import database.Page;
 import tools.uFunc;
 
 public class Extract{
 	private static String i = "Extract";
 
-	public static String TriplePath = 
-			"/home/hanzhe/Public/result_hz/zhwiki/Infobox/Triple/Web/triple";
-	public static String testFilesPath = 
-			"/home/hanzhe/Public/result_hz/zhwiki/ZhwikiWebPages/testPages/1";
+	public static String TripleFolder = 
+			"/home/hanzhe/Public/result_hz/zhwiki/Infobox/Triple/Web/";
+	public static String TriplePath = TripleFolder + "Triple";
+	public static String InfoboxIdListPath;
+	public static String PredicateIdPath = 
+			"/home/hanzhe/Public/result_hz/wiki_count2/predicate/predicateId";
 	private static String info = "";
 	public static void main(String [] args)
 	{
 		InfoboxIdList.LoadInfoboxNameList();
+		TriplePath = TripleFolder + "Triple";
+		InfoboxIdListPath = TripleFolder + "InfoboxIdList";
 		uFunc.deleteFile(TriplePath);
+		uFunc.deleteFile(InfoboxIdListPath);
 		InfoboxNr = 0;
 		fileNr = 0;
 		uFunc.deleteFile(uFunc.InfoFolder + "/FailedExtractPages");
-		uFunc.deleteFile(PredExtraction.UpperTitleFeaturePath);
-		uFunc.deleteFile(PredExtraction.LinkFeaturePath);
-		uFunc.deleteFile("data/predicatetable/predicateId");
+		uFunc.deleteFile(PredicateIdPath);
 		uFunc.AlertPath = "data/info/Extraction";
+		long start = System.currentTimeMillis();
+		long t1 = System.currentTimeMillis();
 		for(int i = 1; i <= 1003; i ++)
 		{
-			long t1 = System.currentTimeMillis();
 			ExtractFromLocalFiles(uFunc.WebPagesFolder + "/" + i);
-			long t2 = System.currentTimeMillis();
-			long sec = (t2 - t1)/1000;
-			info = ("folder" + i + " cost: " + sec + "sec;"
-					+ " total inofboxNr:" + InfoboxNr 
-					+ " NewInfoboxNr:" + NewInfoboxNr);
-			uFunc.Alert("Extract", info);
+			if(i % 10 == 0)
+			{
+				long sec = (System.currentTimeMillis() - t1);
+				t1 = System.currentTimeMillis();
+				info = ("folder" + i + " cost: " + uFunc.GetTime(sec) + ";"
+						+ " total inofboxNr:" + InfoboxNr );
+				uFunc.Alert("Extract", info);
+			}
 		}
+		info = "total time:" + (System.currentTimeMillis() - start)/60000 + " min";
+		uFunc.Alert(true, i, info);
+		uFunc.AlertClose();
 		uFunc.addFile(triples, TriplePath);
-		PredIdGenerator.close("data/predicatetable/predicateId");
+		uFunc.SaveHashMap(PageNode.classAttrName, TripleFolder + "ClassAttrName");
 		//uFunc.outputCountStrings(uFunc.InfoFolder + "/predicate/dotCount");
 	}
 
 
 	static int fileNr = 0;
-	private static int testFileNr = 0;
 	private static int InfoboxNr = 0;
-	private static int NewInfoboxNr = 0;
 	private static void ExtractFromLocalFiles(String path) {
 		File folder = new File(path);
 		if(folder.isDirectory() == false)
@@ -58,36 +63,24 @@ public class Extract{
 			uFunc.Alert(i, folder + " not a folder");
 			return;
 		}
-		
+		String idList = "";
 		for(File file : folder.listFiles())
 		{
 			int pageid = Integer.parseInt(file.getName().substring(
 					0, file.getName().indexOf("_")));
+			String title = uFunc.Simplify(Page.getTitles(pageid));
+			if(title != null && (title.contains("列表") 
+					|| title.contains("年表") 
+					|| title.contains("时间表")))
+				continue;
 			////////////////////////////////
-			//if(pageid != 1042704)continue;
+			//if(pageid != 149093)continue;
 			////////////////////////////////
 			fileNr ++;
-			if(testFileNr > 0 && fileNr > testFileNr)
-				break;
 			String result = "";
 			boolean Alert = true;
-			if(InfoboxIdList.InfoboxIdList.containsKey(pageid))
-			{
-				//System.out.println("\t pageid:" + pageid + "\t" + InfoboxNr);
-				result  = ExtractTriplefromOneFile(
-						pageid, file.getAbsolutePath(), Alert);
-			}
-			else
-			{
-				result = ExtractTriplefromOneFile(
-						pageid, file.getAbsolutePath(), !Alert);
-				if(result != null && result.equals("") == false)
-				{
-					NewInfoboxNr ++;
-					uFunc.Alert(false, i, "new infobox:" + pageid);
-				}
-				triples += result;
-			}
+			result  = ExtractTriplefromOneFile(
+					pageid, file.getAbsolutePath(), Alert);
 			if(result != null && result.equals("") == false)
 			{
 				triples += result;
@@ -97,8 +90,10 @@ public class Extract{
 					uFunc.addFile(triples, TriplePath);
 					triples = "";
 				}
+				idList += pageid + "\n";
 			}
 		}
+		uFunc.addFile(idList, InfoboxIdListPath);
 	}
 
 

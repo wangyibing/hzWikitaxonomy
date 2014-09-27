@@ -244,8 +244,12 @@ public class WikitextPredicate {
 			int linkOP = 0;
 			if(objP.contains("->") == true)
 			{
+				if(objP.contains("##"))
+					objP = objP.substring(0, objP.indexOf("##"));
 				contOP = objP.substring(0, objP.indexOf("->"));
-				linkOP = Zhwiki.getPageId(objP.substring(objP.indexOf("->") + 2));
+				String linkString = objP.substring(
+						objP.indexOf("->") + 3, objP.length() - 1);
+				linkOP = Integer.parseInt(linkString);
 				if(linkOP == linkOD)
 					score += 5;
 			}

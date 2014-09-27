@@ -27,6 +27,7 @@ public class PredicateIdSort {
 			{
 				if(oneLine.equals(""))
 					break;
+				
 				long pId = Long.parseLong(oneLine);
 				
 				String info = "";
@@ -34,6 +35,8 @@ public class PredicateIdSort {
 				{
 					if(oneLine.equals(""))
 						break;
+					while(oneLine.endsWith("##"))
+						oneLine = oneLine.substring(0, oneLine.length() - 2);
 					info += oneLine.replaceAll("\t", "\\$\\$\\$") + "####";
 				}
 				output += pId + "\t" + info + "\n";

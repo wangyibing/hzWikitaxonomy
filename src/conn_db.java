@@ -3,6 +3,8 @@
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.print.attribute.standard.PagesPerMinute;
+
 import tools.uFunc;
 import database.Zhwiki;
 import de.tudarmstadt.ukp.wikipedia.api.Category;
@@ -36,11 +38,10 @@ public class conn_db {
 		dbConfig.setLanguage(Language.chinese);
 		// 创建Wikipedia处理对象
 		Wikipedia wiki = new Wikipedia(dbConfig);
-		
 
 		String title = "整块性核心‎‎";
 		
-		Page page = wiki.getPage(130);
+		Page page = wiki.getPage(1261548);
 		System.out.println("Page title           : "+ wiki.existsPage(title) + page.getTitle());
 		System.out.println("Page id              : "+ page.getPageId());
 		System.out.println("getPlainText:        : "+ "\"" + page.getText() + "\"");

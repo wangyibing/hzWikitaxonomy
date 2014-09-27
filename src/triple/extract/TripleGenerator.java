@@ -12,12 +12,13 @@ import triple.standardize.HTMLStdz;
 
 public class TripleGenerator {
 	public static String i = "TripleGenerator";
+	public static String info;
 	public static boolean NoLink = false;
 	public static myElement UpperTitle;
 	public static int PageId;
 
 	public static String GetTriples(int pageid, myObj predi, myObj objc, 
-			myElement upperTitle, int tRTitleNr) {
+			myElement upperTitle, myElement upperTitleMinus, int tRTitleNr) {
 		// TODO Auto-generated method stub
 		String remark = "";
 		UpperTitle = upperTitle;
@@ -32,36 +33,47 @@ public class TripleGenerator {
 				// page's title can't be predicate
 				isPageTitle(pageid, contP))
 		{
-			//System.out.println("SecondStandardize.java:" + "conP empty:pageid:" + pageid);
+			//conP empty
 			return null;
 		}
-		if(uFunc.isPeriod(contP) || contP.contains("〒"))
+		if(uFunc.isPeriod(contP) || contP.contains("〒") || 
+				contP.startsWith("- ") || contP.startsWith("-"))
 		{
 			// not stand sub-title，can't change!
+			if((contP.startsWith("- ") || contP.startsWith("-")))
+			{
+				if(upperTitleMinus != null)
+					upperTitle = upperTitleMinus;
+				/*
+				if(upperTitle != null)
+					info = contP + "\t" + upperTitle.context + "\t" + pageid;
+				else info = contP + "\tnull" + "\t" + pageid;
+				uFunc.Alert(true, i, info);
+				*/
+			}
 			if(tRTitleNr <= 1)
 				return null;
 			if(contP.contains("〒") == false && upperTitle == null)
 				return null;
-			remark += "####" + contP;
+			remark += "##" + contP;
 			contP = getStringFromMyelement(upperTitle, !NoLink);
 			//uFunc.Alert(i, "subTitle is pred:" + contP);
 		}
 		else{
 			contP = getStringFromMyelement(predi.eles.get(0), !NoLink);
 		}
+		if(contP == null) return null;
 		// 郭泓志\t打击：左\t投球：左
 		if(contP.contains(":") == true)
 		{
 			if(objc.eleNr == 1 && 
 					objc.eles.get(0).context.contains(":") == true)
 			{
-				GeneratorDistributor
-					.distribute(contP, PageId, UpperTitle, tRTitleNr);
-				GeneratorDistributor
-					.distribute(objc.eles.get(0).context, PageId, UpperTitle, tRTitleNr);
+				GeneratorDistributor.distribute(contP, PageId,
+						UpperTitle, upperTitleMinus, tRTitleNr);
+				GeneratorDistributor.distribute(objc.eles.get(0).context,
+						PageId, UpperTitle, upperTitleMinus, tRTitleNr);
 			}
-			else if(objc.eleNr > 1)
-				uFunc.Alert(i, "not double \":\":" + pageid + contP);
 			// else is considered
 			return null;
 		}
@@ -69,8 +81,8 @@ public class TripleGenerator {
 			contP = contP.replaceAll("(?m)( |_)?(\\(.+\\))$", "");
 		
 		String result = "";
-		contP = contP.replaceAll("(?m)^(•|\\s)+", "")
-				.replaceAll("((?m)^\\[)|((?m)\\]$)|((?m)^ +)|((?m) +$)|", "");
+		contP = uFunc.ReplaceBoundSpace(
+				contP.replaceAll("(?m)^(•|\\s)+", ""));
 		for(int i = 0; i < objc.eles.size(); i ++)
 		{
 			String contO = getStringFromMyelement(objc.eles.get(i), !NoLink);
@@ -162,7 +174,7 @@ public class TripleGenerator {
 				int pageid = Entity.getId(entity);
 				if(pageid > 0)
 				{
-					return cont + "->" + "[" + Entity.getTitle(pageid) + "]";
+					return cont + "->" + "[" + pageid + "]";
 				}
 			}
 		}

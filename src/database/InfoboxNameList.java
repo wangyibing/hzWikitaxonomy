@@ -29,6 +29,8 @@ public class InfoboxNameList {
 		if(infoboxListInited == false)
 			LoadInfoboxNameList();
 		String n = name.replaceAll("\\s+", "_").toLowerCase();
+		if(n.contains("collaps"))
+			return false;
 		if(n.contains("box") && n.contains("metadata") == false)
 			return true;
 		if(n.equals("toccolours") || n.equals("wikitable"))
