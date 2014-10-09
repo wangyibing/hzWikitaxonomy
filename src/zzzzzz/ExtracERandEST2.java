@@ -22,9 +22,10 @@ public class ExtracERandEST2 {
 	static String info = "";
 	public static void main(String [] args)
 	{
-		String folder = "E:/hanzhe/";
-		String textFileFolder = "E:/Hanzhe/result_hz/Xser/context/";
-		//String folder = "/home/hanzhe/Public/result_hz/Xser/";
+		//String folder = "E:/hanzhe/";
+		//String textFileFolder = "E:/Hanzhe/result_hz/Xser/context/";
+		String folder = "/home/hanzhe/Public/result_hz/Xser/";
+		String textFileFolder = "/home/hanzhe/Public/result_hz/Xser/context/";
 		uFunc.AlertPath = folder + "MappingPairs.tmp2" + ".info";
 		uFunc.deleteFile(uFunc.AlertPath);
 		/*
@@ -38,7 +39,7 @@ public class ExtracERandEST2 {
 		//totalLineNr:5872467
 		uFunc.Alert(true, "totalLineNr", totalLineNr + "");
 				*/
-		Extract(folder + "MappingPairs.tmp2", textFileFolder);
+		Extract(folder + "MappingPairs.tmp2", textFileFolder, folder);
 		uFunc.AlertClose();
 	}
 
@@ -87,7 +88,7 @@ public class ExtracERandEST2 {
 	}
 
 	private static int outNr = 0;
-	public static void Extract(String sourceFile, String textFileFolder)
+	public static void Extract(String sourceFile, String textFileFolder, String folder)
 	{
 		String oneLine = "";
 		int pageid = 0;
@@ -145,7 +146,7 @@ public class ExtracERandEST2 {
 						{
 							String cont = result.getString(1);
 							to1 += System.currentTimeMillis() - t2;
-							lastCont = UnifiedContext(cont, pageid);
+							lastCont = UnifiedContext(cont, pageid, folder);
 							//SaveFile(pageid, PageTitle, lastCont, textFileFolder);
 							PageAdj = "";
 							RegexContent(lastCont, PageTitle, objects, 
@@ -208,31 +209,66 @@ public class ExtracERandEST2 {
 	static long toUnif2 = 0;
 	static long toUnif3 = 0;
 	static Pattern entityPt = Pattern.compile("\\[\\[[^\\]]{1,}\\]\\]"); 
-	private static String[] UnifiedContext(String cont, int pageid) {
+	private static String[] UnifiedContext(String cont, int pageid, String folder) {
 		// TODO Auto-generated method stub
 		long t1 = System.currentTimeMillis();
+		uFunc.deleteFile(folder + "tmp");
 		if(cont == null ||cont.equals(""))
 			return null;
 		String cont2 = "";
 		//System.out.println(cont.length() + "\n" + cont);
-		cont = RemoveNote(cont, pageid);
+		//uFunc.addFile(cont + "\n\n\n\n\n\n\n\n", folder + "tmp");
+		cont = RemoveTag(cont, pageid, "<!--", "-->", 3);
+
+		int level = 0;
+		StringBuffer sb = new StringBuffer();
+		StringBuffer temp = new StringBuffer();
+		for(char c : cont.toCharArray())
+		{
+			if(c == '<' && )
+				level ++;
+			if(level == 0)
+				sb.append(c);
+			else temp.append(c);
+			if(c == '}'){
+				level --;
+				if(level == 0){
+					System.out.println(temp);
+					temp = new StringBuffer();
+				}
+			}
+		}
+		cont2 = sb.toString();
+		
+		Pattern pt = Pattern.compile("<ref(.+?)</ref>");
+		Matcher mt = pt.matcher(cont);
+		while(mt.find())
+			System.out.println(mt.group());
+		cont = cont.replaceAll("<ref (.+?)/>", "");
+		cont = RemoveTag(cont, pageid, "<ref", "</ref>", 6);
 		toUnif += System.currentTimeMillis() - t1;
+		uFunc.addFile(cont + "\n\n\n\n\n\n\n\n", folder + "tmp");
 		//****** Remove templates begin ******
 		int level = 0;
 		StringBuffer sb = new StringBuffer();
+		StringBuffer temp = new StringBuffer();
 		for(char c : cont.toCharArray())
 		{
 			if(c == '{')
 				level ++;
 			if(level == 0)
 				sb.append(c);
-			if(c == '}')
+			else temp.append(c);
+			if(c == '}'){
 				level --;
+				if(level == 0){
+					System.out.println(temp);
+					temp = new StringBuffer();
+				}
+			}
 		}
 		cont2 = sb.toString();
 		//******  Remove templates end  ******
-		uFunc.deleteFile("E:/hanzhe/tmp");
-		uFunc.addFile(cont2 + "\n\n\n\n\n\n\n\n", "E:/hanzhe/tmp");
 		
 		//******Unified entity tag begin*******
 		Matcher m = entityPt.matcher(cont2);
@@ -255,14 +291,6 @@ public class ExtracERandEST2 {
 		if(cont2.equals(tmp) == true)
 			System.out.println("tmp:\n");
 		cont2 = tmp;
-		/*
-		Pattern p = Pattern.compile("(<!--)((.|\n)*?)(-->)");
-		Matcher m = p.matcher(cont2);
-		while(m.find())
-			System.out.println(m.group());
-		*/
-		cont2 = cont2.replaceAll("<ref.*?ref>", "")
-				.replaceAll("<ref [^<]{1,}/>", "");
 		//System.out.println(2);
 		cont2 = cont2.replaceAll("\\'", "").replaceAll("<br/>", "\n");
 		cont2 = cont2.replaceAll("\\. ", "\\.\n").replaceAll("!", "!\n")
@@ -296,38 +324,10 @@ public class ExtracERandEST2 {
 		return cont2.replaceAll("(\n)+", "\n").split("\n");
 	}
 
-	static Pattern notePt = Pattern.compile("<!--");
-	private static String RemoveNote(String cont, int pageid) {
-		// TODO Auto-generated method stub
-		//result = cont.replaceAll("<!--(.|\n)*?-->", "");
-		//int beg = 0;
-		//int end = 0;
-		
-		/* taiman!!!
-		int len = cont.length();
-		for(int i = 0 ; i < len - 3; i ++)
-		{
-			char c = cont.charAt(i);
-			if(c == '<' && cont.charAt(i+1) == '!' 
-					&& cont.charAt(i+2) == '-' && cont.charAt(i+3) == '-'){
-				//beg = i;
-				i = i + 4;
-				while(i < len - 3){
-					if(cont.charAt(i) != '-')
-						i++;
-					else if(cont.charAt(i+1) != '-')
-						i += 2;
-					else if(cont.charAt(i+2) != '>')
-						i ++;
-					else break;
-				}
-				if(i < len - 3)
-					i += 3;
-				//end = i;
-				//System.out.println(cont.substring(beg, end));
-			}
-			else result += cont.charAt(i);
-		}*/
+	private static String RemoveTag(String cont, int pageid,
+			String begRegex, String endRegex, int endSize) {
+		uFunc.deleteFile("data/tmp");
+		Pattern notePt = Pattern.compile(begRegex);
 		int end = 0;
 		Matcher m = notePt.matcher(cont);
 		StringBuffer sb = new StringBuffer();
@@ -335,9 +335,11 @@ public class ExtracERandEST2 {
 		{
 			int start = m.start();
 			String gap = cont.substring(end, start);
-			if(gap != null)
+			if(gap != null){
 				sb.append(gap);
-			end = cont.indexOf("-->") +3;
+				uFunc.addFile("#####:" + gap +"\n", "data/tmp");
+			}
+			end = cont.indexOf(endRegex) + endSize;
 			if(end < 0)
 				break;
 		}
@@ -347,6 +349,7 @@ public class ExtracERandEST2 {
 			if(gap != null)
 				sb.append(gap);
 		}
+		uFunc.addFile("\n\n$$$$$$$$\n\n", "data/tmp");
 		return sb.toString();
 		
 	}
@@ -394,7 +397,7 @@ public class ExtracERandEST2 {
         }
 		
 		//JDBC的URL
-        String url="jdbc:mysql://localhost:3306/enwiki";    
+        String url="jdbc:mysql://172.31.222.76:3306/enwiki";    
         //调用DriverManager对象的getConnection()方法，获得一个Connection对象
         try {
             conn = DriverManager.getConnection(url,    "root","19920326");
