@@ -21,6 +21,7 @@ public class ExtracERandEST2 {
 	{
 		String folder = "/home/hanzhe/Public/result_hz/Xser/";
 		uFunc.AlertPath = folder + "MappingPairstmp2" + ".info";
+		uFunc.deleteFile(uFunc.AlertPath);
 		/*
 		uFunc.deleteFile(folder + "MappingPairs.tmp");
 		uFunc.deleteFile(folder + "MappingPairs.tmp2");
@@ -146,6 +147,10 @@ public class ExtracERandEST2 {
 				{
 					output += PageAdj;
 					outNr  ++;
+					if(outNr % 100 == 0){
+						uFunc.addFile(output, sourceFile + ".out");
+						output = "";
+					}
 					if(outNr % 1000 == 0)
 					{
 						info = "lineNr:" + lineNr + "\t" + "outNr:" + outNr + 
@@ -153,8 +158,6 @@ public class ExtracERandEST2 {
 								" pageid:" + pageid;
 						t1 = System.currentTimeMillis();
 						uFunc.Alert(true, "", info);
-						uFunc.addFile(output, sourceFile + ".out");
-						output = "";
 					}
 				}
 				lastId = pageid;
