@@ -22,6 +22,7 @@ public class PageNode {
 	private static NodeVisitor PageNodeVistor;
 	public static HashMap<String, Integer> classAttrName = 
 			new HashMap<String, Integer>();
+	public static Vector<Tag> InfoboxTables;
 	
 	
 	private NodeList Page = null;
@@ -32,7 +33,6 @@ public class PageNode {
 	private String lastEndTagName;
 	private String lastTagName;
 	private String triples = "";
-	private Vector<Tag> InfoboxTag;
 	public boolean hasMedalInfo;
 	public String info;
 	private String i = "PageNode";
@@ -73,7 +73,8 @@ public class PageNode {
 		PageId = pageid;
 		triples = "";
 		hasMedalInfo = false;
-		InfoboxTag = new Vector<Tag>();
+		InfoboxTables = new Vector<Tag>();
+		
 		PageNodeVistor = new NodeVisitor(){
 			public void visitTag(Tag tag) {
 				if(TextApprd == true)
@@ -133,15 +134,17 @@ public class PageNode {
 				// find infobox
 				if(tag.getTagName().toLowerCase().equals("table"))
 				{
+					String triple = null;
 					String tableClass = tag.getAttribute("CLASS");
 					if(tableClass != null && 
 							(tableClass.toLowerCase().contains("navbox") 
 									//|| tableClass.toLowerCase().contains("wikitable")
 									))
 					{
-						//System.out.println("PageNode.java: nav box!" + pageid + "\n" + tag.toPlainTextString());
+						//nav box!
 						return;
 					}
+					String summary = tag.getAttribute("SUMMARY");
 					// sub-tables in td
 					if(lastTagName != null && lastEndTagName != null && 
 							lastTagName.equals("td") && lastEndTagName.equals("td") == false)
@@ -149,12 +152,11 @@ public class PageNode {
 						uFunc.Alert(i, "PageNode.java: tables in td!" + pageid);
 						return;
 					}
-					for(int i = 0 ; i < InfoboxTag.size(); i ++)
+					for(int i = 0 ; i < InfoboxTables.size(); i ++)
 					{
-						if(dedup.isFather(InfoboxTag.get(i), tag) == true)
+						if(dedup.isFather(InfoboxTables.get(i), tag) == true)
 							return;
 					}
-					//uFunc.OutputTagInfo(tag, "PageNode.java:table:");
 					String tS = uFunc.Simplify(tag.toPlainTextString());
 					if(tS.contains("金牌") || tS.contains("银牌") || tS.contains("铜牌"))
 						hasMedalInfo = true;
@@ -169,10 +171,10 @@ public class PageNode {
 							switch(Mode)
 							{
 							case 1:
+								InfoboxTables.add(tag);
 								InfoboxNode infobox = new InfoboxNode(PageId, tag.getChildren());
-								String triple = infobox.GetTriples();
+								triple = infobox.GetTriples();
 								triples += triple;
-								InfoboxTag.add(tag);
 								if(triple.equals("") == false)
 								{
 									int freq = 1;
@@ -200,12 +202,17 @@ public class PageNode {
 						switch(Mode)
 						{
 						case 1:
+							InfoboxTables.add(tag);
 							InfoboxNode infobox = new InfoboxNode(PageId, tag.getChildren());
-							triples += infobox.GetTriples();
-							
-							InfoboxTag.add(tag);
+							triple= infobox.GetTriples();
+							triples += triple;
 							break;
 						}
+					}
+					if(summary != null && summary.contains("Sidebar"))
+					{
+						info = "summary:\n" + triple;
+						uFunc.Alert(true, i, info);
 					}
 					
 				}

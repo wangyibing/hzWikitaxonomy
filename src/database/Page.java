@@ -89,6 +89,7 @@ public class Page {
 				String tits = "";
 				ss[1] = uFunc.Simplify(ss[1]);
 				oneLine = uFunc.Simplify(oneLine);
+				/*
 				if(ss[1].endsWith("表") && ss[2].equals("title") 
 						&& ss[1].endsWith("列表") == false
 						&& ss[1].endsWith("年表") == false 
@@ -111,7 +112,7 @@ public class Page {
 						freq += last2c.remove(last2);
 					last2c.put(last2, freq);
 					System.out.println(oneLine);
-				}
+				}*/
 				if(Id2TitsMap.containsKey(pageid))
 				{
 					tits = Id2TitsMap.remove(pageid) + "####" + ss[1];

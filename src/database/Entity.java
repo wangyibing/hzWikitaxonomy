@@ -115,7 +115,7 @@ public class Entity {
 							//System.out.println("Entity.java:" + title + ":" + id + ";" + Eid);
 						}
 					}
-					TitsIdMap.put(title, Eid);
+					else TitsIdMap.put(title, Eid);
 				}
 			}
 			System.out.println("TitsIdMap.size:"+ 

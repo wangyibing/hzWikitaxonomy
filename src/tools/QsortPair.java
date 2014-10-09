@@ -95,5 +95,6 @@ public class QsortPair {
 			}
 		}
 		uFunc.addFile(output, targetPath);
+		System.out.println("QsortPair: finished!");
 	}
 }

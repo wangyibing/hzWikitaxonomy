@@ -5,13 +5,15 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.htmlparser.Tag;
+import org.htmlparser.util.NodeList;
+import org.htmlparser.visitors.NodeVisitor;
 
 import com.tag.TagChild;
 import com.tag.myElement;
 import com.tag.myObj;
 import com.tag.myTag;
 
-import database.Entity;
+import database.Page;
 import tools.uFunc;
 import triple.object.ObjeStdz;
 import triple.predicate.PredStdz;
@@ -20,11 +22,29 @@ public class RecordGenerator {
 	private final static String c = "RecordGenerator";
 	private static String info;
 	private static Vector<myTag> tags = new Vector<myTag>();
-	private static int PageId ;
 	public static String GenerFromTR(int pageid, Tag tr)
 	{
+		
 		if(TagChild.containDescendantTag(tr, "img"))
-			InfoboxNode.infoboxIMG = true;
+		{
+			tr.accept(new NodeVisitor(){
+				public void visitTag(Tag tag)
+				{
+					if(tag.getTagName().equals("IMG"))
+					{
+						String width = tag.getAttribute("WIDTH");
+						if(width != null && Integer.parseInt(width) >= 50)
+						{
+							InfoboxNode.UpperTitle = null;
+							InfoboxNode.UpperTitleMinus = null;
+							InfoboxNode.TRTitleNr = 0;
+							InfoboxNode.infoboxIMG = true;
+						}
+					}
+					return;
+				}
+			});
+		}
 		if(Init(tr) == false)
 		{
 			return null;
@@ -35,8 +55,6 @@ public class RecordGenerator {
 			uFunc.OutputTagInfo(tr, "no children");
 			return null;
 		}
-		PageId = pageid;
-		
 		int TRformat = -1;
 		if(tags.size() == 2)
 		{
@@ -89,8 +107,13 @@ public class RecordGenerator {
 			switch(TRformat)
 			{
 			case 1:
-				myObj predi = ObjeStdz.standardize(tagPre);
+				myElement pred = PredStdz.standardize(tagPre, pageid);
+				myObj predi = new myObj();
+				predi.addEle(pred);
 				myObj objc = ObjeStdz.standardize(tagObj);
+				uFunc.Alert(true, c, "");
+				predi.OutputEle("");
+				objc.OutputEle("");
 				// normal triple exist, namely subtitle exist
 				if(InfoboxNode.infoboxIMG == false &&
 						predi != null && objc != null)
@@ -103,14 +126,18 @@ public class RecordGenerator {
 				String triple = GeneratorDistributor.distribute(
 						pageid, predi, objc, InfoboxNode.UpperTitle,
 						InfoboxNode.UpperTitleMinus, InfoboxNode.TRTitleNr);
+				if(tagPre.tag.getAttribute("BGCOLOR") != null)
+				{
+					String bc = tagPre.tag.getAttribute("BGCOLOR");
+					if(bc.equals("#EEEEEE"))
+					{
+						info = "td:#EEEEEE:\n" + triple;
+						uFunc.Alert(true, c, info);
+					}
+				}
 				if(InfoboxNode.ListTable == true && triple != null &&
 						triple.equals("") == false)
 				{
-					/*
-					info = pageid + "InfoboxNode.ListTable = false" + "\n" +
-							triple;
-					uFunc.Alert(true, c, info);
-					*/
 					return "";
 				}
 				return triple;
@@ -129,7 +156,6 @@ public class RecordGenerator {
 			{
 				InfoboxNode.TRTitleNr = 0;
 				InfoboxNode.infoboxIMG = true;
-				InfoboxNode.TRTitleNr = 0;
 				//System.out.println("TripleGenerator.java:IMG" + tags.get(0).tag.toPlainTextString());
 			}
 			
@@ -149,10 +175,10 @@ public class RecordGenerator {
 			}
 			else if(TagChild.containDescendantTag(tr, "b"))
 			{
-				UpdateUpperTitle(tr, pageid, true);
+				UpdateUpperTitle(tr, pageid, false);
 			}
 			// content
-			if(tName.equals("td"))
+			else if(tName.equals("td"))
 			{
 				RemoveUpperTitleElement(tags.get(0).tag);
 				if(TagChild.containDescendantTag(tags.get(0).tag, "tr"))
@@ -163,7 +189,9 @@ public class RecordGenerator {
 					myObj predi = new myObj();
 					predi.addEle(InfoboxNode.UpperTitle);
 					myObj objc = ObjeStdz.standardize(new myTag(tags.get(0).tag, true));
-					//System.out.println("TripleGenerator.java:\n\t" + SecondStandardize.GetTriples(pageid, predi, objc));
+					info = InfoboxNode.UpperTitle.context + "\n" + 
+							GeneratorDistributor.distribute(pageid, predi, objc, InfoboxNode.UpperTitle, InfoboxNode.UpperTitleMinus, InfoboxNode.TRTitleNr);
+					uFunc.Alert(true, c, info);
 					return GeneratorDistributor.distribute(
 							pageid, predi, objc, InfoboxNode.UpperTitle,
 							InfoboxNode.UpperTitleMinus, InfoboxNode.TRTitleNr);
@@ -179,8 +207,10 @@ public class RecordGenerator {
 					isListTable = false;
 					break;
 				}
-			if(isListTable == true || tags.size() >= 3)
+			if(isListTable == true || tags.size() >= 4)
+			{
 				InfoboxNode.ListTable = true;
+			}
 		}
 		return null;
 	}
@@ -189,8 +219,17 @@ public class RecordGenerator {
 
 	private static String UpdateUpperTitle(Tag tr, int pageid,
 			boolean forMinusSymbolUpperTitle) {
-		// TODO Auto-generated method stub
 		InfoboxNode.TRTitleNr ++;
+		String style = tr.getAttribute("STYLE");
+		if(style != null)
+			style = style.toLowerCase();
+		if(style == null || !style.contains("lightsteelblue"))
+		{
+			InfoboxNode.LightBlue = false;
+		}
+		else{
+			InfoboxNode.LightBlue = true;
+		}
 		String cont = uFunc.Simplify(tags.get(0).tag.toPlainTextString());
 		if(cont.contains("参战方") || cont.contains("交战方"))
 		{
@@ -198,7 +237,19 @@ public class RecordGenerator {
 			InfoboxNode.BattelInfo = true;
 		}
 		// it's the title in infobox, not a subtitle
-		myElement tUpperTitle = PredStdz.standardize(tags.get(0).tag, pageid);
+		myElement tUpperTitle;
+		if(tags.get(0).tag.equals(""))
+			tUpperTitle = PredStdz.standardize(tags.get(0).tag, pageid);
+		else{
+			String bold = TagChild.GetChildren(tr, "b");
+			if(bold == null)
+				return null;
+			tUpperTitle = new myElement(bold);
+			info = "b:" + tUpperTitle.context;
+			uFunc.Alert(true, c, info);
+		}
+		info = "UpperTItle:" + tUpperTitle.context;
+		uFunc.Alert(true, c, info);
 		
 		// there are some image or format defin on the top
 		if(tUpperTitle == null || tUpperTitle.context == null)
@@ -206,10 +257,22 @@ public class RecordGenerator {
 			return null;
 		}
 		// subtitle is not the entity's name
-		String pageTitle = Entity.getTitle(pageid);
-		if(pageTitle != null && tUpperTitle.context.contains(pageTitle))
-			return null;
-		if(Entity.getId(tUpperTitle.context) == PageId)
+		String titles = Page.getTitles(pageid);
+		String ut = tUpperTitle.context;
+		boolean isEntityName = false;
+		if(titles != null)
+		{
+			for(String title : titles.split("####"))
+			{
+				if(ut != null && title != null && 
+						(ut.contains(title) || title.contains(ut)))
+				{
+					isEntityName = true;
+					break;
+				}
+			}
+		}
+		if(isEntityName == true)
 			return null;
 		if(forMinusSymbolUpperTitle == false)
 			InfoboxNode.UpperTitle = tUpperTitle;
@@ -229,7 +292,7 @@ public class RecordGenerator {
 
 
 	private static void RemoveUpperTitleElement(Tag tag) {
-		// TODO Auto-generated method stub
+		
 		if(tag.getTagName().equals("DIV"))
 		{
 			InfoboxNode.UpperTitle = null;
@@ -254,7 +317,6 @@ public class RecordGenerator {
 
 
 	private static boolean isNotPredicate(myTag tagPre) {
-		// TODO Auto-generated method stub
 		int eleNr = 0;
 		if(tagPre == null)
 			return true;
@@ -283,7 +345,7 @@ public class RecordGenerator {
 
 
 	private static boolean Init(Tag tr) {
-		// TODO Auto-generated method stub
+		
 		tags.clear();
 
 		if(tr.getTagName().toLowerCase().equals("tr") == false)

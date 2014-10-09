@@ -2,9 +2,17 @@ package com.tag;
 
 import java.util.HashMap;
 import java.util.Vector;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.htmlparser.Node;
+import org.htmlparser.NodeFilter;
+import org.htmlparser.Parser;
 import org.htmlparser.Tag;
 import org.htmlparser.Text;
+import org.htmlparser.filters.TagNameFilter;
+import org.htmlparser.nodes.TagNode;
+import org.htmlparser.util.NodeList;
 import org.htmlparser.util.ParserException;
 import org.htmlparser.visitors.NodeVisitor;
 
@@ -23,10 +31,38 @@ public class TagChild {
 	private static HashMap<Tag, Integer> TagLevel = 
 			new HashMap<Tag, Integer>();
 
-	private static boolean DescendantTag = false;
+	private static boolean isDescendantTag = false;
+	private static Tag DescendantTag = null;
+	private static String info;
+	private static String c = "TagChild";
+	
+
+	public static String GetChildren(Tag tr, String string) {
+		// TODO Auto-generated method stub
+		String regex = "(?<=" + string + ">)\\w+(?=</" + string + ")";
+	 	Pattern p = Pattern.compile(regex);
+	 	Matcher match = p.matcher(tr.toHtml());
+	 	uFunc.Alert(true, c, regex + "\n" + tr.toPlainTextString());
+	 	if(match.find())
+	 		return match.group(0);
+		return null;
+	}
+
+	public static boolean isChild(Tag father, Tag Son)
+	{
+		
+		return 
+				father.getChildren().contains(Son);
+	}
+	public static boolean isChild(Node father, Tag Son)
+	{
+		return 
+				father.getChildren().contains(Son);
+	}
 	public static boolean containDescendantTag(Tag father, String DescendName)
 	{
-		DescendantTag = false;
+		isDescendantTag = false;
+		DescendantTag = null;
 		try {
 			if(father.getChildren() == null)
 				return false;
@@ -34,7 +70,9 @@ public class TagChild {
 				public void visitTag(Tag tag){
 					if(tag.getTagName().toLowerCase().equals(DescendName.toLowerCase()))
 					{
-						DescendantTag = true;
+						isDescendantTag = true;
+						DescendantTag = tag;
+						//System.out.println("tag:" + tag.toHtml());
 						return;
 					}
 					
@@ -43,9 +81,9 @@ public class TagChild {
 		} catch (ParserException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			DescendantTag = false;
+			isDescendantTag = false;
 		}
-		return DescendantTag;
+		return isDescendantTag;
 	}
 	public static Vector<myTag> getChildren(Tag father)
 	{
@@ -58,7 +96,16 @@ public class TagChild {
 				break;
 			String tname = sons.get(0).tag.getTagName().toLowerCase();
 			if(tname.equals("span") || tname.equals("div"))
+			{
+				String className = sons.get(0).tag.getAttribute("CLASS");
+				if(className != null)
+					className = className.toLowerCase();
+				if(className != null && 
+						(className.contains("navbar") ||
+								className.contains("navbox")))
+					return null;
 				tsons = getChildren_old(sons.get(0).tag);
+			}
 			else break;
 		}
 		if(sons!= null && sons.size() < 1)
@@ -168,6 +215,5 @@ public class TagChild {
 		};
 		CdvisInited = true;
 	}
-
 
 }

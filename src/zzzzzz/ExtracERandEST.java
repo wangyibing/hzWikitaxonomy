@@ -7,9 +7,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
+import tools.QsortPair;
 import tools.uFunc;
 
 /**
@@ -20,7 +19,52 @@ import tools.uFunc;
 public class ExtracERandEST {
 	public static void main(String [] args)
 	{
-		Extract("E:/Hanzhe/entityPairs");
+		String folder = "/home/hanzhe/Public/result_hz/Xser/";
+		uFunc.deleteFile(folder + "MappingPairs.tmp");
+		uFunc.deleteFile(folder + "MappingPairs.tmp2");
+		int recordNr = 0;
+		recordNr = QsortByEntityId(folder + "MappingPairs", folder + "MappingPairs.tmp");
+		QsortPair.SortPair(folder + "MappingPairs.tmp", folder + "MappingPairs.tmp2", false,
+				true, recordNr + 100);
+		Extract(folder + "MappingPairs.tmp2");
+	}
+
+	private static int QsortByEntityId(String path, String pathTmp) {
+		// TODO Auto-generated method stub
+		String oneLine = "";
+		BufferedReader br = uFunc.getBufferedReader(path);
+		int Nr = 0;
+		try {
+			while((oneLine = br.readLine()) != null)
+			{
+				String[] ss = oneLine.split("\t");
+				if(ss.length != 4)
+				{
+					System.out.println(oneLine);
+					continue;
+				}
+				int pageid = Integer.parseInt(ss[3]);
+				if(pageid == 12)
+					System.out.println(oneLine);
+				String info = ss[0] + "####" + ss[1] + "####" + ss[2];
+				output += pageid + "\t" + info + "\n";
+				Nr ++;
+				if(Nr % 1000 == 0)
+				{
+					uFunc.addFile(output, pathTmp);
+					output = "";
+				}
+			}
+			System.out.println("data format end, begin qsort!");
+		} catch (NumberFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		uFunc.addFile(output, pathTmp);
+		return Nr;
 	}
 
 	private static int outNr = 0;
@@ -31,51 +75,61 @@ public class ExtracERandEST {
 		BufferedReader br = uFunc.getBufferedReader(sourceFile);
 		connectToMysql();
 		uFunc.deleteFile(sourceFile + ".out");
+		int lineNr = 0;
+		int lastId = 0;
+		String lastCont = "";
 		try {
 			while( (oneLine = br.readLine()) != null)
 			{
+				lineNr ++;
 				String [] ss = oneLine.split("\t");
-				if(ss.length < 4)
+				if(ss.length != 2)
 				{
 					System.out.println(oneLine);
 					continue;
 				}
-				pageid = Integer.parseInt(ss[3]);
-				String number = ss[2];
-				if(number.contains("."))
-					number = number.substring(0, number.indexOf("."));
-				if(number.contains("-"))
-					number = number.substring(0, number.indexOf("-"));
-				int id = Integer.parseInt(number);
-				try {
-					Query.setInt(1, pageid);
-					PageId = pageid;
-					PageTitle = ss[0];
-					Query.addBatch();
-					ResultSet result = Query.executeQuery();
-					if(result.next())
-					{
-						String cont = result.getString(1);
-						PageAdj = "";
-						RegexContent(cont, id);
-						//System.out.println(PageAdj);
-						if(PageAdj.equals("") == false)
-						{
-							output += oneLine + "\n" + PageAdj;
-							outNr  ++;
-							if(outNr % 100 == 0)
-							{
-								System.out.println(outNr);
-								uFunc.addFile(output, sourceFile + ".out");
-								output = "";
-							}
-						}
-					}
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				pageid = Integer.parseInt(ss[0]);
+				String [] sss = ss[1].split("####");
+				if(pageid == lastId)
+				{
+					PageAdj = "";
+					String cont = lastCont;
+					RegexContent(cont, sss[0], sss[2], oneLine);
 				}
+				else{
+					try {
+						Query.setInt(1, pageid);
+						PageId = pageid;
+						PageTitle = ss[0];
+						Query.addBatch();
+						ResultSet result = Query.executeQuery();
+						if(result.next())
+						{
+							String cont = result.getString(1);
+							lastCont = cont;
+							PageAdj = "";
+							RegexContent(cont, sss[0], sss[2], oneLine);
+						}
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				if(PageAdj.equals("") == false)
+				{
+					output += PageAdj;
+					outNr  ++;
+					if(outNr % 100 == 0)
+					{
+						String info = "lineNr:" + lineNr + "\t" + "outNr:" + outNr;
+						System.out.println(info);
+						uFunc.addFile(output, sourceFile + ".out");
+						output = "";
+					}
+				}
+				lastId = pageid;
 			}
+			
 			uFunc.addFile(output, sourceFile + ".out");
 			disconnectToMysql();
 		} catch (NumberFormatException | IOException e) {
@@ -84,60 +138,21 @@ public class ExtracERandEST {
 		}
 	}
 
-	static Pattern p = Pattern.compile("( |\\.|-)(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)( |\\.|-)");
-	static Pattern p2 = Pattern.compile("January|February|March|April|May|June|July"
-			+ "|Augest|September|October|November|December".toLowerCase());
-	static Pattern p3 = Pattern.compile("january|february|march|april|may|june|july"
-			+ "|augest|september|october|november|december|over|"
-			+ "number|chapter|other|however".toLowerCase());
-	
 	static String output = "";
 	static String PageAdj = "";
 	static int PageId;
 	static String PageTitle;
-	private static void RegexContent(String cont, int id) {
+	private static void RegexContent(String cont, String subject,
+			String object, String oneline) {
 		// TODO Auto-generated method stub
-		String cont2 = "";
-		int level = 0;
-		for(char c : cont.toCharArray())
+		for(String sent : cont.split("\n|\\.|\\?|!"))
 		{
-			if(c == '{' || c == '<' || c == '[')
-				level ++;
-			if(level == 0)
-				cont2 = cont2 + c;
-			if(c == '}' || c == '>' || c == ']')
-				level --;
-		}
-		for(String sent : cont2.split("\n|\\.|\\?|!"))
-		{
-			Matcher matcher1 = p.matcher(sent);
-			Matcher matcher2 = p2.matcher(sent);
-			if(sent.contains(id + ""))
+			if(sent.toLowerCase().contains(subject.toLowerCase()) &&
+					sent.toLowerCase().contains((object.toLowerCase())))
 			{
-				String [] ss = sent.split("\\.|\\,|\\:|\\!|\\s");
-				//System.out.println(sent);
-				String adj = "";
-				for(int i = 0 ; i < ss.length ; i ++)
-				{
-					String word = ss[i];
-					if(p3.matcher(word.toLowerCase()).find())
-							continue;
-					if(word.endsWith("er") || word.endsWith("est"))
-						adj += word + ";";
-					else if((word.equals("most") || word.equals("more") ||
-							word.equals("less") || word.equals("least")) && i < ss.length - 1)
-					{
-						adj += word + " " + ss[i + 1] + ";";
-					}
-				}
-				if(adj.equals("") == false)
-				{
-					PageAdj += PageId + "\t" + PageTitle + "\n" + 
-							sent + "\n"  + "\t" + adj + "\n\n";
-				}
-				
-			}
-				
+				PageAdj += PageId + "\t" + PageTitle + "\n" + oneline + "\n"
+						+ sent + "\n\n";
+			}	
 		}
 	}
 

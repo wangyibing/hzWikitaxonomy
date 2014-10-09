@@ -3,6 +3,8 @@ package tools;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map.Entry;
 
 import extract.Extract;
 
@@ -17,7 +19,7 @@ public class predicate {
 	public static void main(String [] args)
 	{
 		//FindDuplicatePredi(Extract.TriplePath);
-		PredDistribution(Extract.TriplePath + "2");
+		PredDistribution(Extract.TriplePath + "");
 	}
 
 	public static int PredFreq(String content)
@@ -62,13 +64,15 @@ public class predicate {
 	private static void PredDistribution(String triplePath) {
 		// TODO Auto-generated method stub
 		String oneLine = "";
+		uFunc.deleteFile(PrediDistributionPath + ".error");
 		HashMap<String, Integer> SinglePred = new HashMap<String, Integer>();
 		BufferedReader br = uFunc.getBufferedReader(PrediDistributionPath);
 		try {
 			while((oneLine = br.readLine()) != null)
 			{
 				String [] ss = oneLine.split("\t");
-				if(ss[1].equals("1"))
+				int t = Integer.parseInt(ss[1]);
+				if(t <= 2)
 					SinglePred.put(ss[0], 1);
 			}
 		} catch (IOException e1) {
@@ -82,31 +86,62 @@ public class predicate {
 		try {
 			String output = "";
 			int outNr = 0;
+			int lastid = 0;
+			int lineNr = 0;
+			HashMap<String, Integer> pagePreds = 
+					new HashMap<String, Integer>();
 			while((oneLine = br.readLine()) != null)
 			{
+				lineNr ++;
+				if(lineNr % 100000 == 0)
+					System.out.println(lineNr);
+				while(oneLine.startsWith("null"))
+					oneLine = oneLine.substring(4);
 				String [] ss = oneLine.split("\t");
 				if(ss.length < 3)
 					continue;
+				int pageid = Integer.parseInt(ss[0]);
 				int freq = 1;
 				ss[1] = uFunc.Simplify(uFunc.ReplaceBoundSpace(ss[1]));
+				if(ss[1].equals(""))
+				{
+					System.out.println(oneLine);
+					continue;
+				}
+				if(pageid != lastid)
+				{
+					Iterator<Entry<String, Integer>> it = 
+							pagePreds.entrySet().iterator();
+					while(it.hasNext())
+					{
+						Entry<String, Integer> next = it.next();
+						int freq1 = 1;
+						if(PredFreq.containsKey(next.getKey()))
+							freq1 += PredFreq.remove(next.getKey());
+						PredFreq.put(next.getKey(), freq1);
+					}
+					pagePreds.clear();
+					pageid = lastid;
+				}
 				if(ss[1].contains("->"))
 					ss[1] = ss[1].substring(0, ss[1].indexOf("->"));
 				if(ss[1].length() > 30)
 					continue;
 				ss[1] = ss[1].replaceAll("(?m)^(•|\\s)+", "")
 						.replaceAll("((?m)^\\[)|((?m)\\]$)|((?m)^ +)|((?m) +$)|", "");
-				if(PredFreq.containsKey(ss[1]))
-					freq += PredFreq.remove(ss[1]);
-				if(ss[1].substring(0, 1).matches("[0-9]") 
-						|| SinglePred.containsKey(ss[1]))
+				if(pagePreds.containsKey(ss[1]) == false)
+					pagePreds.put(ss[1], 1);
+				if(SinglePred.containsKey(ss[1]))
 				{
 					output += oneLine + "\n";
 					outNr ++;
-					//System.out.println(oneLine);
+					if(outNr % 1000 == 0)
+					{
+						uFunc.addFile(output, PrediDistributionPath + ".error");
+						output = "";
+					}
 				}
-				PredFreq.put(ss[1], freq);
 			}
-			uFunc.deleteFile(PrediDistributionPath + ".error");
 			uFunc.addFile(output, PrediDistributionPath + ".error");
 		} catch (IOException e) {
 			e.printStackTrace();

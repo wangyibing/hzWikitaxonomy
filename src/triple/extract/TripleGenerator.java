@@ -5,6 +5,7 @@ import com.tag.myObj;
 
 import database.Entity;
 import database.Page;
+import database.Zhwiki;
 import extract.GeneratorDistributor;
 import tools.URL2UTF8;
 import tools.uFunc;
@@ -37,10 +38,12 @@ public class TripleGenerator {
 			return null;
 		}
 		if(uFunc.isPeriod(contP) || contP.contains("〒") || 
-				contP.startsWith("- ") || contP.startsWith("-"))
+				contP.startsWith("- ") || contP.startsWith("-") ||
+				contP.startsWith("–"))
 		{
 			// not stand sub-title，can't change!
-			if((contP.startsWith("- ") || contP.startsWith("-")))
+			if((contP.startsWith("- ") || contP.startsWith("-")
+					|| contP.startsWith("–")))
 			{
 				if(upperTitleMinus != null)
 					upperTitle = upperTitleMinus;
@@ -82,7 +85,7 @@ public class TripleGenerator {
 		
 		String result = "";
 		contP = uFunc.ReplaceBoundSpace(
-				contP.replaceAll("(?m)^(•|\\s)+", ""));
+				contP.replaceAll("(?m)^[[•\\s\\-]]+", ""));
 		for(int i = 0; i < objc.eles.size(); i ++)
 		{
 			String contO = getStringFromMyelement(objc.eles.get(i), !NoLink);
@@ -171,7 +174,11 @@ public class TripleGenerator {
 						(link.indexOf("/wiki/") + 6));
 				if(entity.contains("#"))
 					entity = entity.substring(0,  entity.indexOf("#"));
-				int pageid = Entity.getId(entity);
+				int pageid = Entity.getId(entity.replaceAll("_", ""));
+				if(pageid <= 0)
+					pageid = Zhwiki.getPageId(entity);
+				//info = "#####link in obj:" + entity + "\t" + pageid;
+				//uFunc.Alert(true, i, info);
 				if(pageid > 0)
 				{
 					return cont + "->" + "[" + pageid + "]";

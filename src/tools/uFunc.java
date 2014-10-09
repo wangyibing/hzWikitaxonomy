@@ -353,7 +353,7 @@ public class uFunc {
 		if(file.isFile() == true && file.getName().endsWith(".java"))
 		{
 			fileNr ++;
-			System.out.println(file.getName());
+			//System.out.println(file.getName());
 			BufferedReader br = uFunc.getBufferedReader(
 					file.getAbsolutePath());
 			try {
@@ -611,5 +611,21 @@ public class uFunc {
 		if(min > 0)
 			return min + "min" + sec + "sec";
 		else return sec + "sec";
+	}
+
+
+	public static int GetLineNr(String path) {
+		// TODO Auto-generated method stub
+		BufferedReader br = uFunc.getBufferedReader(path);
+		int lineNr = 0;
+		String oneLine = "";
+		try {
+			while((oneLine = br.readLine()) != null)
+				lineNr ++;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return lineNr;
 	}
 }

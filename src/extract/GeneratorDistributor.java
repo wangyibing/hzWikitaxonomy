@@ -27,20 +27,45 @@ public class GeneratorDistributor {
 		if(predi.eleNr == objc.eleNr && objc.eleNr > 1)
 		{
 			String oneLine = "";
-			for(int i = 0 ; i < predi.eleNr; i ++)
+			info = "";
+			if(objc.eleNr == 2)
 			{
+				for(int i = 0 ; i < predi.eleNr; i ++)
+				{
+					info += predi.eles.get(i).context + "$$$";
+					myObj tPred = new myObj();
+					tPred.addEle(predi.eles.get(i));
+					myObj tObjc = new myObj();
+					tObjc.addEle(objc.eles.get(i));
+					/////////////////////////////////////////////////////
+					oneLine = Distribute2Multi(
+							pageid, tPred, tObjc, upperTitle, 
+							upperTitleMinus, tRTitleNr);
+					if(oneLine != null)
+						result += oneLine;
+					/////////////////////////////////////////////////////
+				}
+			}
+			else{
 				myObj tPred = new myObj();
-				tPred.addEle(predi.eles.get(i));
 				myObj tObjc = new myObj();
-				tObjc.addEle(objc.eles.get(i));
-				/////////////////////////////////////////////////////
-				oneLine = Distribute2Multi(
+				tPred.addEle(predi.eles.get(0));
+				for(int i = 1 ; i < predi.eleNr; i ++)
+					tObjc.addEle(predi.eles.get(i));
+				result += Distribute2Multi(
 						pageid, tPred, tObjc, upperTitle, 
 						upperTitleMinus, tRTitleNr);
-				if(oneLine != null)
-					result += oneLine;
-				/////////////////////////////////////////////////////
+				tPred = new myObj();
+				tObjc = new myObj();
+				tPred.addEle(objc.eles.get(0));
+				for(int i = 1 ; i < objc.eleNr; i ++)
+					tObjc.addEle(objc.eles.get(i));
+				result += Distribute2Multi(
+						pageid, tPred, tObjc, upperTitle, 
+						upperTitleMinus, tRTitleNr);
+				
 			}
+			//uFunc.Alert(true, i, "\n" + result);
 		}
 		else
 		{
@@ -93,6 +118,11 @@ public class GeneratorDistributor {
 				upperTitle, upperTitleMinus, tRTitleNr);
 		if(result == null || result.equals(""))
 			return null;
+		if(InfoboxNode.LightBlue)
+		{
+			info = "lightblue:\n" + result;
+			uFunc.Alert(true, i, info);
+		}
 		return result;
 	}
 	
@@ -103,7 +133,7 @@ public class GeneratorDistributor {
 		// TODO Auto-generated method stub
 		String result = TripleGenerator.GetTriples(
 				pageid, predi, objc, upperTitle, upperTitleMinus, tRTitleNr);
-		//System.out.println(result);
+		//uFunc.Alert(true, i, result);
 		if(result != null && result.equals("") == false)
 		{
 			PredIdGenerator.generator(pageid, 

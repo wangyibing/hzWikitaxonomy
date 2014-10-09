@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.HashMap;
 
 import database.InfoboxNameList;
 import extract.Extract;
@@ -14,40 +15,37 @@ public class defaule {
 	public static void main(String [] args){
 		String re = uFunc.OutputProjectInfo();
 		System.out.println(re);
-		//OutputTripleNr();
-		System.out.println(uFunc.TraConverter.convert("赵鸿‎‎"));
-	}
-	private static void OutputTripleNr() {
-		// TODO Auto-generated method stub
-		BufferedReader br = uFunc.getBufferedReader(Extract.TriplePath);
-		String oneline = "";
-		int lastId = 0;
-		int Nr = 0;
-		int lineNr = 0;
+		
+		String folder = "/home/hanzhe/Public/result_hz/zhwiki/Infobox/Triple/Web/";
+		BufferedReader br = uFunc.getBufferedReader(folder + "Triple2");
+		String oneLine = "";
+		HashMap<String, Integer> map1 = new HashMap<String, Integer>();
+		HashMap<String, Integer> map2 = new HashMap<String, Integer>();
 		try {
-			while((oneline = br.readLine()) != null)
+			while((oneLine = br.readLine()) != null)
 			{
-				lineNr ++;
-				int pageid = 0;
-				try{
-					pageid = Integer.parseInt(oneline.split("\t")[0]);
-				}catch(Exception e1){
-					System.out.println("error line:" + oneline);
-				}
-				
-				if(pageid != 0 && pageid != lastId)
-				{
-					lastId = pageid;
-					Nr ++;
-				}
+				String pre = oneLine.split("\t")[1];
+				map2.put(pre, 0);
 			}
-		}catch (IOException e) {
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println("infoboxNr:" + Nr);
-		System.out.println("lineNr:" + lineNr);
-		System.out.println("average:" + (double)(1.0*lineNr/Nr) + "\n");
-		
+		br = uFunc.getBufferedReader(folder + "Triple");
+		try {
+			while((oneLine = br.readLine()) != null)
+			{
+				String pre = oneLine.split("\t")[1];
+				if(map1.containsKey(pre) == false)
+				{
+					map1.put(pre, 0);
+					if(map2.containsKey(pre) == false)
+						System.out.println(oneLine);
+				}
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }
