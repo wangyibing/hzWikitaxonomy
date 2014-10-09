@@ -102,15 +102,23 @@ public class ExtracERandEST2 {
 					continue;
 				}
 				pageid = Integer.parseInt(ss[0]);
-				//System.out.println(pageid);
-				if(pageid < 863)
+				if(ss[1].split("####").length < 3){
+					uFunc.Alert(true, "triple not correct", oneLine);
 					continue;
-				String [] sss = ss[1].split("####");
+				}
+				String predicate = ss[1].split("####")[1];
+				PageTitle = ss[1].split("####")[0];
+				String objects = ss[1].split("####")[2];
+				/*
+				if(pageid < 8222)
+					continue;
+				System.out.println(pageid);*/
 				if(pageid == lastId)
 				{
 					//info = (pageid + "\t" + lastId);
 					PageAdj = "";
-					RegexContent(lastCont, sss[0], sss[2], ss[1].replaceAll("####", "\t"));
+					RegexContent(lastCont, PageTitle, objects, 
+							predicate, pageid);
 				}
 				else{
 					//info = (pageid + "\t" + lastId);
@@ -123,81 +131,10 @@ public class ExtracERandEST2 {
 						if(result.next())
 						{
 							String cont = result.getString(1);
-							String cont2 = "";
-							int level = 0;
-							int rLevel = 0;
-							String entity = "";
-							//System.out.println(cont);
-							cont = RemoveNote(cont, pageid);
-							for(char c : cont.toCharArray())
-							{
-								if(c == '{'  || c == '[')
-								{
-									level ++;
-									if(c == '{')
-										rLevel ++;
-									else if(c == '[')
-										entity = "";
-								}
-								if(level == 0)
-									cont2 = cont2 + c;
-								if(rLevel == 0 && (c != '[' ) && (c != ']'))
-									entity += c;
-								if(c == '}'  || c == ']')
-								{
-									level --;
-									if(c == '}' )
-										rLevel --;
-									else if(c == ']' && rLevel == 0)
-									{
-										if(entity.toLowerCase().startsWith("file:"))
-											entity = "";
-										if(entity.contains("|"))
-											entity = entity.substring(0, entity.indexOf("|"));
-										cont2 += entity;
-										entity = "";
-									}
-								}
-							}
-							/*
-							Pattern p = Pattern.compile("(<!--)((.|\n)*?)(-->)");
-							Matcher m = p.matcher(cont2);
-							while(m.find())
-								System.out.println(m.group());
-							*/
-							cont2 = cont2.replaceAll("====.+?====", "").replaceAll("===.+?===", "")
-									.replaceAll("==.+?==", "").replaceAll("<ref.*?/ref>", "")
-									.replaceAll("<ref [^<]{1,}/>", "");
-							cont2 = cont2.replaceAll("'", "").replaceAll("<br */ *>", "\n")
-									.replaceAll("http(s?):.+?( |\n)", "")
-									.replaceAll("Category:.+\n", "\n")
-									//.replaceAll("\\?", "\\?\n")
-									;
-							cont2 = cont2.replaceAll("\\. ", "\\.\n").replaceAll("!", "!\n");
-							// correct wrong split
-							String cont3 = "";
-							char[] chars = cont2.toCharArray();
-							for(int i = 0 ; i < chars.length - 1; i ++)
-							{
-								if(chars[i] == '\n')
-								{
-									if(chars[i+1] >= 'a' && chars[i+1] <= 'z')
-										cont3 += " ";
-									else cont3 += "\n";
-								}
-								else cont3 += chars[i];
-							}
-							cont3 += chars[chars.length - 1];
-							lastCont = cont3.replaceAll("(\n)+", "\n").split("\n");
-							/*
-							for(int i = 0 ; i < lastCont.length; i ++)
-							{
-								lastCont[i] = lastCont[i].replaceAll("^( |\\*|\\-)+", "");
-								System.out.println(lastCont[i]);
-							}*/
-							//System.out.println(cont + "\n#########################\n" + cont2);
+							lastCont = UnifiedContext(cont, pageid);
 							PageAdj = "";
-							RegexContent(lastCont, sss[0], sss[2], ss[1].replaceAll("####", "\t"));
+							RegexContent(lastCont, PageTitle, objects, 
+									predicate, pageid);
 						}
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
@@ -225,13 +162,96 @@ public class ExtracERandEST2 {
 			
 			uFunc.addFile(output, sourceFile + ".out");
 			info = "totalLineNr:" + lineNr + "\t" + "outNr:" + outNr + 
-					"\ntotalCost:" + uFunc.GetTime(System.currentTimeMillis() - t1);
+					"\ntotalCost:" + uFunc.GetTime(System.currentTimeMillis() - startTime);
 			uFunc.Alert(true, "", info);
 			disconnectToMysql();
 		} catch (NumberFormatException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	private static String[] UnifiedContext(String cont, int pageid) {
+		// TODO Auto-generated method stub
+		if(cont == null ||cont.equals(""))
+			return null;
+		String cont2 = "";
+		int level = 0;
+		int rLevel = 0;
+		String entity = "";
+		//System.out.println(cont.length() + "\n" + cont);
+		cont = RemoveNote(cont, pageid);
+		for(char c : cont.toCharArray())
+		{
+			if(c == '{'  || c == '[')
+			{
+				level ++;
+				if(c == '{')
+					rLevel ++;
+				else if(c == '[')
+					entity = "";
+			}
+			if(level == 0)
+				cont2 = cont2 + c;
+			if(rLevel == 0 && (c != '[' ) && (c != ']'))
+				entity += c;
+			if(c == '}'  || c == ']')
+			{
+				level --;
+				if(c == '}' )
+					rLevel --;
+				else if(c == ']' && rLevel == 0)
+				{
+					if(entity.toLowerCase().startsWith("file:"))
+						entity = "";
+					if(entity.contains("|"))
+						entity = entity.substring(0, entity.indexOf("|"));
+					cont2 += entity;
+					entity = "";
+				}
+			}
+		}
+		/*
+		Pattern p = Pattern.compile("(<!--)((.|\n)*?)(-->)");
+		Matcher m = p.matcher(cont2);
+		while(m.find())
+			System.out.println(m.group());
+		*/
+		cont2 = cont2.replaceAll("====.+?====", "").replaceAll("===.+?===", "")
+				.replaceAll("==.+?==", "").replaceAll("<ref.*?/ref>", "")
+				.replaceAll("<ref [^<]{1,}/>", "");
+		//System.out.println(2);
+		cont2 = cont2.replaceAll("'", "").replaceAll("<br */ *>", "\n")
+				.replaceAll("http(s?):.+?( |\n)", "")
+				.replaceAll("Category:.+\n", "\n")
+				.replaceAll("\\?", "\\?\n")
+				;
+		cont2 = cont2.replaceAll("\\. ", "\\.\n").replaceAll("!", "!\n");
+		// correct wrong split
+		String cont3 = "";
+		char[] chars = cont2.toCharArray();
+		for(int i = 0 ; i < chars.length - 1; i ++)
+		{
+			if(chars[i] == '\n')
+			{
+				if(chars[i+1] >= 'a' && chars[i+1] <= 'z')
+					cont3 += " ";
+				else cont3 += "\n";
+			}
+			else cont3 += chars[i];
+		}
+		if(chars.length > 0)
+			cont3 += chars[chars.length - 1];
+		if(cont3 == null || cont3.equals(""))
+			return null;
+		/*
+		for(int i = 0 ; i < lastCont.length; i ++)
+		{
+			lastCont[i] = lastCont[i].replaceAll("^( |\\*|\\-)+", "");
+			System.out.println(lastCont[i]);
+		}*/
+		//System.out.println(cont + "\n#########################\n" + cont2);
+		return cont3.replaceAll("(\n)+", "\n").split("\n");
 	}
 
 	private static String RemoveNote(String cont, int pageid) {
@@ -262,18 +282,24 @@ public class ExtracERandEST2 {
 	static String PageAdj = "";
 	static int PageId;
 	static String PageTitle;
-	private static void RegexContent(String[] sents, String subject,
-			String object, String oneline) {
+	private static void RegexContent(String[] sents, String subjects,
+			String object, String predicate, int pageid) {
 		// TODO Auto-generated method stub
-		if(sents == null)
-			uFunc.Alert(true, "", "sents is null");
+		if(sents == null){
+			uFunc.Alert(true, pageid + "", "sents is empty");
+			return;
+		}
+		String[] subs = subjects.split(",");
 		for(String sent : sents)
-			if(sent.toLowerCase().contains(subject.toLowerCase()) &&
-					sent.toLowerCase().contains((object.toLowerCase())))
-			{
-				PageAdj += PageId + "\t" + PageTitle + "\n" + oneline + "\n"
-						+ sent + "\n\n";
-			}	
+			for(String sub : subs){
+				if(sent.toLowerCase().contains(sub.toLowerCase()) &&
+						sent.toLowerCase().contains((object.toLowerCase())))
+				{
+					PageAdj += PageId + "\t" + subjects + "\t" + predicate + "\t" +
+							object + "\n" + sent + "\n\n";
+					break;
+				}
+			}
 	}
 
 	private static Connection conn;
