@@ -21,10 +21,10 @@ public class ExtracERandEST2 {
 	static String info = "";
 	public static void main(String [] args)
 	{
-		//String folder = "E:/hanzhe/";
-		//String textFileFolder = "E:/Hanzhe/result_hz/Xser/context/";
-		String folder = "/home/hanzhe/Public/result_hz/Xser/";
-		String textFileFolder = "/home/hanzhe/Public/result_hz/Xser/context/";
+		String folder = "E:/hanzhe/";
+		String textFileFolder = "E:/Hanzhe/result_hz/Xser/context/";
+		//String folder = "/home/hanzhe/Public/result_hz/Xser/";
+		//String textFileFolder = "/home/hanzhe/Public/result_hz/Xser/context/";
 		uFunc.AlertPath = folder + "MappingPairs.tmp2" + ".info";
 		uFunc.deleteFile(uFunc.AlertPath);
 		/*
@@ -126,7 +126,7 @@ public class ExtracERandEST2 {
 				PageTitle = ss[1].split("####")[0];
 				String objects = ss[1].split("####")[2];
 				
-				if(pageid < 634)
+				if(pageid < 303)
 					continue;
 				//System.out.println(pageid);
 				if(pageid == lastId)
@@ -167,19 +167,19 @@ public class ExtracERandEST2 {
 						uFunc.addFile(output, sourceFile + ".out");
 						output = "";
 					}
-					if(outNr % 1000 == 0)
+					if(outNr % 10000 == 0)
 					{
 						info = "lineNr:" + lineNr + "\t " + "tripleFindNr:" + 
 								tripleFindNr + "\t outNr" + outNr +  "\n\t cost:" + 
 								uFunc.GetTime(System.currentTimeMillis() - t1) +
-								"\t PageNr:" + PageNr + "\t pageid:" + pageid;
+								"\t PageNr:" + PageNr + "\t pageid:" + pageid + "\n";
 						t1 = System.currentTimeMillis();
 						uFunc.Alert(true, "", info);
 						//System.out.println(to1 + "\t" + toComp + "\t" + toUnif + "\t" + toUnif2 + "\t" + toUnif3);
 					}
 				}
 				lastId = pageid;
-				//break;
+				break;
 			}
 			
 			uFunc.addFile(output, sourceFile + ".out");
@@ -204,12 +204,14 @@ public class ExtracERandEST2 {
 		if(cont == null ||cont.equals(""))
 			return null;
 		String cont2 = "";
-		cont = RemoveTagNoNest(cont, pageid, "<!--", "-->", 3);
-
+		cont = RemoveTag(cont, pageid, "<!--", "-->");
+		uFunc.deleteFile(folder + "tmp");
+		uFunc.addFile(cont, folder + "tmp");
 		int level = 0;
 		StringBuffer sb = new StringBuffer();
 		char [] chars = cont.toCharArray();
-		for(int i = 0 ; i < cont.length() - 5; i ++)
+		int i;
+		for(i = 0 ; i < cont.length() - 5; i ++)
 		{
 			if(level == 0 && chars[i] == '<' && chars[i+1] == 'r'
 					&& chars[i+2] == 'e' && chars[i+3] == 'f'){
@@ -257,26 +259,22 @@ public class ExtracERandEST2 {
 			}
 			else sb.append(chars[i]);
 		}
+		sb.append(cont.substring(i));
 		cont2 = sb.toString();
 		toUnif += System.currentTimeMillis() - t1;
 
 		//****** Remove templates begin ******
 		level = 0;
 		sb = new StringBuffer();
-		StringBuffer temp = new StringBuffer();
 		for(char c : cont2.toCharArray())
 		{
+			System.out.println(c + "\t" + level);
 			if(c == '{')
 				level ++;
 			if(level == 0)
 				sb.append(c);
-			else temp.append(c);
 			if(c == '}'){
 				level --;
-				if(level == 0){
-					//System.out.println(temp);
-					temp = new StringBuffer();
-				}
 			}
 		}
 		cont2 = sb.toString();
@@ -289,9 +287,9 @@ public class ExtracERandEST2 {
 		cont2 = RemoveHttpMark(cont2, pageid);
 		toUnif2 += System.currentTimeMillis() - t1;
 		cont2 = cont2.replaceAll("====.+?====", "").replaceAll("===.+?===", "")
-				.replaceAll("==.+?==", "").replaceAll("\\'", "")
+				.replaceAll("==.+?==", "").replaceAll("\\'\\'", "")
 				.replaceAll("<br/>", "\n");
-		cont2 = cont2.replaceAll("\\. ", "\\.\n").replaceAll("!", "!\n")
+		cont2 = cont2.replaceAll("\\. ", "\\.\n").replaceAll("!", "!\n").replaceAll("\n(!|\\?|\\.)", "$1")
 				.replaceAll("\\?", "\\?\n").replaceAll("e\\.g\\.\n", "e\\.g\\. ");
 		// correct wrong split
 		cont2 = cont2.replaceAll("\n([a-z])", "$1");
@@ -301,8 +299,6 @@ public class ExtracERandEST2 {
 			uFunc.Alert(true, pageid + "", "sents is empty");
 			return null;
 		}
-		//uFunc.deleteFile(folder + "tmp");
-		//uFunc.addFile(cont2, folder + "tmp");
 		return cont2.replaceAll("(\n)+", "\n").split("\n");
 	}
 
@@ -316,14 +312,18 @@ public class ExtracERandEST2 {
 	private static String RemoveHttpMark(String cont2, int pageid2) {
 		// TODO Auto-generated method stub
 		String result;
+		System.out.println(cont2);
 		char [] cs = cont2.toCharArray();
 		int len = cs.length;
+		
 		StringBuffer sb = new StringBuffer();
-		for(int i = 0 ; i < len; i ++)
+		int i ;
+		for(i = 0 ; i < len - 5; i ++)
 		{
 			if(cs[i] == '[' && cs[i+1] == 'h' 
 					&& cs[i+2] == 't' && cs[i+3] == 't'
 					&& cs[i+4] == 'p'){
+				System.out.println(i);
 				int start = i;
 				int end = i+5;
 				while(end < len)
@@ -332,8 +332,9 @@ public class ExtracERandEST2 {
 						break;
 					end ++;
 				}
-				if(end < len - 1){
+				if(end < len){
 					String text = cont2.substring(start + 1, end);
+					System.out.println(cont2.substring(start, end + 1));
 					if(text.contains(" "))
 						text = text.substring(text.indexOf(" ") + 1);
 					else text  = "";
@@ -345,6 +346,7 @@ public class ExtracERandEST2 {
 				sb.append(cs[i]);
 			}
 		}
+		sb.append(cont2.substring(i));
 		result = sb.toString();
 		return result;
 	}
@@ -357,7 +359,7 @@ public class ExtracERandEST2 {
 		char [] cs = cont2.toCharArray();
 		int len = cs.length;
 		StringBuffer sb = new StringBuffer();
-		for(int i = 0 ; i < len; i ++)
+		for(int i = 0 ; i < len - 1; i ++)
 		{
 			if(cs[i] == '[' && cs[i+1] == '['){
 				lastMaxLevel = 1;
@@ -417,13 +419,36 @@ public class ExtracERandEST2 {
 		return result;
 	}
 
-	private static String RemoveTagNoNest(String cont, int pageid,
-			String begRegex, String endString, int endSize) {
-		Pattern notePt = Pattern.compile(begRegex);
+	private static String RemoveTag(String cont, int pageid,
+			String begString, String endString) {
 		int end = 0;
-		Matcher m = notePt.matcher(cont);
+		int start = cont.indexOf(begString);
+		int level = 1;
 		StringBuffer sb = new StringBuffer();
-		boolean in = false;
+		while(true){
+			if(start < 0)
+				break;
+			int nextStart = cont.indexOf(begString, start + begString.length());
+			int nextEnd = cont.indexOf(endString, start + begString.length());
+			if(nextStart > 0 && nextStart < nextEnd)
+			{
+				level ++;
+				start = nextStart;
+			}
+			else if(nextEnd > 0){
+				level --;
+				if(level == 0)
+					sb.append(cont.substring(end, start));
+				end = nextEnd + endString.length();
+				System.out.println(cont.substring(start, end));
+				start = cont.indexOf(begString, end);
+			}
+			else if(nextEnd < 0)
+				break;
+		}
+		if(end < cont.length())
+			sb.append(cont.substring(end));
+		/*
 		while(m.find())
 		{
 			in = true;
@@ -444,7 +469,7 @@ public class ExtracERandEST2 {
 			if(gap != null)
 				sb.append(gap);
 			
-		}
+		}*/
 		return sb.toString();
 		
 	}
@@ -491,7 +516,8 @@ public class ExtracERandEST2 {
         }
 		
 		//JDBC的URL
-        String url="jdbc:mysql://172.31.222.76:3306/enwiki";    
+        //String url="jdbc:mysql://172.31.222.76:3306/enwiki"; 
+        String url="jdbc:mysql://localhost:3306/enwiki";    
         //调用DriverManager对象的getConnection()方法，获得一个Connection对象
         try {
             conn = DriverManager.getConnection(url,    "root","19920326");

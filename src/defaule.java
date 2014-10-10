@@ -15,7 +15,7 @@ public class defaule {
 	public static void main(String [] args){
 		String re = uFunc.OutputProjectInfo();
 		System.out.println(re);
-		System.out.println(("$12").replaceAll("\\$", "\\\\\\$"));
+		System.out.println(("23").substring(0, 0).equals(""));
 		StringBuffer sb = new StringBuffer();
 		sb.append('c');
 		sb.append("wre");
