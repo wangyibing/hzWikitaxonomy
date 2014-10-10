@@ -15,6 +15,7 @@ public class defaule {
 	public static void main(String [] args){
 		String re = uFunc.OutputProjectInfo();
 		System.out.println(re);
+		System.out.println(("$12").replaceAll("\\$", "\\\\\\$"));
 		
 		String folder = "/home/hanzhe/Public/result_hz/zhwiki/Infobox/Triple/Web/";
 		BufferedReader br = uFunc.getBufferedReader(folder + "Triple2");

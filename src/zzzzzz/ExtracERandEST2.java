@@ -43,7 +43,7 @@ public class ExtracERandEST2 {
 		uFunc.AlertClose();
 	}
 
-	private static int QsortByEntityId(String path, String pathTmp) {
+	public static int QsortByEntityId(String path, String pathTmp) {
 		
 		
 		// TODO Auto-generated method stub
@@ -101,7 +101,6 @@ public class ExtracERandEST2 {
 		long startTime = System.currentTimeMillis();
 		long t1 = System.currentTimeMillis();
 		long to1 = 0;
-		long to2 = 0;
 		try {
 			while( (oneLine = br.readLine()) != null)
 			{
@@ -147,7 +146,7 @@ public class ExtracERandEST2 {
 							String cont = result.getString(1);
 							to1 += System.currentTimeMillis() - t2;
 							lastCont = UnifiedContext(cont, pageid, folder);
-							//SaveFile(pageid, PageTitle, lastCont, textFileFolder);
+							
 							PageAdj = "";
 							RegexContent(lastCont, PageTitle, objects, 
 									predicate, pageid);
@@ -166,18 +165,18 @@ public class ExtracERandEST2 {
 						uFunc.addFile(output, sourceFile + ".out");
 						output = "";
 					}
-					if(outNr % 50 == 0)
+					if(outNr % 1000 == 0)
 					{
 						info = "lineNr:" + lineNr + "\t" + "outNr:" + outNr + 
 								"\t cost:" + uFunc.GetTime(System.currentTimeMillis() - t1) +
 								" pageid:" + pageid;
 						t1 = System.currentTimeMillis();
 						uFunc.Alert(true, "", info);
-						System.out.println(to1 + "\t" + toComp + "\t" + toUnif + "\t" + toUnif2 + "\t" + toUnif3);
+						//System.out.println(to1 + "\t" + toComp + "\t" + toUnif + "\t" + toUnif2 + "\t" + toUnif3);
 					}
 				}
 				lastId = pageid;
-				break;
+				//break;
 			}
 			
 			uFunc.addFile(output, sourceFile + ".out");
@@ -200,7 +199,7 @@ public class ExtracERandEST2 {
 				"\\\\|\\?|\\!|\\/|\\<|\\>|\\:|\\*|\\|", "_");
 		String fileName = pageid2 + "_" + pageTitle2;
 		File file= new File(textFileFolder + fileName);
-		if(file.exists() && file.isDirectory() == false)
+		if(file.exists())
 			return;
 		else uFunc.addFile("", file.getAbsolutePath());
 	}
@@ -212,7 +211,6 @@ public class ExtracERandEST2 {
 	private static String[] UnifiedContext(String cont, int pageid, String folder) {
 		// TODO Auto-generated method stub
 		long t1 = System.currentTimeMillis();
-		uFunc.deleteFile(folder + "tmp");
 		if(cont == null ||cont.equals(""))
 			return null;
 		String cont2 = "";
@@ -222,35 +220,65 @@ public class ExtracERandEST2 {
 
 		int level = 0;
 		StringBuffer sb = new StringBuffer();
-		StringBuffer temp = new StringBuffer();
-		for(char c : cont.toCharArray())
+		char [] chars = cont.toCharArray();
+		for(int i = 0 ; i < cont.length() - 5; i ++)
 		{
-			if(c == '<' && )
+			if(level == 0 && chars[i] == '<' && chars[i+1] == 'r'
+					&& chars[i+2] == 'e' && chars[i+3] == 'f'){
+				int end = i + 4;
 				level ++;
-			if(level == 0)
-				sb.append(c);
-			else temp.append(c);
-			if(c == '}'){
-				level --;
-				if(level == 0){
-					System.out.println(temp);
-					temp = new StringBuffer();
+				while(true)
+				{
+					if(end >= cont.length())
+						break;
+					else if(end < cont.length() - 1 && chars[end] == '/' 
+							&& chars[end+1] == '>')
+					{
+						level --;
+						if(level == 0)
+							break;
+						//else System.out.println("s:" + level);
+					}
+					else if(end < cont.length() - 3 && chars[end] == '<'
+							&& chars[end+1] == 'r' && chars[end+2] == 'e' 
+							&& chars[end+3] == 'f'){
+						level ++;
+						//System.out.println("A:" + level);
+						//System.out.println("\t" + cont.substring(i, end+3));
+					}
+					else if(end < cont.length() - 5 && chars[end] == '<'
+							&& chars[end+1] == '/' && chars[end+2] == 'r'
+							&& chars[end+3] == 'e' && chars[end+4] == 'f'
+							&& chars[end+5] == '>')
+					{
+						level --;
+						if(level == 0)
+							break;
+						//else System.out.println(level);
+					}
+					end ++;
+				}
+				if(end < cont.length() && level == 0){
+					//int tmp = i;
+					if(chars[end] == '/')
+						i = end + 1;
+					else if(chars[end] == '<')
+						i = end + 5;
+					//System.out.println(cont.substring(tmp, i+1) + "\n**********************");
 				}
 			}
+			else sb.append(chars[i]);
 		}
 		cont2 = sb.toString();
-		
+		/*
 		Pattern pt = Pattern.compile("<ref(.+?)</ref>");
 		Matcher mt = pt.matcher(cont);
 		while(mt.find())
-			System.out.println(mt.group());
-		cont = cont.replaceAll("<ref (.+?)/>", "");
-		cont = RemoveTag(cont, pageid, "<ref", "</ref>", 6);
+			System.out.println(mt.group());*/
 		toUnif += System.currentTimeMillis() - t1;
-		uFunc.addFile(cont + "\n\n\n\n\n\n\n\n", folder + "tmp");
 		//****** Remove templates begin ******
-		int level = 0;
-		StringBuffer sb = new StringBuffer();
+		level = 0;
+		sb = new StringBuffer();
 		StringBuffer temp = new StringBuffer();
 		for(char c : cont.toCharArray())
 		{
@@ -262,7 +290,7 @@ public class ExtracERandEST2 {
 			if(c == '}'){
 				level --;
 				if(level == 0){
-					System.out.println(temp);
+					//System.out.println(temp);
 					temp = new StringBuffer();
 				}
 			}
@@ -271,6 +299,7 @@ public class ExtracERandEST2 {
 		//******  Remove templates end  ******
 		
 		//******Unified entity tag begin*******
+		cont2 = cont2.replaceAll("\\$", "\\\\\\$");
 		Matcher m = entityPt.matcher(cont2);
 		sb = new StringBuffer();
 		while(m.find()){
@@ -278,26 +307,29 @@ public class ExtracERandEST2 {
 			if(entity.contains("|"))
 				entity = entity.substring(2, entity.indexOf("|"));
 			else entity = entity.substring(2, entity.length() - 2);
-			entity = entity.replaceAll("\\$", "\\\\$");
 			if(entity.toLowerCase().startsWith("file:"))
 				entity = "";
 			m.appendReplacement(sb, entity);
 		}
 		m.appendTail(sb);
 		String tmp = sb.toString();
-		tmp = tmp.replaceAll("\\\\$", "\\$");
+		tmp = tmp.replaceAll("\\\\\\$", "\\$");
 		//****** Unified entity tag end *******
 		toUnif2 += System.currentTimeMillis() - t1;
-		if(cont2.equals(tmp) == true)
-			System.out.println("tmp:\n");
+		/*
+		if(cont2.matches("\\s*") == false &&
+				cont2.equals(tmp) == true)
+			System.out.println("tmp:\n" + tmp + "\ncont2:" + cont2);
+			*/
 		cont2 = tmp;
-		//System.out.println(2);
-		cont2 = cont2.replaceAll("\\'", "").replaceAll("<br/>", "\n");
+		cont2 = cont2.replaceAll("====.+?====", "").replaceAll("===.+?===", "")
+				.replaceAll("==.+?==", "").replaceAll("\\'", "")
+				.replaceAll("<br/>", "\n");
 		cont2 = cont2.replaceAll("\\. ", "\\.\n").replaceAll("!", "!\n")
 				.replaceAll("\\?", "\\?\n");
 		// correct wrong split
 		sb = new StringBuffer();
-		char[] chars = cont2.toCharArray();
+		chars = cont2.toCharArray();
 		for(int i = 0 ; i < chars.length - 1; i ++)
 		{
 			if(chars[i] == '\n')
@@ -313,7 +345,10 @@ public class ExtracERandEST2 {
 			sb.append(chars[chars.length - 1]);
 		cont2 = sb.toString();
 		if(cont2 == null || cont2.equals(""))
+		{
+			uFunc.Alert(true, pageid + "", "sents is empty");
 			return null;
+		}
 		/*
 		for(int i = 0 ; i < lastCont.length; i ++)
 		{
@@ -326,7 +361,6 @@ public class ExtracERandEST2 {
 
 	private static String RemoveTag(String cont, int pageid,
 			String begRegex, String endRegex, int endSize) {
-		uFunc.deleteFile("data/tmp");
 		Pattern notePt = Pattern.compile(begRegex);
 		int end = 0;
 		Matcher m = notePt.matcher(cont);
@@ -337,7 +371,6 @@ public class ExtracERandEST2 {
 			String gap = cont.substring(end, start);
 			if(gap != null){
 				sb.append(gap);
-				uFunc.addFile("#####:" + gap +"\n", "data/tmp");
 			}
 			end = cont.indexOf(endRegex) + endSize;
 			if(end < 0)
@@ -349,7 +382,6 @@ public class ExtracERandEST2 {
 			if(gap != null)
 				sb.append(gap);
 		}
-		uFunc.addFile("\n\n$$$$$$$$\n\n", "data/tmp");
 		return sb.toString();
 		
 	}
@@ -364,8 +396,6 @@ public class ExtracERandEST2 {
 		// TODO Auto-generated method stub
 		long t1 = System.currentTimeMillis();
 		if(sents == null || sents.length == 0){
-			uFunc.Alert(true, pageid + "", "sents is empty");
-			toComp += System.currentTimeMillis() - t1;
 			return;
 		}
 		String[] objs = objects.split(",");
