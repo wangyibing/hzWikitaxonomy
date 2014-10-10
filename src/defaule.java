@@ -16,6 +16,13 @@ public class defaule {
 		String re = uFunc.OutputProjectInfo();
 		System.out.println(re);
 		System.out.println(("$12").replaceAll("\\$", "\\\\\\$"));
+		StringBuffer sb = new StringBuffer();
+		sb.append('c');
+		sb.append("wre");
+		sb.append('.');
+		sb.append(' ');
+		System.out.println(("1\n23\nN2\n\n3\nsdf").replaceAll("\n([a-z])", "$1"));
+		
 		
 		String folder = "/home/hanzhe/Public/result_hz/zhwiki/Infobox/Triple/Web/";
 		BufferedReader br = uFunc.getBufferedReader(folder + "Triple2");

@@ -1,7 +1,6 @@
 package zzzzzz;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -88,19 +87,24 @@ public class ExtracERandEST2 {
 	}
 
 	private static int outNr = 0;
+	private static int PageNr = 0;
+	private static int tripleFindNr = 0;
 	public static void Extract(String sourceFile, String textFileFolder, String folder)
 	{
 		String oneLine = "";
 		int pageid = 0;
+		PageNr = 0;
+		tripleFindNr = 0;
 		BufferedReader br = uFunc.getBufferedReader(sourceFile);
 		connectToMysql();
 		uFunc.deleteFile(sourceFile + ".out");
+		uFunc.deleteFile(folder + "tmp");
 		int lineNr = 0;
 		int lastId = 0;
 		String[] lastCont = null;
 		long startTime = System.currentTimeMillis();
 		long t1 = System.currentTimeMillis();
-		long to1 = 0;
+		//long to1 = 0;
 		try {
 			while( (oneLine = br.readLine()) != null)
 			{
@@ -121,13 +125,12 @@ public class ExtracERandEST2 {
 				String predicate = ss[1].split("####")[1];
 				PageTitle = ss[1].split("####")[0];
 				String objects = ss[1].split("####")[2];
-				/*
-				if(pageid < 8222)
+				
+				if(pageid < 634)
 					continue;
-				System.out.println(pageid);*/
+				//System.out.println(pageid);
 				if(pageid == lastId)
 				{
-					//info = (pageid + "\t" + lastId);
 					PageAdj = "";
 					if(lastCont == null || lastCont.equals(""))
 						continue;
@@ -135,18 +138,17 @@ public class ExtracERandEST2 {
 							predicate, pageid);
 				}
 				else{
-					//info = (pageid + "\t" + lastId);
 					try {
-						long t2 = System.currentTimeMillis();
+						//long t2 = System.currentTimeMillis();
 						Query.setInt(1, pageid);
 						Query.addBatch();
 						ResultSet result = Query.executeQuery();
 						if(result.next())
 						{
 							String cont = result.getString(1);
-							to1 += System.currentTimeMillis() - t2;
+							//to1 += System.currentTimeMillis() - t2;
 							lastCont = UnifiedContext(cont, pageid, folder);
-							
+							PageNr ++;
 							PageAdj = "";
 							RegexContent(lastCont, PageTitle, objects, 
 									predicate, pageid);
@@ -167,9 +169,10 @@ public class ExtracERandEST2 {
 					}
 					if(outNr % 1000 == 0)
 					{
-						info = "lineNr:" + lineNr + "\t" + "outNr:" + outNr + 
-								"\t cost:" + uFunc.GetTime(System.currentTimeMillis() - t1) +
-								" pageid:" + pageid;
+						info = "lineNr:" + lineNr + "\t " + "tripleFindNr:" + 
+								tripleFindNr + "\t outNr" + outNr +  "\n\t cost:" + 
+								uFunc.GetTime(System.currentTimeMillis() - t1) +
+								"\t PageNr:" + PageNr + "\t pageid:" + pageid;
 						t1 = System.currentTimeMillis();
 						uFunc.Alert(true, "", info);
 						//System.out.println(to1 + "\t" + toComp + "\t" + toUnif + "\t" + toUnif2 + "\t" + toUnif3);
@@ -190,19 +193,6 @@ public class ExtracERandEST2 {
 		}
 	}
 
-	private static void SaveFile(int pageid2, String pageTitle2,
-			String[] lastCont, String textFileFolder) {
-		// TODO Auto-generated method stub
-		if(lastCont == null)
-			return;
-		pageTitle2 = pageTitle2.replaceAll(
-				"\\\\|\\?|\\!|\\/|\\<|\\>|\\:|\\*|\\|", "_");
-		String fileName = pageid2 + "_" + pageTitle2;
-		File file= new File(textFileFolder + fileName);
-		if(file.exists())
-			return;
-		else uFunc.addFile("", file.getAbsolutePath());
-	}
 
 	static long toUnif = 0;
 	static long toUnif2 = 0;
@@ -214,9 +204,7 @@ public class ExtracERandEST2 {
 		if(cont == null ||cont.equals(""))
 			return null;
 		String cont2 = "";
-		//System.out.println(cont.length() + "\n" + cont);
-		//uFunc.addFile(cont + "\n\n\n\n\n\n\n\n", folder + "tmp");
-		cont = RemoveTag(cont, pageid, "<!--", "-->", 3);
+		cont = RemoveTagNoNest(cont, pageid, "<!--", "-->", 3);
 
 		int level = 0;
 		StringBuffer sb = new StringBuffer();
@@ -270,17 +258,13 @@ public class ExtracERandEST2 {
 			else sb.append(chars[i]);
 		}
 		cont2 = sb.toString();
-		/*
-		Pattern pt = Pattern.compile("<ref(.+?)</ref>");
-		Matcher mt = pt.matcher(cont);
-		while(mt.find())
-			System.out.println(mt.group());*/
 		toUnif += System.currentTimeMillis() - t1;
+
 		//****** Remove templates begin ******
 		level = 0;
 		sb = new StringBuffer();
 		StringBuffer temp = new StringBuffer();
-		for(char c : cont.toCharArray())
+		for(char c : cont2.toCharArray())
 		{
 			if(c == '{')
 				level ++;
@@ -299,88 +283,167 @@ public class ExtracERandEST2 {
 		//******  Remove templates end  ******
 		
 		//******Unified entity tag begin*******
-		cont2 = cont2.replaceAll("\\$", "\\\\\\$");
-		Matcher m = entityPt.matcher(cont2);
-		sb = new StringBuffer();
-		while(m.find()){
-			String entity = m.group();
-			if(entity.contains("|"))
-				entity = entity.substring(2, entity.indexOf("|"));
-			else entity = entity.substring(2, entity.length() - 2);
-			if(entity.toLowerCase().startsWith("file:"))
-				entity = "";
-			m.appendReplacement(sb, entity);
-		}
-		m.appendTail(sb);
-		String tmp = sb.toString();
-		tmp = tmp.replaceAll("\\\\\\$", "\\$");
+		cont2 = UnifiedEntity(cont2, pageid);
 		//****** Unified entity tag end *******
+
+		cont2 = RemoveHttpMark(cont2, pageid);
 		toUnif2 += System.currentTimeMillis() - t1;
-		/*
-		if(cont2.matches("\\s*") == false &&
-				cont2.equals(tmp) == true)
-			System.out.println("tmp:\n" + tmp + "\ncont2:" + cont2);
-			*/
-		cont2 = tmp;
 		cont2 = cont2.replaceAll("====.+?====", "").replaceAll("===.+?===", "")
 				.replaceAll("==.+?==", "").replaceAll("\\'", "")
 				.replaceAll("<br/>", "\n");
 		cont2 = cont2.replaceAll("\\. ", "\\.\n").replaceAll("!", "!\n")
-				.replaceAll("\\?", "\\?\n");
+				.replaceAll("\\?", "\\?\n").replaceAll("e\\.g\\.\n", "e\\.g\\. ");
 		// correct wrong split
-		sb = new StringBuffer();
-		chars = cont2.toCharArray();
-		for(int i = 0 ; i < chars.length - 1; i ++)
-		{
-			if(chars[i] == '\n')
-			{
-				if(chars[i+1] >= 'a' && chars[i+1] <= 'z')
-					sb.append(' ');
-				else sb.append('\n');
-			}
-			else sb.append(chars[i]);
-		}
+		cont2 = cont2.replaceAll("\n([a-z])", "$1");
 		toUnif3 += System.currentTimeMillis() - t1;
-		if(chars.length > 0)
-			sb.append(chars[chars.length - 1]);
-		cont2 = sb.toString();
 		if(cont2 == null || cont2.equals(""))
 		{
 			uFunc.Alert(true, pageid + "", "sents is empty");
 			return null;
 		}
-		/*
-		for(int i = 0 ; i < lastCont.length; i ++)
-		{
-			lastCont[i] = lastCont[i].replaceAll("^( |\\*|\\-)+", "");
-			System.out.println(lastCont[i]);
-		}*/
-		//System.out.println(cont + "\n#########################\n" + cont2);
+		//uFunc.deleteFile(folder + "tmp");
+		//uFunc.addFile(cont2, folder + "tmp");
 		return cont2.replaceAll("(\n)+", "\n").split("\n");
 	}
 
-	private static String RemoveTag(String cont, int pageid,
-			String begRegex, String endRegex, int endSize) {
+	/**
+	 * [http://www.dced.state.ak.us/dca/commdb/CF_COMDB.htm Alaska Community Database System]
+	 * --> Alaska Community Database System
+	 * @param cont2
+	 * @param pageid2
+	 * @return
+	 */
+	private static String RemoveHttpMark(String cont2, int pageid2) {
+		// TODO Auto-generated method stub
+		String result;
+		char [] cs = cont2.toCharArray();
+		int len = cs.length;
+		StringBuffer sb = new StringBuffer();
+		for(int i = 0 ; i < len; i ++)
+		{
+			if(cs[i] == '[' && cs[i+1] == 'h' 
+					&& cs[i+2] == 't' && cs[i+3] == 't'
+					&& cs[i+4] == 'p'){
+				int start = i;
+				int end = i+5;
+				while(end < len)
+				{
+					if(cs[end] == ']')
+						break;
+					end ++;
+				}
+				if(end < len - 1){
+					String text = cont2.substring(start + 1, end);
+					if(text.contains(" "))
+						text = text.substring(text.indexOf(" ") + 1);
+					else text  = "";
+					sb.append(text);
+					i = end;
+				}
+			}
+			else{
+				sb.append(cs[i]);
+			}
+		}
+		result = sb.toString();
+		return result;
+	}
+
+	private static String UnifiedEntity(String cont2, int pageid) {
+		// TODO Auto-generated method stub
+		String result;
+		int level = 0;
+		int lastMaxLevel = 0;
+		char [] cs = cont2.toCharArray();
+		int len = cs.length;
+		StringBuffer sb = new StringBuffer();
+		for(int i = 0 ; i < len; i ++)
+		{
+			if(cs[i] == '[' && cs[i+1] == '['){
+				lastMaxLevel = 1;
+				level = 1;
+				int start = i;
+				int end = i+2;
+				while(end < len-1)
+				{
+					if(cs[end] == '[' && cs[end+1] =='['){
+						level ++;
+						lastMaxLevel  = lastMaxLevel >= level?
+								lastMaxLevel : level;
+					}
+					else if(cs[end] == ']' && cs[end+1] ==']'){
+						level --;
+						if(level ==0)
+							break;
+					}
+					end ++;
+				}
+				if(end < len - 1){
+					String entity = "";
+					if(lastMaxLevel <= 1){
+						entity = cont2.substring(start, end + 2);
+						
+						if(entity.contains("|"))
+							entity = entity.substring(2, entity.indexOf("|"));
+						else entity = entity.substring(2, entity.length() - 2);
+						while(entity.startsWith(":"))
+							entity = entity.substring(1);
+						String ent = entity.toLowerCase();
+						if(ent.startsWith("file:") || ent.startsWith("image:")
+								|| ent.startsWith("category:") || ent.startsWith("wikt:")
+								|| ent.startsWith("media:"))
+							entity = "";
+						else{
+							int ind = entity.indexOf(":");
+							String mark = entity;
+							while(ind >= 0 && ind < entity.length() - 1
+									&& entity.charAt(ind+1) != ' '){
+								entity = entity.substring(ind + 1);
+								ind = entity.indexOf(":");
+							}
+							//if(entity.contains(":") && entity.contains(": ") == false)
+							//	System.out.println(pageid + " entity:" + entity + "\t" + mark);
+						}
+					}
+					sb.append(entity);
+					i = end + 1;
+				}
+			}
+			else{
+				sb.append(cs[i]);
+			}
+		}
+		result = sb.toString();
+		return result;
+	}
+
+	private static String RemoveTagNoNest(String cont, int pageid,
+			String begRegex, String endString, int endSize) {
 		Pattern notePt = Pattern.compile(begRegex);
 		int end = 0;
 		Matcher m = notePt.matcher(cont);
 		StringBuffer sb = new StringBuffer();
+		boolean in = false;
 		while(m.find())
 		{
+			in = true;
 			int start = m.start();
 			String gap = cont.substring(end, start);
 			if(gap != null){
 				sb.append(gap);
 			}
-			end = cont.indexOf(endRegex) + endSize;
-			if(end < 0)
+			end = cont.indexOf(endString, start) + endSize;
+			if(end < endSize)
 				break;
+			//System.out.println(start + "\t" + end);
+			//System.out.println(cont.substring(start, end));
 		}
-		if(end < cont.length())
+		if(end < cont.length() && (in == false || end >= endSize))
 		{
 			String gap = cont.substring(end);
 			if(gap != null)
 				sb.append(gap);
+			
 		}
 		return sb.toString();
 		
@@ -405,6 +468,7 @@ public class ExtracERandEST2 {
 				{
 					PageAdj += PageId + "\t" + subject + "\t" + predicate + "\t" +
 							obj + "\n" + sent + "\n\n";
+					tripleFindNr ++;
 					break;
 				}
 			}
