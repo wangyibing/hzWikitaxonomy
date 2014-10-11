@@ -145,6 +145,12 @@ public class PageNode {
 						return;
 					}
 					String summary = tag.getAttribute("SUMMARY");
+					if(summary != null && summary.contains("Sidebar"))
+					{
+						/*info = "summary:\n" + triple;
+						uFunc.Alert(true, i, info);*/
+						return;
+					}
 					// sub-tables in td
 					if(lastTagName != null && lastEndTagName != null && 
 							lastTagName.equals("td") && lastEndTagName.equals("td") == false)
@@ -208,11 +214,6 @@ public class PageNode {
 							triples += triple;
 							break;
 						}
-					}
-					if(summary != null && summary.contains("Sidebar"))
-					{
-						info = "summary:\n" + triple;
-						uFunc.Alert(true, i, info);
 					}
 					
 				}

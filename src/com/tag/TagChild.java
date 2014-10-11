@@ -42,7 +42,7 @@ public class TagChild {
 		String regex = "(?<=" + string + ">)\\w+(?=</" + string + ")";
 	 	Pattern p = Pattern.compile(regex);
 	 	Matcher match = p.matcher(tr.toHtml());
-	 	uFunc.Alert(true, c, regex + "\n" + tr.toPlainTextString());
+	 	//uFunc.Alert(true, c, regex + "\n" + tr.toPlainTextString());
 	 	if(match.find())
 	 		return match.group(0);
 		return null;

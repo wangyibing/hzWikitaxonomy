@@ -108,12 +108,22 @@ public class RecordGenerator {
 			{
 			case 1:
 				myElement pred = PredStdz.standardize(tagPre, pageid);
+				if(pred == null){
+					if(InfoboxNode.TRTitleNr > 1 && 
+							InfoboxNode.UpperTitle != null)
+					{
+						pred = InfoboxNode.UpperTitle;
+						//uFunc.Alert(true, c, pageid + "\t" + pred.context + ";" + tagObj.context);
+					}
+					if(pred == null)
+						return "";
+				}
 				myObj predi = new myObj();
 				predi.addEle(pred);
 				myObj objc = ObjeStdz.standardize(tagObj);
-				uFunc.Alert(true, c, "");
+				/*uFunc.Alert(true, c, "");
 				predi.OutputEle("");
-				objc.OutputEle("");
+				objc.OutputEle("");*/
 				// normal triple exist, namely subtitle exist
 				if(InfoboxNode.infoboxIMG == false &&
 						predi != null && objc != null)
@@ -123,18 +133,19 @@ public class RecordGenerator {
 					//System.out.println("TripleGenerator.java:" + InfoboxNode.TRTitleNr);
 				}
 				//System.out.println("TripleGenerator.java:" + tagPre.outputInfo() + "\t" +  GeneratorDistributor.distribute(pageid, predi, objc, null, 2));
-				String triple = GeneratorDistributor.distribute(
-						pageid, predi, objc, InfoboxNode.UpperTitle,
-						InfoboxNode.UpperTitleMinus, InfoboxNode.TRTitleNr);
 				if(tagPre.tag.getAttribute("BGCOLOR") != null)
 				{
 					String bc = tagPre.tag.getAttribute("BGCOLOR");
 					if(bc.equals("#EEEEEE"))
 					{
-						info = "td:#EEEEEE:\n" + triple;
-						uFunc.Alert(true, c, info);
+						/*info = "td:#EEEEEE:\n" + triple;
+						uFunc.Alert(true, c, info);*/
+						return "";
 					}
 				}
+				String triple = GeneratorDistributor.distribute(
+						pageid, predi, objc, InfoboxNode.UpperTitle,
+						InfoboxNode.UpperTitleMinus, InfoboxNode.TRTitleNr);
 				if(InfoboxNode.ListTable == true && triple != null &&
 						triple.equals("") == false)
 				{
@@ -158,13 +169,14 @@ public class RecordGenerator {
 				InfoboxNode.infoboxIMG = true;
 				//System.out.println("TripleGenerator.java:IMG" + tags.get(0).tag.toPlainTextString());
 			}
-			
+
 			String context =uFunc.Simplify(uFunc.ReplaceBoundSpace(
 					tags.get(0).tag.toPlainTextString())); 
 			if(context.matches(".+([\\u4e00-\\u9fa5]| |_)+(\\:|：).+") &&
 					TagChild.containDescendantTag(tags.get(0).tag, "tr") == false)
 			{
 				// single tr containing ":"
+				//uFunc.Alert(true, c, "single tr:" + context);
 				return null;
 				//return GeneratorDistributor.distribute(context, pageid, InfoboxNode.UpperTitle, InfoboxNode.TRTitleNr);
 			}
@@ -189,9 +201,9 @@ public class RecordGenerator {
 					myObj predi = new myObj();
 					predi.addEle(InfoboxNode.UpperTitle);
 					myObj objc = ObjeStdz.standardize(new myTag(tags.get(0).tag, true));
-					info = InfoboxNode.UpperTitle.context + "\n" + 
+					/*info = InfoboxNode.UpperTitle.context + "\n" + 
 							GeneratorDistributor.distribute(pageid, predi, objc, InfoboxNode.UpperTitle, InfoboxNode.UpperTitleMinus, InfoboxNode.TRTitleNr);
-					uFunc.Alert(true, c, info);
+					uFunc.Alert(true, c, info);*/
 					return GeneratorDistributor.distribute(
 							pageid, predi, objc, InfoboxNode.UpperTitle,
 							InfoboxNode.UpperTitleMinus, InfoboxNode.TRTitleNr);
@@ -238,24 +250,24 @@ public class RecordGenerator {
 		}
 		// it's the title in infobox, not a subtitle
 		myElement tUpperTitle;
-		if(tags.get(0).tag.equals(""))
+		if(tags.get(0).tag.getTagName().equals("TH"))
 			tUpperTitle = PredStdz.standardize(tags.get(0).tag, pageid);
 		else{
 			String bold = TagChild.GetChildren(tr, "b");
 			if(bold == null)
 				return null;
 			tUpperTitle = new myElement(bold);
-			info = "b:" + tUpperTitle.context;
-			uFunc.Alert(true, c, info);
 		}
-		info = "UpperTItle:" + tUpperTitle.context;
-		uFunc.Alert(true, c, info);
 		
 		// there are some image or format defin on the top
 		if(tUpperTitle == null || tUpperTitle.context == null)
 		{
 			return null;
 		}
+		/*info = "th:" + tr.toPlainTextString();
+		uFunc.Alert(true, c, info);
+		info = "UpperTItle:" + tUpperTitle.context;
+		uFunc.Alert(true, c, info);*/
 		// subtitle is not the entity's name
 		String titles = Page.getTitles(pageid);
 		String ut = tUpperTitle.context;
@@ -274,8 +286,11 @@ public class RecordGenerator {
 		}
 		if(isEntityName == true)
 			return null;
-		if(forMinusSymbolUpperTitle == false)
+		if(forMinusSymbolUpperTitle == false && 
+				tUpperTitle.context.equals("") == false){
+			//uFunc.Alert(true, c, "UppderTitle:" + ut);
 			InfoboxNode.UpperTitle = tUpperTitle;
+		}
 		else{
 			InfoboxNode.UpperTitleMinus = tUpperTitle;
 			/*

@@ -44,20 +44,22 @@ public class PredAvgExtraction {
 				{
 					pageNr ++;
 					lastPageId = pageId;
-					if(pageNr % 10 == 0)
+					if(pageNr % 10000 == 0)
 					{
-						info = pageNr + " pageNr passed! " + "\tpredicateNr:" + 
+						info = pageNr + " page passed" + "\tpredicateNr:" + 
 								predicateNr + " \tcost:" + 
 								(System.currentTimeMillis() - time)/1000 + "sec ";
 						uFunc.Alert(true, c, info);
-						break;
+						//break;
 					}
 				}
 				myPredicate pred = new myPredicate(predId, pageId);
 				pred.CompleteInfo(br);
+				if(pred.Content == null)
+					continue;
 				predicateNr ++;
-				info = pred.Content + " " + pred.Pageid;
-				System.out.println(info);
+				//info = pred.Content + " " + pred.Pageid;
+				//System.out.println(info);
 				if(Cont2PredseqMap.containsKey(pred.Content))
 				{
 					int id = Cont2PredseqMap.get(pred.Content);
@@ -68,16 +70,18 @@ public class PredAvgExtraction {
 					Cont2PredseqMap.put(pred.Content, predSeq);
 					predicates[predSeq] = new myPredicateAvg(
 							pred.Content, predSeq);
+					// do not get word2vec vector
+					/*
 					if(predicates[predSeq].vectorW2V == null)
 					{
 						info = predSeq + "\t" + pred.Content + "\t" + 
 								" word2vec is null";
 						uFunc.Alert(true, c, info);
-					}
+					}*/
 					predicates[predSeq].addOnePredicate(pred);
 				}
 			}
-			System.out.println("predicate nr:" + predSeq);
+			System.out.println("\ntotal predicate nr:" + predSeq);
 			SavePredicateAvg(tar);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

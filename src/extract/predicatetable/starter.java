@@ -16,9 +16,9 @@ public class starter {
 		String predicateAvg = folder + "PredicateAvg";
 		
 		// 1. generate "predicateId" file along with "web's triple" file
-		//Extract.main(null);
+		Extract.main(null);
 		// 2. sort predicateId table to generate "predicateId.sorted"
-		//PredicateIdSort.Sort(predicate, predicateSorted);
+		PredicateIdSort.Sort(predicate, predicateSorted);
 		// 3. fill the predicate info with dumpsinfo, generate "predicate2"
 		// file
 		WikitextPredicate.Extract(predicateSorted, dumpsTriple, predicate2);
@@ -26,5 +26,6 @@ public class starter {
 		PredNorm.Normalize(predicate2, predicateNormed);
 		// 5. Generate myPredicateAvg from myPredicates
 		PredAvgExtraction.Extract(predicateNormed, predicateAvg);
+		
 	}
 }
