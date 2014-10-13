@@ -14,7 +14,7 @@ import java.util.List;
 public class Mysql {
 	public Connection conn;
 	public PreparedStatement Query = null;
-	public Connection Connect2DB(String dbName) {
+	public Connection Connect2DB(String dbName, String IP) {
 		// TODO Auto-generated method stub
 		try{
             //调用Class.forName()方法加载驱动程序
@@ -24,9 +24,10 @@ public class Mysql {
             System.out.println("找不到MySQL驱动!");
             e1.printStackTrace();
         }
-		
+		if(IP == null)
+			IP = "localhost";
 		//JDBC的URL
-        String url="jdbc:mysql://localhost:3306/" + dbName 
+        String url="jdbc:mysql://IP:3306/" + dbName 
         		+ "?characterEncoding=utf8";    
         //调用DriverManager对象的getConnection()方法，获得一个Connection对象
         try {

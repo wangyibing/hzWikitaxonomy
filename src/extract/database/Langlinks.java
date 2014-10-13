@@ -15,7 +15,7 @@ public class Langlinks {
 		if(tar == null)
 			tar = langlinkPath;
 		Mysql langlinks = new Mysql();
-		langlinks.Connect2DB("wikipedia");
+		langlinks.Connect2DB("wikipedia", null);
 		String sql = "select ll_from, ll_title from langlinks where ll_lang='en' ";
 		try {
 			langlinks.Query = langlinks.conn.prepareStatement(sql);

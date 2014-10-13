@@ -1,0 +1,241 @@
+PageNode:summary:
+
+PageNode:summary:
+
+PageNode:summary:
+
+Extract:folder720 cost: 1min51sec; total inofboxNr:254692
+PageNode:summary:
+
+PageNode:summary:
+
+PageNode:summary:
+
+Extract:folder730 cost: 2min15sec; total inofboxNr:257612
+PageNode:summary:
+
+PageNode:summary:
+
+Extract:folder740 cost: 2min13sec; total inofboxNr:260493
+Extract:folder750 cost: 3min40sec; total inofboxNr:265830
+PageNode:summary:
+
+Extract:folder760 cost: 3min25sec; total inofboxNr:270971
+Extract:folder770 cost: 2min3sec; total inofboxNr:273981
+Extract:folder780 cost: 2min4sec; total inofboxNr:276802
+Extract:folder790 cost: 2min14sec; total inofboxNr:279329
+PageNode:summary:
+
+PageNode:summary:
+
+PageNode:summary:
+
+PageNode:summary:
+
+PageNode:summary:
+
+PageNode:summary:
+
+PageNode:summary:
+
+Extract:folder800 cost: 2min16sec; total inofboxNr:281963
+Extract:folder810 cost: 2min16sec; total inofboxNr:284908
+PageNode:summary:
+
+Extract:folder820 cost: 2min41sec; total inofboxNr:287735
+PageNode:summary:
+
+Extract:folder830 cost: 3min0sec; total inofboxNr:290621
+PageNode:summary:
+
+Extract:folder840 cost: 2min49sec; total inofboxNr:293669
+Extract:folder850 cost: 2min43sec; total inofboxNr:296338
+PageNode:summary:
+
+Extract:folder860 cost: 2min48sec; total inofboxNr:299203
+Extract:folder870 cost: 2min44sec; total inofboxNr:302446
+Extract:folder880 cost: 3min23sec; total inofboxNr:306084
+Extract:folder890 cost: 3min2sec; total inofboxNr:309595
+Extract:folder900 cost: 3min11sec; total inofboxNr:313187
+PageNode:summary:
+
+Extract:folder910 cost: 2min58sec; total inofboxNr:316375
+Extract:/home/hanzhe/Public/result_hz/zhwiki/ZhwikiWebPages/FileSplit/919/749723_忆阻器
+Extract:folder920 cost: 2min47sec; total inofboxNr:319575
+PageNode:summary:
+
+Extract:folder930 cost: 2min42sec; total inofboxNr:322483
+PageNode:summary:
+
+PageNode:summary:
+
+PageNode:summary:
+
+PageNode:summary:
+
+PageNode:summary:
+
+PageNode:summary:
+
+PageNode:summary:
+
+Extract:folder940 cost: 3min31sec; total inofboxNr:325805
+PageNode:summary:
+
+PageNode:summary:
+
+Extract:folder950 cost: 2min49sec; total inofboxNr:328638
+PageNode:summary:
+
+Extract:folder960 cost: 2min35sec; total inofboxNr:331520
+Extract:folder970 cost: 2min58sec; total inofboxNr:334453
+PageNode:summary:
+
+Extract:folder980 cost: 2min56sec; total inofboxNr:337617
+Extract:folder990 cost: 1min39sec; total inofboxNr:339209
+Extract:folder1000 cost: 58sec; total inofboxNr:340167
+Extract:total time:267 min
+:5000 pageNrP;	2760 pageNrD	AlignNr:39768	 cost:50sec
+	triple in P aligned:.63 (27612/43730)
+	triple in D aligned:.62 (39768/64516)
+AlignTime:46499
+:10000 pageNrP;	7071 pageNrD	AlignNr:90398	 cost:48sec
+	triple in P aligned:.70 (64356/92037)
+	triple in D aligned:.61 (90398/149238)
+AlignTime:91911
+:15000 pageNrP;	11515 pageNrD	AlignNr:139415	 cost:41sec
+	triple in P aligned:.72 (100372/138643)
+	triple in D aligned:.61 (139415/230018)
+AlignTime:130220
+:20000 pageNrP;	15976 pageNrD	AlignNr:186747	 cost:38sec
+	triple in P aligned:.73 (135091/184616)
+	triple in D aligned:.61 (186747/308400)
+AlignTime:165571
+:25000 pageNrP;	20058 pageNrD	AlignNr:227588	 cost:30sec
+	triple in P aligned:.73 (164693/226655)
+	triple in D aligned:.61 (227588/374700)
+AlignTime:193673
+:30000 pageNrP;	24408 pageNrD	AlignNr:272338	 cost:33sec
+	triple in P aligned:.73 (197538/270398)
+	triple in D aligned:.61 (272338/448110)
+AlignTime:224337
+:35000 pageNrP;	28900 pageNrD	AlignNr:317230	 cost:27sec
+	triple in P aligned:.74 (234459/315343)
+	triple in D aligned:.62 (317230/512519)
+AlignTime:249245
+:40000 pageNrP;	34045 pageNrD	AlignNr:357163	 cost:27sec
+	triple in P aligned:.75 (263616/353549)
+	triple in D aligned:.61 (357163/588787)
+AlignTime:274288
+:45000 pageNrP;	38567 pageNrD	AlignNr:397676	 cost:31sec
+	triple in P aligned:.75 (293673/393665)
+	triple in D aligned:.60 (397676/660928)
+AlignTime:303254
+:50000 pageNrP;	43248 pageNrD	AlignNr:437944	 cost:30sec
+	triple in P aligned:.74 (323173/434991)
+	triple in D aligned:.59 (437944/737169)
+AlignTime:331148
+:55000 pageNrP;	47913 pageNrD	AlignNr:480482	 cost:32sec
+	triple in P aligned:.74 (354361/476258)
+	triple in D aligned:.59 (480482/814765)
+AlignTime:360893
+:60000 pageNrP;	52514 pageNrD	AlignNr:524327	 cost:32sec
+	triple in P aligned:.74 (385832/517963)
+	triple in D aligned:.59 (524327/891664)
+AlignTime:391192
+:65000 pageNrP;	56844 pageNrD	AlignNr:569774	 cost:30sec
+	triple in P aligned:.74 (419144/563049)
+	triple in D aligned:.59 (569774/961690)
+AlignTime:419039
+:70000 pageNrP;	61243 pageNrD	AlignNr:616756	 cost:35sec
+	triple in P aligned:.74 (453453/610133)
+	triple in D aligned:.60 (616756/1035906)
+AlignTime:451358
+:75000 pageNrP;	65714 pageNrD	AlignNr:658896	 cost:34sec
+	triple in P aligned:.74 (484294/653418)
+	triple in D aligned:.59 (658896/1109731)
+AlignTime:482926
+:80000 pageNrP;	70317 pageNrD	AlignNr:703831	 cost:36sec
+	triple in P aligned:.74 (516584/697217)
+	triple in D aligned:.59 (703831/1184631)
+AlignTime:516941
+:85000 pageNrP;	74691 pageNrD	AlignNr:742928	 cost:28sec
+	triple in P aligned:.74 (545504/738692)
+	triple in D aligned:.59 (742928/1257651)
+AlignTime:543009
+:90000 pageNrP;	79681 pageNrD	AlignNr:785529	 cost:30sec
+	triple in P aligned:.74 (576624/778295)
+	triple in D aligned:.59 (785529/1336968)
+AlignTime:570895
+:95000 pageNrP;	97683 pageNrD	AlignNr:826038	 cost:26sec
+	triple in P aligned:.74 (599966/807897)
+	triple in D aligned:.52 (826038/1579098)
+AlignTime:595502
+:100000 pageNrP;	106318 pageNrD	AlignNr:865084	 cost:28sec
+	triple in P aligned:.74 (626389/843404)
+	triple in D aligned:.51 (865084/1698015)
+AlignTime:621346
+:105000 pageNrP;	113483 pageNrD	AlignNr:904904	 cost:28sec
+	triple in P aligned:.74 (655397/883987)
+	triple in D aligned:.50 (904904/1796649)
+AlignTime:647524
+:110000 pageNrP;	121475 pageNrD	AlignNr:940905	 cost:25sec
+	triple in P aligned:.74 (682276/925859)
+	triple in D aligned:.49 (940905/1904116)
+AlignTime:670411
+:115000 pageNrP;	126195 pageNrD	AlignNr:981949	 cost:30sec
+	triple in P aligned:.74 (713224/968729)
+	triple in D aligned:.50 (981949/1975510)
+AlignTime:698408
+:120000 pageNrP;	130695 pageNrD	AlignNr:1022749	 cost:29sec
+	triple in P aligned:.74 (744078/1010112)
+	triple in D aligned:.50 (1022749/2044476)
+AlignTime:725020
+:125000 pageNrP;	134935 pageNrD	AlignNr:1063316	 cost:31sec
+	triple in P aligned:.74 (774481/1052315)
+	triple in D aligned:.50 (1063316/2114247)
+AlignTime:753523
+:130000 pageNrP;	139403 pageNrD	AlignNr:1101202	 cost:26sec
+	triple in P aligned:.74 (803618/1092245)
+	triple in D aligned:.51 (1101202/2180157)
+AlignTime:777855
+:135000 pageNrP;	143920 pageNrD	AlignNr:1142787	 cost:29sec
+	triple in P aligned:.74 (835419/1135577)
+	triple in D aligned:.51 (1142787/2248601)
+AlignTime:804362
+:140000 pageNrP;	148188 pageNrD	AlignNr:1182207	 cost:27sec
+	triple in P aligned:.73 (865255/1178293)
+	triple in D aligned:.51 (1182207/2316169)
+AlignTime:829529
+:145000 pageNrP;	153177 pageNrD	AlignNr:1223964	 cost:32sec
+	triple in P aligned:.73 (897771/1221702)
+	triple in D aligned:.51 (1223964/2392309)
+AlignTime:859183
+:150000 pageNrP;	157966 pageNrD	AlignNr:1266830	 cost:35sec
+	triple in P aligned:.74 (931304/1264685)
+	triple in D aligned:.51 (1266830/2471265)
+AlignTime:892466
+:155000 pageNrP;	162925 pageNrD	AlignNr:1303485	 cost:25sec
+	triple in P aligned:.74 (958096/1301436)
+	triple in D aligned:.51 (1303485/2545786)
+AlignTime:915298
+:160000 pageNrP;	167045 pageNrD	AlignNr:1338427	 cost:25sec
+	triple in P aligned:.73 (984039/1340605)
+	triple in D aligned:.51 (1338427/2609495)
+AlignTime:938242
+:165000 pageNrP;	170236 pageNrD	AlignNr:1363751	 cost:17sec
+	triple in P aligned:.73 (1002661/1379202)
+	triple in D aligned:.51 (1363751/2655857)
+AlignTime:953594
+:170000 pageNrP;	171204 pageNrD	AlignNr:1369282	 cost:4sec
+	triple in P aligned:.71 (1006980/1420879)
+	triple in D aligned:.51 (1369282/2667865)
+AlignTime:955946
+:175000 pageNrP;	172335 pageNrD	AlignNr:1375301	 cost:4sec
+	triple in P aligned:.69 (1011438/1461459)
+	triple in D aligned:.51 (1375301/2680069)
+AlignTime:958203
+:180000 pageNrP;	174433 pageNrD	AlignNr:1387112	 cost:7sec
+	triple in P aligned:.68 (1020186/1497987)
+	triple in D aligned:.51 (1387112/2702147)
+AlignTime:963256

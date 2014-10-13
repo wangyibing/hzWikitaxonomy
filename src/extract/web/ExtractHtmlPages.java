@@ -7,9 +7,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.HashMap;
 
-import org.htmlparser.NodeFilter;
 import org.htmlparser.Parser;
-import org.htmlparser.visitors.HtmlPage;
 
 import database.Entity;
 import tools.uFunc;
@@ -28,24 +26,27 @@ public class ExtractHtmlPages {
 			"/home/hanzhe/Public/result_hz/zhwiki/ZhwikiWebPages/EntityId_unif.txt";
 	static String FailureIdTitPath = 
 			"/home/hanzhe/Public/result_hz/zhwiki/ZhwikiWebPages/FailureIdTit.txt";
-	static int RestartPageid = 1126608;
+	//static int RestartPageid = 1126608;
 	public static void main(String [] args){
 		//ExtractProcess();
-		AddNewPages(1004);
+		int threadNr = 5;
+		AddNewPages(1004, 1, 5);
 	}
-	private static void AddNewPages(int existFolderNr) {
+	private static void AddNewPages(int existFolderNr, int threadK, int threadNr) {
 		// TODO Auto-generated method stub
 		HashMap<Integer, Integer> extractedPage = 
 				new HashMap<Integer, Integer>();
 		long t1 = System.currentTimeMillis();
+		File  folder = null;
 		for(int i = 1 ; i <= existFolderNr; i ++)
 		{
-			File folder = new File(uFunc.WebPagesFolder + "/" + i);
+			folder = new File(uFunc.WebPagesFolder + "/" + i);
 			if(folder.isDirectory() == false)
 			{
 				System.out.println("not a folder:" + folder.getAbsolutePath());
 				continue;
 			}
+			
 			for(File f : folder.listFiles())
 			{
 				String fName = f.getName();
@@ -62,7 +63,7 @@ public class ExtractHtmlPages {
 				Entity.CanonicalPath_titles);
 		String oneLine = "";
 		int PageNrSize = 0;
-		int newPageNr = 0;
+		int newPageNr = folder == null ? 0 : folder.listFiles().length;
 		int folderNr = existFolderNr;
 		File newFolder = new File(WebPageFolder +"/"+ folderNr);
 		if(!(newFolder.exists() && newFolder.isDirectory()))
@@ -87,7 +88,7 @@ public class ExtractHtmlPages {
 							uFunc.addFile(oneLine + "\n", FailureIdTitPath);
 							continue;
 						}
-						System.out.println(oneLine);
+						//System.out.println(oneLine);
 						String PageTitle = uFunc.Simplify(ss[1]);
 						PageTitle = PageTitle.replaceAll(
 								"\\\\|\\?|\\!|\\/|\\<|\\>|\\:|\\*|\\|", "_");
@@ -127,8 +128,8 @@ public class ExtractHtmlPages {
 								if(newPageNr % 10 == 0){
 									Thread.sleep(100);
 									if(newPageNr % 200 == 0){
-										System.out.println((System.currentTimeMillis() - t2)/1000);
-										t2 = System.currentTimeMillis();
+										//System.out.println((System.currentTimeMillis() - t2)/1000);
+										//t2 = System.currentTimeMillis();
 										Thread.sleep(20000);
 										System.out.println(newPageNr);
 									}
@@ -153,9 +154,10 @@ public class ExtractHtmlPages {
 		}
 		
 	}
+	/*
 	static long t1,t2,t3,t4;
 	static long cost1 = 0, cost2 = 0, cost3 = 0;
-	private static void ExtractProcess() {
+	public static void ExtractProcess() {
 		// TODO Auto-generated method stub
 		t1 = System.currentTimeMillis();
 		BufferedReader br = 
@@ -184,8 +186,8 @@ public class ExtractHtmlPages {
 			if(ss.length < 2)
 				continue;
 			PageId = Integer.parseInt(ss[0]);
-			if(PageId <= RestartPageid)
-				continue;
+			//if(PageId <= RestartPageid)
+			//	continue;
 			if(PageId == 0)
 				continue;
 			//System.out.print("b");
@@ -226,4 +228,5 @@ public class ExtractHtmlPages {
 			}
 		}
 	}
+	*/
 }

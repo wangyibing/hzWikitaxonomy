@@ -23,7 +23,7 @@ public class Triple2Mysql {
 		uFunc.deleteFile(uFunc.AlertPath);
 		
 		Mysql db = new Mysql();
-		db.Connect2DB(dbName);
+		db.Connect2DB(dbName, null);
 		db.execute(CreateSQLFile);
 		
 		String SQL = "insert into " + tableName 

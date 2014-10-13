@@ -515,6 +515,7 @@ public class uFunc {
 	{
 		if(AlertPath != null)
 			uFunc.addFile(AlertOutput, AlertPath);
+		AlertOutput = "";
 	}
 	
 
