@@ -439,28 +439,6 @@ public class ExtracERandEST2 {
 		}
 		if(end < cont.length())
 			sb.append(cont.substring(end));
-		/*
-		while(m.find())
-		{
-			in = true;
-			int start = m.start();
-			String gap = cont.substring(end, start);
-			if(gap != null){
-				sb.append(gap);
-			}
-			end = cont.indexOf(endString, start) + endSize;
-			if(end < endSize)
-				break;
-			//System.out.println(start + "\t" + end);
-			//System.out.println(cont.substring(start, end));
-		}
-		if(end < cont.length() && (in == false || end >= endSize))
-		{
-			String gap = cont.substring(end);
-			if(gap != null)
-				sb.append(gap);
-			
-		}*/
 		return sb.toString();
 		
 	}
@@ -472,15 +450,21 @@ public class ExtracERandEST2 {
 	static long toComp = 0;
 	private static void RegexContent(String[] sents, String subject,
 			String objects, String predicate, int pageid) {
-		// TODO Auto-generated method stub
+		// TODO Auto-generated method stub;
 		long t1 = System.currentTimeMillis();
 		if(sents == null || sents.length == 0){
 			return;
 		}
 		String[] objs = objects.split(",");
+		subject = subject.toLowerCase();
 		for(String sent : sents)
 			for(String obj : objs){
-				if(sent.toLowerCase().contains(obj.toLowerCase()))
+				obj = obj.toLowerCase();
+				boolean equal = obj.equals(subject);
+				if((!equal && sent.toLowerCase().contains(obj.toLowerCase()) &&
+						sent.toLowerCase().contains(subject.toLowerCase()))
+						||
+						(equal && Twice(sent, obj)))
 				{
 					PageAdj += PageId + "\t" + subject + "\t" + predicate + "\t" +
 							obj + "\n" + sent + "\n\n";
@@ -489,6 +473,23 @@ public class ExtracERandEST2 {
 				}
 			}
 		toComp += System.currentTimeMillis() - t1;
+	}
+
+	private static boolean Twice(String sent, String obj) {
+		// TODO Auto-generated method stub
+		int ind;
+		sent = sent.toLowerCase();
+		ind = sent.indexOf(obj);
+		if(ind > 0)
+		{
+			ind = sent.indexOf(obj, ind + obj.length());
+			if(ind > 0)
+			{
+				//System.out.println(obj + "\t" + sent);
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private static Connection conn;
