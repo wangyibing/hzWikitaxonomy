@@ -7,9 +7,6 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.HashMap;
 
-import org.htmlparser.Parser;
-
-import database.Entity;
 import tools.uFunc;
 
 /**
@@ -26,8 +23,9 @@ class ExtractThread_Enwiki implements Runnable{
 		uFunc.deleteFile(uFunc.AlertPath);
 		WebPageFolder = WholeFolder + "FileSplit";
 		FailureIdTitPath = WholeFolder + "FailureIdTit.txt";
+		uFunc.deleteFile(FailureIdTitPath);
 		br = uFunc.getBufferedReader(
-				"/home/hanzhe/Public/result_hz/enwiki/EnwikiIdTitle");
+				"D:/hanzhe/result_hz/enwiki/EnwikiIdTitle");
 		t1 = System.currentTimeMillis();
 		File filesplit = new File(WebPageFolder);
 		if(filesplit.exists() == false ||
@@ -63,7 +61,7 @@ class ExtractThread_Enwiki implements Runnable{
 		t1 = System.currentTimeMillis();
 	}
 	private String WholeFolder = 
-			"/home/hanzhe/Public/result_hz/enwiki/EnwikiWebPages/";
+			"D:/hanzhe/result_hz/enwiki/EnwikiWebPages/";
 	private static String WebPageFolder;
 	private String FailureIdTitPath;
 	private static String c = "ExtractThread";
@@ -86,11 +84,11 @@ class ExtractThread_Enwiki implements Runnable{
 					continue;
 				else
 				{
-					if(newPageNr % 5 == 0)
+					if(newPageNr % 50 == 0)
 						System.out.println(oneLine);
 					String PageTitle = uFunc.Simplify(ss[1]);
 					PageTitle = PageTitle.replaceAll(
-							"\\\\|\\?|\\!|\\/|\\<|\\>|\\:|\\*|\\|", "_");
+							"\\\\|\\?|\\!|\\/|\\<|\\>|\\:|\\*|\\||\"", "_");
 					String outputPath = WebPageFolder +"/"+ existFolderNr 
 							+ "/" +pageid +"_"+ PageTitle;
 					File file = new File(outputPath);
@@ -176,10 +174,11 @@ public class ExtractHtmlPages_MultiThread_Enwiki {
 	//static int RestartPageid = 1126608;
 	public static void main(String [] args){
 		//ExtractProcess();
-		int threadNr = 5;
 		ExtractThread_Enwiki myThr = new ExtractThread_Enwiki();
 		new Thread(myThr, "thread 1").start();
 		new Thread(myThr, "thread 2").start();
 		new Thread(myThr, "thread 3").start();
+		new Thread(myThr, "thread 4").start();
+		new Thread(myThr, "thread 5").start();
 	}
 }

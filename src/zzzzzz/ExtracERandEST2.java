@@ -21,10 +21,10 @@ public class ExtracERandEST2 {
 	static String info = "";
 	public static void main(String [] args)
 	{
-		//String folder = "E:/hanzhe/";
-		//String textFileFolder = "E:/Hanzhe/result_hz/Xser/context/";
-		String folder = "/home/hanzhe/Public/result_hz/Xser/";
-		String textFileFolder = "/home/hanzhe/Public/result_hz/Xser/context/";
+		String folder = "E:/hanzhe/";
+		String textFileFolder = "E:/Hanzhe/result_hz/Xser/context/";
+		//String folder = "/home/hanzhe/Public/result_hz/Xser/";
+		//String textFileFolder = "/home/hanzhe/Public/result_hz/Xser/context/";
 		uFunc.AlertPath = folder + "MappingPairs.tmp2" + ".info";
 		uFunc.deleteFile(uFunc.AlertPath);
 		uFunc.deleteFile(folder + "tmp");
@@ -507,8 +507,8 @@ public class ExtracERandEST2 {
         }
 		
 		//JDBC的URL
-        String url="jdbc:mysql://172.31.222.76:3306/enwiki"; 
-        //String url="jdbc:mysql://localhost:3306/enwiki";    
+        //String url="jdbc:mysql://172.31.222.76:3306/enwiki"; 
+        String url="jdbc:mysql://localhost:3306/enwiki";    
         //调用DriverManager对象的getConnection()方法，获得一个Connection对象
         try {
             conn = DriverManager.getConnection(url,    "root","19920326");
