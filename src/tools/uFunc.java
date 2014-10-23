@@ -127,6 +127,8 @@ public class uFunc {
 			return;
 		try{
 			BufferedReader br = getBufferedReader(filePath);
+			if(br == null)
+				return;
 			String oneLine = "";
 			String result = "";
 			int lineNr = 0;

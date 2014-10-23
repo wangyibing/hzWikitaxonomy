@@ -207,7 +207,18 @@ public class segment {
 			e.printStackTrace();
 		}
 	}
-
+	
+	public static String ANSJsegmentSeg(String content) {
+		// TODO Auto-generated method stub			
+		List<Term> seg = NlpAnalysis.parse(content);
+		String oneOut = "";
+		for(Term term : seg)
+		{
+			oneOut += term.getName() + " ";
+		}
+		return oneOut;
+	}
+	
 	public static void RemoveExtraSpace(String srcPath, String savePath) {
 		// TODO Auto-generated method stub
 		BufferedReader br = uFunc.getBufferedReader(srcPath);

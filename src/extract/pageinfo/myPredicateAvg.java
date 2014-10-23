@@ -325,7 +325,7 @@ public class myPredicateAvg {
 				else return 0;
 			}
 		});
-		for(int i = 0 ; i < pair.size() && i < 250; i ++)
+		for(int i = 0 ; i < pair.size() && i < k && i < 250 ; i ++)
 			result[i] = pair.get(i).getKey();
 		return result;
 	}
@@ -397,8 +397,8 @@ public class myPredicateAvg {
 				formal = false;
 				continue;
 			}
-			int key = Integer.parseInt(pair.split("$$")[0]);
-			double value = Double.parseDouble(pair.split("$$")[1]);
+			int key = Integer.parseInt(pair.split("\\$\\$")[0]);
+			double value = Double.parseDouble(pair.split("\\$\\$")[1]);
 			map.put(key, value);
 		}
 		return formal;
@@ -411,8 +411,8 @@ public class myPredicateAvg {
 		{
 			if(pair.contains("$$") == false)
 				return false;
-			String key = pair.split("$$")[0];
-			double value = Double.parseDouble(pair.split("$$")[1]);
+			String key = pair.split("\\$\\$")[0];
+			double value = Double.parseDouble(pair.split("\\$\\$")[1]);
 			map.put(key, value);
 		}
 		return true;

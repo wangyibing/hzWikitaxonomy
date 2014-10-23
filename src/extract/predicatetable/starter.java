@@ -14,7 +14,7 @@ public class starter {
 		String predicateNormed = folder + "predicateId.Normed";
 		String dumpsTriple = folder + "dumpsTriples";
 		String predicateAvg = folder + "PredicateAvg";
-		
+		/*
 		// 1. generate "predicateId" file along with "web's triple" file
 		Extract.main(null);
 		// 2. sort predicateId table to generate "predicateId.sorted"
@@ -25,7 +25,8 @@ public class starter {
 		// 4. replace some predicates' content with their UpperTitles
 		PredNorm.Normalize(predicate2, predicateNormed);
 		// 5. Generate myPredicateAvg from myPredicates
-		PredAvgExtraction.Extract(predicateNormed, predicateAvg);
-		
+		PredAvgExtraction.Extract(predicateNormed, predicateAvg);*/
+		// 6.
+		GenerateTestCase.start();
 	}
 }
