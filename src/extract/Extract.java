@@ -33,7 +33,7 @@ public class Extract{
 		uFunc.AlertPath = "data/info/Extraction";
 		long start = System.currentTimeMillis();
 		long t1 = System.currentTimeMillis();
-		for(int i = 1; i <= 1003; i ++)
+		for(int i = 500; i <= 700; i ++)
 		{
 			ExtractFromLocalFiles(uFunc.WebPagesFolder + "/" + i);
 			if(i % 10 == 0)
@@ -75,7 +75,7 @@ public class Extract{
 					|| title.endsWith("系表")))
 				continue;
 			////////////////////////////////
-			//if(pageid != 1024546 && pageid != 1364464)continue;
+			if(pageid != 3184078 && pageid != 3202797)continue;
 			////////////////////////////////
 			fileNr ++;
 			String result = "";

@@ -135,9 +135,14 @@ public class TripleGenerator {
 		// TODO Auto-generated method stub
 		if(predi == null)
 			return null;
-		String cont = predi.context;
+		String cont = predi.context.replaceAll("\\{\\{\\{[^\\}]{1,}\\}\\}\\}", "")
+				.replaceAll("[0-9]{1,}px", "");
+		if(cont.contains("←") || cont.contains("↙") 
+			|| cont.contains("◄") || cont.contains("►")) 
+			return null;
 		cont = uFunc.ReplaceBoundSpace(
 				HTMLStdz.standardize(cont));
+		cont = RePlaceSpaceInside(cont);
 		if(cont.contains("•"))
 		{
 			if(UpperTitle != null)
@@ -186,6 +191,27 @@ public class TripleGenerator {
 			}
 		}
 		return cont;
+	}
+
+	private static String RePlaceSpaceInside(String cont) {
+		// TODO Auto-generated method stub
+		if(cont == null || cont.equals(""))
+			return "";
+		char [] cs = cont.toCharArray();
+		StringBuffer sb = new StringBuffer();
+		sb.append(cs[0]);
+		for(int i = 1 ; i < cs.length - 1; i ++)
+		{
+			if((cs[i] == ' ') 
+					&& uFunc.isChineseChar(cs[i+1])
+					&& uFunc.isChineseChar(cs[i-1]))
+			{
+				continue;
+			}
+			sb.append(cs[i]);
+		}
+		sb.append(cs[cs.length-1]);
+		return sb.toString();
 	}
 
 }

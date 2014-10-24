@@ -5,6 +5,8 @@ import org.htmlparser.util.NodeList;
 import org.htmlparser.util.ParserException;
 import org.htmlparser.visitors.NodeVisitor;
 
+import tools.uFunc;
+
 import com.tag.TagChild;
 import com.tag.myElement;
 
@@ -23,6 +25,7 @@ public class InfoboxNode {
 	public static boolean ListTable;
 	// album, not triple
 	public static boolean LightBlue;
+	private static boolean SHUTDOWN;
 	
 	private String outputTriples = "";
 	
@@ -37,8 +40,15 @@ public class InfoboxNode {
 		infoboxIMG = false;
 		ListTable =  false;
 		LightBlue = false;
+		SHUTDOWN = false;
+		String con = uFunc.Simplify(infobox.asString().replaceAll("\\s", ""));
+		if(con.startsWith("站点和里程"))
+			SHUTDOWN = true;
 		InfoboxVisitor = new NodeVisitor(){
 			public void visitTag(Tag tag){
+				//uFunc.Alert(true, SHUTDOWN + "", tag.toPlainTextString());
+				if(SHUTDOWN)
+					return;
 				String tagName = tag.getTagName().toLowerCase();
 				if(tagName.equals("tr"))
 				{
@@ -59,6 +69,16 @@ public class InfoboxNode {
 					if(triples == null)
 						return;
 					outputTriples += triples;
+				}
+				else if(tagName.equals("HR"))
+				{
+					UpperTitle = null;
+					UpperTitleMinus = null;
+				}
+				else if(tagName.equals("caption"))
+				{
+					if(con.contains("发现") && con.contains("小行星"))
+						SHUTDOWN = true;
 				}
 				else if(tagName.equals("HR"))
 				{

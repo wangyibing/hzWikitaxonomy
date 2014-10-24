@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 import tools.uFunc;
 import triple.extract.TripleGenerator;
-import triple.object.ObjeStdz;
+import triple.standardize.ObjeStdz;
 
 import com.tag.myElement;
 import com.tag.myObj;

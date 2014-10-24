@@ -15,8 +15,8 @@ import com.tag.myTag;
 
 import database.Page;
 import tools.uFunc;
-import triple.object.ObjeStdz;
-import triple.predicate.PredStdz;
+import triple.standardize.ObjeStdz;
+import triple.standardize.PredStdz;
 
 public class RecordGenerator {
 	private final static String c = "RecordGenerator";
@@ -55,6 +55,13 @@ public class RecordGenerator {
 			uFunc.OutputTagInfo(tr, "no children");
 			return null;
 		}
+		String TrClass = tr.getAttribute("CLASS");
+		if(TagChild.containDescendantTag(tr, "HR") ||
+				(TrClass != null && TrClass.toLowerCase().contains("mergedtoprow")))
+		{
+			InfoboxNode.UpperTitle = null;
+			InfoboxNode.UpperTitleMinus = null;
+		}
 		int TRformat = -1;
 		if(tags.size() == 2)
 		{
@@ -90,20 +97,20 @@ public class RecordGenerator {
 					TRformat = 0;
 				}
 				// return to false only when new infobox or uppertitle exist
-				if((preName.equals("th") && objName.equals("th")) &&
-						InfoboxNode.infoboxIMG == false)
+				if((TagChild.containDescendantTag(tagPre.tag, "b") || preName.equals("th"))
+						&& (TagChild.containDescendantTag(tagObj.tag, "b") || objName.equals("th")))
 				{
 					String h1 = uFunc.ReplaceBoundSpace(
 							tags.get(0).tag.toPlainTextString());
 					String h2 = uFunc.ReplaceBoundSpace(
 							tags.get(1).tag.toPlainTextString());
 					if(h1.equals("") == false && h2.equals("") == false)
+					{
 						InfoboxNode.ListTable = true;
+						uFunc.Alert(true, c, "listttable");
+					}
 				}
-					
-
 			}
-			
 			switch(TRformat)
 			{
 			case 1:
@@ -138,19 +145,31 @@ public class RecordGenerator {
 					String bc = tagPre.tag.getAttribute("BGCOLOR");
 					if(bc.equals("#EEEEEE"))
 					{
-						/*info = "td:#EEEEEE:\n" + triple;
-						uFunc.Alert(true, c, info);*/
 						return "";
 					}
+				}
+				myElement uN = InfoboxNode.UpperTitle;
+				if(uN != null)
+				{
+					myObj newObj = new myObj();
+					String cont = uFunc.Simplify(uN.context.replaceAll("\\[[^\\]]{1,}\\]", ""));
+					if(cont.contains("聚集地")|| cont.contains("聚居地")
+							|| cont.endsWith("友好城市") || cont.contains("族群")
+							|| cont.contains("分布地区") || cont.equals("人种构成")
+							|| cont.equals("语言") || cont.equals("主要品种")
+							|| cont.equals("仪器") || cont.equals("望远镜") )
+					{
+						newObj.addEle(predi.eles);
+						return TripleFromUT(pageid, newObj);
+					}
+				}
+				if(InfoboxNode.ListTable == true)
+				{
+					return "";
 				}
 				String triple = GeneratorDistributor.distribute(
 						pageid, predi, objc, InfoboxNode.UpperTitle,
 						InfoboxNode.UpperTitleMinus, InfoboxNode.TRTitleNr);
-				if(InfoboxNode.ListTable == true && triple != null &&
-						triple.equals("") == false)
-				{
-					return "";
-				}
 				return triple;
 			case 2:
 				
@@ -177,7 +196,7 @@ public class RecordGenerator {
 			{
 				// single tr containing ":"
 				//uFunc.Alert(true, c, "single tr:" + context);
-				return null;
+				return "";
 				//return GeneratorDistributor.distribute(context, pageid, InfoboxNode.UpperTitle, InfoboxNode.TRTitleNr);
 			}
 			// subTitle
@@ -194,20 +213,10 @@ public class RecordGenerator {
 			{
 				RemoveUpperTitleElement(tags.get(0).tag);
 				if(TagChild.containDescendantTag(tags.get(0).tag, "tr"))
-					return null;
-				if(InfoboxNode.TRTitleNr > 1 && 
-						InfoboxNode.UpperTitle != null)
-				{
-					myObj predi = new myObj();
-					predi.addEle(InfoboxNode.UpperTitle);
-					myObj objc = ObjeStdz.standardize(new myTag(tags.get(0).tag, true));
-					/*info = InfoboxNode.UpperTitle.context + "\n" + 
-							GeneratorDistributor.distribute(pageid, predi, objc, InfoboxNode.UpperTitle, InfoboxNode.UpperTitleMinus, InfoboxNode.TRTitleNr);
-					uFunc.Alert(true, c, info);*/
-					return GeneratorDistributor.distribute(
-							pageid, predi, objc, InfoboxNode.UpperTitle,
-							InfoboxNode.UpperTitleMinus, InfoboxNode.TRTitleNr);
-				}
+					return "";
+				myObj objc = ObjeStdz.standardize(new myTag(tags.get(0).tag, true));
+				return TripleFromUT(pageid, objc);
+				
 			}
 		}
 		else{
@@ -224,10 +233,29 @@ public class RecordGenerator {
 				InfoboxNode.ListTable = true;
 			}
 		}
-		return null;
+		return "";
 	}
 	
 	
+
+	private static String TripleFromUT(int pageid, myObj objc) {
+		// TODO Auto-generated method stub
+		if(InfoboxNode.TRTitleNr > 1 && 
+				InfoboxNode.UpperTitle != null)
+		{
+			myObj predi = new myObj();
+			predi.addEle(InfoboxNode.UpperTitle);
+			/*info = InfoboxNode.UpperTitle.context + "\n" + 
+					GeneratorDistributor.distribute(pageid, predi, objc, InfoboxNode.UpperTitle, InfoboxNode.UpperTitleMinus, InfoboxNode.TRTitleNr);
+			uFunc.Alert(true, c, info);*/
+			return GeneratorDistributor.distribute(
+					pageid, predi, objc, InfoboxNode.UpperTitle,
+					InfoboxNode.UpperTitleMinus, InfoboxNode.TRTitleNr);
+		}
+		return "";
+	}
+
+
 
 	private static String UpdateUpperTitle(Tag tr, int pageid,
 			boolean forMinusSymbolUpperTitle) {
@@ -254,6 +282,7 @@ public class RecordGenerator {
 			tUpperTitle = PredStdz.standardize(tags.get(0).tag, pageid);
 		else{
 			String bold = TagChild.GetChildren(tr, "b");
+			//System.out.println(bold + "\t" + tr.toHtml());
 			if(bold == null)
 				return null;
 			tUpperTitle = new myElement(bold);

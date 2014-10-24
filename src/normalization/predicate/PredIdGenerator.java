@@ -2,8 +2,8 @@ package normalization.predicate;
 
 import tools.URL2UTF8;
 import tools.uFunc;
-import triple.object.ObjeStdz;
 import triple.standardize.HTMLStdz;
+import triple.standardize.ObjeStdz;
 
 import com.tag.myElement;
 import com.tag.myObj;

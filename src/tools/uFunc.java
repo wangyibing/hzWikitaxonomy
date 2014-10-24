@@ -120,6 +120,9 @@ public class uFunc {
 		}
 		return false;
 	}
+	public static boolean isChineseChar(char c){
+		return (c >= 0x4e00) && (c <= 0x9fbb);
+	}
 	
 	public static void AddOneFile(String filePath, String targetPath){
 		if(filePath == null || filePath.equals("")||

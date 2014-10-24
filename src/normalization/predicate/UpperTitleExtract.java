@@ -13,7 +13,7 @@ import com.tag.myTag;
 
 import database.Entity;
 import triple.extract.TripleGenerator;
-import triple.predicate.PredStdz;
+import triple.standardize.PredStdz;
 
 public class UpperTitleExtract {
 	private static NodeVisitor Extractor; 

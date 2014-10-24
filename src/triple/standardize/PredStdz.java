@@ -1,4 +1,4 @@
-package triple.predicate;
+package triple.standardize;
 
 import org.htmlparser.Tag;
 
@@ -8,7 +8,6 @@ import com.tag.myTag;
 
 import database.Entity;
 import tools.uFunc;
-import triple.standardize.HTMLStdz;
 
 public class PredStdz {
 

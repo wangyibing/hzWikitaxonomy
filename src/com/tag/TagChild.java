@@ -39,12 +39,13 @@ public class TagChild {
 
 	public static String GetChildren(Tag tr, String string) {
 		// TODO Auto-generated method stub
-		String regex = "(?<=" + string + ">)\\w+(?=</" + string + ")";
+		String regex = "<" + string + ">((.|\\n)+?)</" + string + ">";
+		regex = regex.toLowerCase();
 	 	Pattern p = Pattern.compile(regex);
-	 	Matcher match = p.matcher(tr.toHtml());
-	 	//uFunc.Alert(true, c, regex + "\n" + tr.toPlainTextString());
+	 	Matcher match = p.matcher(tr.toHtml().toLowerCase());
+	 	//uFunc.Alert(true, c, regex + "\n" + tr.toHtml().toLowerCase());
 	 	if(match.find())
-	 		return match.group(0);
+	 		return match.group(1);
 		return null;
 	}
 
@@ -68,6 +69,8 @@ public class TagChild {
 				return false;
 			father.getChildren().visitAllNodesWith(new NodeVisitor(){
 				public void visitTag(Tag tag){
+					if(isDescendantTag)
+						return;
 					if(tag.getTagName().toLowerCase().equals(DescendName.toLowerCase()))
 					{
 						isDescendantTag = true;

@@ -1,4 +1,4 @@
-package triple.object;
+package triple.standardize;
 
 import java.util.Vector;
 
@@ -11,7 +11,6 @@ import com.tag.myObj;
 import com.tag.myTag;
 
 import tools.uFunc;
-import triple.standardize.HTMLStdz;
 
 public class ObjeStdz {
 

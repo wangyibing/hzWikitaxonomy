@@ -13,7 +13,7 @@ import com.tag.myTag;
 
 import tools.uFunc;
 import triple.extract.TripleGenerator;
-import triple.predicate.PredStdz;
+import triple.standardize.PredStdz;
 
 public class linkExtract {
 	private static NodeVisitor Extractor; 
