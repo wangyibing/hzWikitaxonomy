@@ -6,6 +6,7 @@ import org.htmlparser.Parser;
 import org.htmlparser.util.NodeList;
 
 import database.InfoboxIdList;
+import database.NoInfoboxIdList;
 import database.Page;
 import tools.uFunc;
 
@@ -33,7 +34,7 @@ public class Extract{
 		uFunc.AlertPath = "data/info/Extraction";
 		long start = System.currentTimeMillis();
 		long t1 = System.currentTimeMillis();
-		for(int i = 500; i <= 700; i ++)
+		for(int i = 1; i <= 1073; i ++)
 		{
 			ExtractFromLocalFiles(uFunc.WebPagesFolder + "/" + i);
 			if(i % 10 == 0)
@@ -68,6 +69,8 @@ public class Extract{
 		{
 			int pageid = Integer.parseInt(file.getName().substring(
 					0, file.getName().indexOf("_")));
+			if(NoInfoboxIdList.isNot(pageid))
+				continue;
 			String title = uFunc.Simplify(Page.getTitles(pageid));
 			if(title != null && (title.contains("列表") 
 					|| title.contains("年表") 
@@ -75,7 +78,7 @@ public class Extract{
 					|| title.endsWith("系表")))
 				continue;
 			////////////////////////////////
-			if(pageid != 3184078 && pageid != 3202797)continue;
+			//if(pageid != 411338 && pageid != 425512)continue;
 			////////////////////////////////
 			fileNr ++;
 			String result = "";

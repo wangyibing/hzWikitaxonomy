@@ -1,5 +1,8 @@
 package triple.extract;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import com.tag.myElement;
 import com.tag.myObj;
 
@@ -86,6 +89,14 @@ public class TripleGenerator {
 		String result = "";
 		contP = uFunc.ReplaceBoundSpace(
 				contP.replaceAll("(?m)^[[•\\s\\-]]+", ""));
+		Pattern p = Pattern.compile("[0-9]{4}年");
+		Matcher m = p.matcher(contP);
+		if(m.find())
+		{
+			int ind = m.start();
+			remark += "##" + contP.substring(ind);
+			contP = uFunc.ReplaceBoundSpace(contP.substring(0, ind));
+		}
 		for(int i = 0; i < objc.eles.size(); i ++)
 		{
 			String contO = getStringFromMyelement(objc.eles.get(i), !NoLink);
@@ -138,7 +149,8 @@ public class TripleGenerator {
 		String cont = predi.context.replaceAll("\\{\\{\\{[^\\}]{1,}\\}\\}\\}", "")
 				.replaceAll("[0-9]{1,}px", "");
 		if(cont.contains("←") || cont.contains("↙") 
-			|| cont.contains("◄") || cont.contains("►")) 
+			|| cont.contains("◄") || cont.contains("►")
+			|| cont.startsWith("<")) 
 			return null;
 		cont = uFunc.ReplaceBoundSpace(
 				HTMLStdz.standardize(cont));

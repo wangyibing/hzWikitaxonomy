@@ -1,7 +1,9 @@
 package extract;
 
 import java.util.HashMap;
+import java.util.Stack;
 import java.util.Vector;
+
 
 
 import org.htmlparser.Remark;
@@ -36,6 +38,7 @@ public class PageNode {
 	public boolean hasMedalInfo;
 	public String info;
 	private String i = "PageNode";
+	private Stack<Boolean> FakeDiv;
 	
 	/**
 	 * 1:extract triples
@@ -74,35 +77,26 @@ public class PageNode {
 		triples = "";
 		hasMedalInfo = false;
 		InfoboxTables = new Vector<Tag>();
-		
+		FakeDiv = new Stack<Boolean>();
 		PageNodeVistor = new NodeVisitor(){
 			public void visitTag(Tag tag) {
+				String tagName = tag.getTagName().toLowerCase();
+				if(tagName.equals("div"))
+					FakeDiv.push(uFunc.HasAttriCompnt(tag, "class", "nounderlines"));
 				if(TextApprd == true)
 					return;
-				if(tag.getTagName().toLowerCase().equals("div") &&
-						tag.getAttribute("ID") != null)
+
+				if(tagName.equals("div"))
 				{
-					if(tag.getAttribute("ID").toLowerCase()
-							.endsWith("mw-content-text"))
-					{
+					if(uFunc.HasAttriCompnt(tag, "ID", "mw\\-content\\-text"))
 						inMvContentText = true;
-					}
-				}
-				// summary exist, namely, infobox search end
-				if(tag.getTagName().toLowerCase().equals("div"))
-				{
-					if(tag.getAttribute("ID") != null &&
-							tag.getAttribute("ID").toLowerCase().equals("toc") &&
-							tag.getAttribute("CLASS") != null &&
-							tag.getAttribute("CLASS").toLowerCase().equals("toc"))
-					{
+					// summary exist, namely, infobox search end
+					if(uFunc.HasAttriCompnt(tag, "ID", "toc") ||
+							uFunc.HasAttriCompnt(tag, "CLASS", "toc"))
 						TextApprd = true;
-						//System.out.println("summary exist!");
-					}
 				}
 				// content begin
-				if(lastEndTag != null &&
-						tag.getTagName().toLowerCase().equals("p"))
+				if(lastEndTag != null && tagName.equals("p"))
 				{
 					//System.out.println("PageNode.java:" + lastEndTagName + "\n" + tag.toHtml());
 					if(lastEndTagName.equals("table") ||
@@ -113,9 +107,6 @@ public class PageNode {
 							//System.out.println("#######firs para:" + tag.toPlainTextString());
 							TextApprd = true;
 						}
-						else{
-							
-						}
 						
 						String para = uFunc.Simplify(tag.toPlainTextString()); 
 						if(para == null || para.contains("页面不存在") 
@@ -125,32 +116,17 @@ public class PageNode {
 							//System.out.println("content not exist!");
 						}
 					}
-					else
-					{
-						//System.out.println("PageNode.java:" + "lastEndTag:" + lastEndTag);
-					}
 				}
 				
 				// find infobox
-				if(tag.getTagName().toLowerCase().equals("table"))
+				if(tagName.equals("table"))
 				{
+					if(FakeDiv.size() > 0 && FakeDiv.peek())
+						return;
 					String triple = null;
-					String tableClass = tag.getAttribute("CLASS");
-					if(tableClass != null && 
-							(tableClass.toLowerCase().contains("navbox") 
-									//|| tableClass.toLowerCase().contains("wikitable")
-									))
-					{
-						//nav box!
+					if(uFunc.HasAttriCompnt(tag, "class", "navbox")
+							|| uFunc.HasAttriCompnt(tag, "summary", "sidebar"))
 						return;
-					}
-					String summary = tag.getAttribute("SUMMARY");
-					if(summary != null && summary.contains("Sidebar"))
-					{
-						/*info = "summary:\n" + triple;
-						uFunc.Alert(true, i, info);*/
-						return;
-					}
 					// sub-tables in td
 					if(lastTagName != null && lastEndTagName != null && 
 							lastTagName.equals("td") && lastEndTagName.equals("td") == false)
@@ -189,16 +165,13 @@ public class PageNode {
 									classAttrName.put(possiName, freq);
 								}
 								if(triple.equals("") == false && 
-										(possiName.contains("metadata")
-												//|| possiName.contains("wikitable")
-												))
+										(possiName.contains("metadata")))
 								{
 									info = pageid + "\t" + possiName + "\n" + infobox.GetTriples();
 									uFunc.Alert(true, i, info);
 								}
 								break;
 							}
-							
 						}
 					}
 					else
@@ -231,13 +204,11 @@ public class PageNode {
 				lastEndTag = tag;
 				lastEndTagName = tag.getTagName().toLowerCase();
 				//System.out.println("PageNode.java:" + "lastEndTag:" + lastEndTag.getTagName());
-				if(lastEndTagName.equals("div") && tag.getAttribute("ID") != null)
-				{
-					if(tag.getAttribute("ID").endsWith("mw-content-text") == true)
-					{
+				if(lastEndTagName.equals("div"))
+					if(uFunc.HasAttriCompnt(tag, "ID", "mw\\-content\\-text"))
 						inMvContentText = false;
-					}
-				}
+				if(lastEndTagName.equals("div"))
+					FakeDiv.pop();
 			}
 			public void finishedParsing(){}
 		};

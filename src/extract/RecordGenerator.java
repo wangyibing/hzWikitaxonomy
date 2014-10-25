@@ -5,7 +5,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.htmlparser.Tag;
-import org.htmlparser.util.NodeList;
 import org.htmlparser.visitors.NodeVisitor;
 
 import com.tag.TagChild;
@@ -19,12 +18,15 @@ import triple.standardize.ObjeStdz;
 import triple.standardize.PredStdz;
 
 public class RecordGenerator {
-	private final static String c = "RecordGenerator";
-	private static String info;
+	public final static String c = "RecordGenerator";
+	public static String info;
 	private static Vector<myTag> tags = new Vector<myTag>();
 	public static String GenerFromTR(int pageid, Tag tr)
 	{
-		
+
+		//uFunc.Alert(true, c,tr.toPlainTextString());
+		if(uFunc.HasAttriCompnt(tr, "style", "(font\\-size\\:[0-9]{1,}\\%)|(small)"))
+			return null;
 		if(TagChild.containDescendantTag(tr, "img"))
 		{
 			tr.accept(new NodeVisitor(){
@@ -52,7 +54,7 @@ public class RecordGenerator {
 		tags = TagChild.getChildren(tr);
 		if(tags == null)
 		{
-			uFunc.OutputTagInfo(tr, "no children");
+			//uFunc.OutputTagInfo(tr, "no children");
 			return null;
 		}
 		String TrClass = tr.getAttribute("CLASS");
@@ -67,8 +69,9 @@ public class RecordGenerator {
 		{
 			myTag tagPre = tags.get(0);
 			myTag tagObj = tags.get(1);
-			if(TagChild.containDescendantTag(tags.get(0).tag, "b") ||
-					tagPre.tag.getTagName().equals("TH"))
+			if((TagChild.containDescendantTag(tags.get(0).tag, "b") ||
+					tagPre.tag.getTagName().equals("TH")) 
+					 && TagChild.containDescendantTag(tr, "HR") == false)
 			{
 					UpdateUpperTitle(tr, pageid, true);
 			}
@@ -107,7 +110,6 @@ public class RecordGenerator {
 					if(h1.equals("") == false && h2.equals("") == false)
 					{
 						InfoboxNode.ListTable = true;
-						uFunc.Alert(true, c, "listttable");
 					}
 				}
 			}
@@ -127,6 +129,9 @@ public class RecordGenerator {
 				}
 				myObj predi = new myObj();
 				predi.addEle(pred);
+				if(uFunc.HasAttriCompnt
+						(tr, "style", "(font\\-size\\:[0-9]{1,}\\%)|(small)"))
+					return "";
 				myObj objc = ObjeStdz.standardize(tagObj);
 				/*uFunc.Alert(true, c, "");
 				predi.OutputEle("");
@@ -162,6 +167,21 @@ public class RecordGenerator {
 						newObj.addEle(predi.eles);
 						return TripleFromUT(pageid, newObj);
 					}
+					if(cont.endsWith("沿革") || cont.contains("青年队")
+							|| cont.contains("职业俱乐部") || cont.contains("国家队")
+							|| cont.contains("历任") || cont.contains("承建商")
+							|| cont.equals("生涯历史") || cont.equals("奖项与成就"))
+					{
+						myElement ele = new myElement("");
+						if(pred != null)
+							ele.context += pred.context + " ";
+						if(objc != null)
+							ele.context += objc.toString();
+						newObj.addEle(ele);
+						return TripleFromUT(pageid, newObj);
+					}
+					if(cont.equals("伤亡与损失") || cont.equals("指挥官和领导者"))
+						return "";
 				}
 				if(InfoboxNode.ListTable == true)
 				{
@@ -200,11 +220,12 @@ public class RecordGenerator {
 				//return GeneratorDistributor.distribute(context, pageid, InfoboxNode.UpperTitle, InfoboxNode.TRTitleNr);
 			}
 			// subTitle
-			if(tName.equals("th"))
+			if(tName.equals("th") && TagChild.containDescendantTag(tr, "HR") == false)
 			{
 				return UpdateUpperTitle(tr, pageid, false);
 			}
-			else if(TagChild.containDescendantTag(tr, "b"))
+			else if(TagChild.containDescendantTag(tr, "b")
+					 && TagChild.containDescendantTag(tr, "HR") == false)
 			{
 				UpdateUpperTitle(tr, pageid, false);
 			}
@@ -389,8 +410,8 @@ public class RecordGenerator {
 
 
 	private static boolean Init(Tag tr) {
-		
-		tags.clear();
+		if(tags != null)
+			tags.clear();
 
 		if(tr.getTagName().toLowerCase().equals("tr") == false)
 		{

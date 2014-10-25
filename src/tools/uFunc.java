@@ -464,7 +464,7 @@ public class uFunc {
 		if(contP == null)
 			return false;
 		// 200x年
-		return contP.matches("[0-9\\-–−_ —年月日\\.x\\?]{1,}");
+		return contP.matches("[0-9\\-–−_ —至今现在年月日\\.x\\?]{1,}");
 	}
 
 	private static HashMap<String, Integer> tmp = new HashMap<String, Integer>();
@@ -633,5 +633,18 @@ public class uFunc {
 			e.printStackTrace();
 		}
 		return lineNr;
+	}
+
+
+	public static boolean HasAttriCompnt(Tag tr, String attri, String regex) {
+		// TODO Auto-generated method stub
+		if(tr == null)
+			return false;
+		String attriValue = tr.getAttribute(attri.toUpperCase());
+		if(attriValue == null)
+			return false;
+		Pattern p = Pattern.compile(regex.toLowerCase());
+		Matcher m = p.matcher(attriValue.toLowerCase());
+		return m.find();
 	}
 }

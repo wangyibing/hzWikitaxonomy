@@ -14,8 +14,8 @@ public class InfoboxNode {
 	private NodeList infobox = null;
 	private int PageId;
 	private NodeVisitor InfoboxVisitor;
-	private String lastTagName;
-	private String lastEndTagName;
+	//private String lastTagName;
+	//private String lastEndTagName;
 
 	public static myElement UpperTitle;
 	public static myElement UpperTitleMinus;
@@ -26,6 +26,7 @@ public class InfoboxNode {
 	// album, not triple
 	public static boolean LightBlue;
 	private static boolean SHUTDOWN;
+	private static String con;
 	
 	private String outputTriples = "";
 	
@@ -41,7 +42,9 @@ public class InfoboxNode {
 		ListTable =  false;
 		LightBlue = false;
 		SHUTDOWN = false;
-		String con = uFunc.Simplify(infobox.asString().replaceAll("\\s", ""));
+		con = "";
+		if(infobox != null && infobox.asString() != null)
+			con = uFunc.Simplify(infobox.asString().replaceAll("\\s", ""));
 		if(con.startsWith("站点和里程"))
 			SHUTDOWN = true;
 		InfoboxVisitor = new NodeVisitor(){
@@ -66,7 +69,7 @@ public class InfoboxNode {
 					}
 					String triples = 
 							RecordGenerator.GenerFromTR(PageId, tag);
-					if(triples == null)
+					if(triples == null || triples.equals(""))
 						return;
 					outputTriples += triples;
 				}
@@ -85,10 +88,10 @@ public class InfoboxNode {
 					UpperTitle = null;
 					UpperTitleMinus = null;
 				}
-				lastTagName = tagName;
+				//lastTagName = tagName;
 			}
 			public void visitEndTag(Tag tag){
-				lastEndTagName = tag.getTagName().toLowerCase();
+				//lastEndTagName = tag.getTagName().toLowerCase();
 			}
 		};
 	}
@@ -107,15 +110,6 @@ public class InfoboxNode {
 			infobox.visitAllNodesWith(InfoboxVisitor);
 		} catch (ParserException e) {
 			e.printStackTrace();
-		}
-		if(outputTriples.equals(""))
-		{
-			//System.out.println("InfoboxNode.java:" + PageId + 
-			//		" extract triples failed!");
-		}
-		else
-		{
-			//System.out.println("\"" + outputTriples + "\"");
 		}
 		totalLineNr += outputTriples.split("\n").length;
 		return outputTriples;

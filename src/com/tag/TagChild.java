@@ -6,13 +6,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.htmlparser.Node;
-import org.htmlparser.NodeFilter;
-import org.htmlparser.Parser;
 import org.htmlparser.Tag;
 import org.htmlparser.Text;
-import org.htmlparser.filters.TagNameFilter;
-import org.htmlparser.nodes.TagNode;
-import org.htmlparser.util.NodeList;
 import org.htmlparser.util.ParserException;
 import org.htmlparser.visitors.NodeVisitor;
 
@@ -33,8 +28,8 @@ public class TagChild {
 
 	private static boolean isDescendantTag = false;
 	private static Tag DescendantTag = null;
-	private static String info;
-	private static String c = "TagChild";
+	public static String info;
+	public static String c = "TagChild";
 	
 
 	public static String GetChildren(Tag tr, String string) {
@@ -59,6 +54,34 @@ public class TagChild {
 	{
 		return 
 				father.getChildren().contains(Son);
+	}
+	public static Tag getDescendantTag(Tag father, String DescendName)
+	{
+		isDescendantTag = false;
+		DescendantTag = null;
+		try {
+			if(father.getChildren() == null)
+				return null;
+			father.getChildren().visitAllNodesWith(new NodeVisitor(){
+				public void visitTag(Tag tag){
+					if(isDescendantTag)
+						return;
+					if(tag.getTagName().toLowerCase().equals(DescendName.toLowerCase()))
+					{
+						isDescendantTag = true;
+						DescendantTag = tag;
+						//System.out.println("tag:" + tag.toHtml());
+						return;
+					}
+					
+				}
+			});
+		} catch (ParserException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			isDescendantTag = false;
+		}
+		return DescendantTag;
 	}
 	public static boolean containDescendantTag(Tag father, String DescendName)
 	{
@@ -177,8 +200,11 @@ public class TagChild {
 					TagLevel.put(tag, level);
 					if(level == 1)
 					{
+						boolean isNote = uFunc.HasAttriCompnt
+								(tag, "STYLE", "(font\\-size\\:[0-9]{1,}\\%)|(small)");
 						if(tName.equals("SMALL")
-								|| tName.equals("IMG") || tName.equals("B"))
+								|| tName.equals("IMG") || tName.equals("B")
+								|| isNote)
 						{
 							return;
 						}

@@ -65,5 +65,17 @@ public class myObj {
 		System.out.println("**** elements end *****");
 	}
 	
+	public String toString()
+	{
+		String result = "";
+		if(eles != null)
+		{
+			for(myElement ele : eles)
+				result += ele.context + "，";
+		}
+		if(result.equals("") == false)
+			result = result.substring(0, result.length() - 1);
+		return result;
+	}
 	
 }

@@ -1,6 +1,8 @@
 package triple.standardize;
 
 import java.util.Vector;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.htmlparser.Tag;
 
@@ -124,8 +126,8 @@ public class ObjeStdz {
 		for(int i = 0 ; i < length; i ++)
 		{
 			String tText = HTMLStdz.standardize(children.get(i).context);
-			if(children.get(i).tag != null &&
-					children.get(i).tag.getTagName().equals("BR"))
+			if((children.get(i).tag != null &&
+					children.get(i).tag.getTagName().equals("BR")))
 			{
 				if(text.equals("") == false)
 				{
