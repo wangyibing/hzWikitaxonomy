@@ -4,6 +4,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import tools.uFunc;
+import database.Entity;
 import database.Zhwiki;
 import de.tudarmstadt.ukp.wikipedia.api.Page;
 import extract.web.ExtractAPI;
@@ -150,7 +151,7 @@ public class RediPageExtraction {
 				//System.out.println(text);
 			}
 			s = GetTargetTitle(s);
-			int targetId = Zhwiki.getPageId(s);
+			int targetId = Entity.getId(s);
 			if(targetId == 0)
 				targetId = ExtractAPI.GetPageId(s);
 			if(targetId == 0)

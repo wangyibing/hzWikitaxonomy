@@ -40,22 +40,16 @@ public class TripleGenerator {
 			//conP empty
 			return null;
 		}
-		if(uFunc.isPeriod(contP) || contP.contains("〒") || 
+		if(uFunc.isPeriod(contP) ||uFunc.Contain(contP, "(?m)^[0-9]{4}年?") 
+				|| contP.contains("〒") || 
 				contP.startsWith("- ") || contP.startsWith("-") ||
 				contP.startsWith("–"))
 		{
 			// not stand sub-title，can't change!
-			if((contP.startsWith("- ") || contP.startsWith("-")
-					|| contP.startsWith("–")))
+			if(upperTitleMinus != null && uFunc.Contain
+					(upperTitleMinus.context, "(?m)^[0-9]{4}年?") == false)
 			{
-				if(upperTitleMinus != null)
-					upperTitle = upperTitleMinus;
-				/*
-				if(upperTitle != null)
-					info = contP + "\t" + upperTitle.context + "\t" + pageid;
-				else info = contP + "\tnull" + "\t" + pageid;
-				uFunc.Alert(true, i, info);
-				*/
+				upperTitle = upperTitleMinus;
 			}
 			if(tRTitleNr <= 1)
 				return null;
@@ -104,7 +98,8 @@ public class TripleGenerator {
 					// page's title can't be predicate
 					isPageTitle(pageid, contP))
 				continue;
-			result += pageid + "\t" + contP + "\t" + contO + remark + "\n";
+			info = pageid + "\t" + contP + "\t" + contO + remark + "\n";
+			result += info;
 		}
 		if(result.equals("") == false)
 			return result;
@@ -113,7 +108,7 @@ public class TripleGenerator {
 	
 	private static boolean isPageTitle(int pageid2, String contP) {
 		// TODO Auto-generated method stub
-		String titles = Page.getTitles(pageid2);
+		String titles = Entity.getTitles(pageid2);
 		if(titles != null)
 		{
 			for(String title : titles.split("####"))
@@ -191,14 +186,13 @@ public class TripleGenerator {
 						(link.indexOf("/wiki/") + 6));
 				if(entity.contains("#"))
 					entity = entity.substring(0,  entity.indexOf("#"));
-				int pageid = Entity.getId(entity.replaceAll("_", ""));
-				if(pageid <= 0)
-					pageid = Zhwiki.getPageId(entity);
-				//info = "#####link in obj:" + entity + "\t" + pageid;
-				//uFunc.Alert(true, i, info);
+				int pageid = Entity.getId(entity);
 				if(pageid > 0)
 				{
 					return cont + "->" + "[" + pageid + "]";
+				}else{
+					info = "entity pageid not found!" + cont + " " + PageId;
+					uFunc.Alert(true, i, info);
 				}
 			}
 		}

@@ -25,7 +25,7 @@ public class InfoboxNode {
 	public static boolean ListTable;
 	// album, not triple
 	public static boolean LightBlue;
-	private static boolean SHUTDOWN;
+	public static boolean SHUTDOWN;
 	private static String con;
 	
 	private String outputTriples = "";
@@ -50,8 +50,10 @@ public class InfoboxNode {
 		InfoboxVisitor = new NodeVisitor(){
 			public void visitTag(Tag tag){
 				//uFunc.Alert(true, SHUTDOWN + "", tag.toPlainTextString());
-				if(SHUTDOWN)
+				if(SHUTDOWN || LightBlue)
+				{
 					return;
+				}
 				String tagName = tag.getTagName().toLowerCase();
 				if(tagName.equals("tr"))
 				{
@@ -101,10 +103,8 @@ public class InfoboxNode {
 	{
 		if(infobox == null)
 		{
-			//System.out.println("infobox is null, can't get triples!");
 			return "";
 		}
-		//System.out.println("InfoboxNode.java:GetTriples():" + infobox.toHtml() + "InfoboxNode.java:GetTriples end");
 		outputTriples = "";
 		try {
 			infobox.visitAllNodesWith(InfoboxVisitor);

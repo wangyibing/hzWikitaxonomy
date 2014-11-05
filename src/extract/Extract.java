@@ -5,9 +5,11 @@ import java.io.File;
 import org.htmlparser.Parser;
 import org.htmlparser.util.NodeList;
 
+import database.Entity;
 import database.InfoboxIdList;
 import database.NoInfoboxIdList;
 import database.Page;
+import database.RediPage;
 import tools.uFunc;
 
 public class Extract{
@@ -69,16 +71,33 @@ public class Extract{
 		{
 			int pageid = Integer.parseInt(file.getName().substring(
 					0, file.getName().indexOf("_")));
+			if(RediPage.getTargetPageid(pageid) > 0)
+				continue;
 			if(NoInfoboxIdList.isNot(pageid))
 				continue;
-			String title = uFunc.Simplify(Page.getTitles(pageid));
-			if(title != null && (title.contains("列表") 
-					|| title.contains("年表") 
-					|| title.endsWith("时间表")
-					|| title.endsWith("系表")))
+			String titles = uFunc.Simplify(Entity.getTitles(pageid));
+			if(titles == null)
+			{
+				info = "pagetitle missed in Entity:" + pageid;
+				uFunc.Alert(true, i, info);
+				continue;
+			}
+			boolean jump = false;
+			for(String title : titles.split("####"))
+			{
+				if(title != null && (title.contains("列表") 
+						|| title.contains("年表") 
+						|| title.endsWith("时间表")
+						|| title.endsWith("系表")))
+				{
+					jump = true;
+					break;
+				}
+			}
+			if(jump)
 				continue;
 			////////////////////////////////
-			//if(pageid != 411338 && pageid != 425512)continue;
+			if(pageid != 481 && pageid != 105461)continue;
 			////////////////////////////////
 			fileNr ++;
 			String result = "";

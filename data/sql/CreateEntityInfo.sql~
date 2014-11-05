@@ -1,0 +1,14 @@
+USE hzWikiCount2;
+-- 
+-- Table structure for table `EntityInfo`
+-- 
+DROP TABLE IF EXISTS `EntityInfo`;
+CREATE TABLE `EntityInfo` (
+	`EntityId` bigint(20) NOT NULL auto_increment,
+	`title` varchar(255) NOT NULL,
+	`IMGUrl` text NOT NULL,
+	`IMGWidth` bigint(11) NOT NULL,
+	`IMGHeight` bigint(11) NOT NULL,
+	`FirPara` longtext NOT NULL,
+	PRIMARY KEY  (`EntityId`)
+)ENGINE=MyISAM DEFAULT CHARSET=utf8;

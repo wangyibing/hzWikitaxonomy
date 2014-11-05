@@ -20,6 +20,7 @@ import org.htmlparser.visitors.NodeVisitor;
 import tools.URL2UTF8;
 import tools.uFunc;
 import database.DisPage;
+import database.Entity;
 import database.Zhwiki;
 import de.tudarmstadt.ukp.wikipedia.api.Page;
 import de.tudarmstadt.ukp.wikipedia.api.exception.WikiApiException;
@@ -82,15 +83,26 @@ public class DisaPageExtraction {
 			{
 				String [] ss = oneLine.split("\t");
 				int linkId = Integer.parseInt(ss[1]);
-				String linkTitle = uFunc.Simplify(Zhwiki.getTitle(linkId));
+				String linkTitle = uFunc.Simplify(Entity.getTitles(linkId));
 				int freq = 1;
 				if(targetFreq.containsKey(linkTitle))
 				{
 					freq = targetFreq.get(linkTitle);
 				}
-				if((freq > 3 && linkTitle.endsWith("乡")== false && linkTitle.endsWith("镇")))
-					continue;
-				if(linkTitle.endsWith("省") || linkTitle.endsWith("语") || linkTitle.endsWith("市"))
+				boolean jump = false;
+				if(linkTitle != null)
+				{
+					for(String tit : linkTitle.split("####"))
+					{
+						if((freq > 3 && tit.endsWith("乡")== false && tit.endsWith("镇"))
+								|| tit.endsWith("省") || tit.endsWith("语") || tit.endsWith("市"))
+						{
+							jump = true;
+							break;
+						}
+					}
+				}
+				if(jump)
 					continue;
 				output += oneLine + "\n";
 				outNr ++;
@@ -136,7 +148,9 @@ public class DisaPageExtraction {
 					PageTarget.clear();
 					lastId = pageid;
 				}
-				String title = Zhwiki.getTitle(Integer.parseInt(ss[1]));
+				String title = Entity.getTitles(Integer.parseInt(ss[1]));
+				if(title != null && title.contains("####"))
+					title = title.substring(0, title.indexOf("####"));
 				if(PageTarget.containsKey(title) == false)
 				{
 					PageTarget.put(title, 0);
@@ -188,7 +202,9 @@ public class DisaPageExtraction {
 			//page = Zhwiki.getPage(43690);
 			PageNr ++;
 			PageId = page.getPageId();
-			PageTitle = Zhwiki.getTitle(PageId);
+			PageTitle = Entity.getTitles(PageId);
+			if(PageTitle != null && PageTitle.contains("####"))
+				PageTitle = PageTitle.substring(0, PageTitle.indexOf("####"));
 			//uFunc.Alert("", PageId + "\t" + PageTitle);
 			PageExtraced = true;
 			if(PageId <= 0){
@@ -311,11 +327,7 @@ public class DisaPageExtraction {
 				for(int i = 0; i < titles.size(); i ++)
 				{
 					String entity = titles.get(i);
-					int pageid = Zhwiki.getPageId(entity);
-					if(pageid <= 0)
-						pageid = Zhwiki.getPageId(uFunc.Simplify(entity));
-					if(pageid <= 0)
-						pageid = Zhwiki.getPageId(uFunc.TraConverter.convert(entity));
+					int pageid = Entity.getId(entity);
 					if(pageid <= 0)
 						pageid = ExtractAPI.GetPageId(entity);
 					if(pageid <= 0)
@@ -345,7 +357,7 @@ public class DisaPageExtraction {
 					else{
 						pageDis.put(id, 0);
 					}
-					info  = "web disa:" + Zhwiki.getTitle(id) + "\t" + id
+					info  = "web disa:" + entity + "\t" + id
 							+ "\t" + PageTitle + "\t" + PageId;
 					//uFunc.Alert("", info);
 				}
@@ -389,14 +401,7 @@ public class DisaPageExtraction {
 				for(int i = 0 ; i < linklist.size(); i ++)
 				{
 					String link = linklist.get(i).getTarget();
-					int pageid = Zhwiki.getPageId(link);
-					if(pageid <= 0)
-					{
-						link = uFunc.Simplify(link);
-						pageid = Zhwiki.getPageId(link);
-					}
-					if(pageid <= 0)
-						pageid = Zhwiki.getPageId(uFunc.TraConverter.convert(link));
+					int pageid = Entity.getId(link);
 					if(pageid <= 0)
 					{
 						String info = "";
@@ -436,7 +441,12 @@ public class DisaPageExtraction {
 		int sim = 0;
 		Vector<String> linkTitles = new Vector<String>();
 		try {
-			linkTitles.add(Zhwiki.getTitle(id));
+			String title = Entity.getTitles(id);
+			if(title != null)
+			{
+				for(String tit : title.split("####"))
+					linkTitles.add(tit);
+			}
 			for(String redi : Zhwiki.wiki.getPage(id).getRedirects())
 				linkTitles.add(redi);
 		} catch (WikiApiException e) {
@@ -464,7 +474,7 @@ public class DisaPageExtraction {
 		// TODO Auto-generated method stub
 		if(id <= 0)
 			return;
-		LinkOutput += PageId +"\t"+ id +"\t"+ PageTitle +"\t"+ Zhwiki.getTitle(id) +"\n";
+		LinkOutput += PageId +"\t"+ id +"\t"+ PageTitle +"\t"+ Entity.getTitles(id) +"\n";
 		LinkOutputNr++;
 		PageExtraced = true;
 		if(LinkOutputNr % 1000 == 0){

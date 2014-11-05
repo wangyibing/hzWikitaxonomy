@@ -7,7 +7,6 @@ import java.util.HashMap;
 import database.Zhwiki;
 import extract.pageinfo.myPredicate;
 import extract.pageinfo.myPredicateAvg;
-import tools.predicate;
 import tools.uFunc;
 
 public class PredAvgExtraction {

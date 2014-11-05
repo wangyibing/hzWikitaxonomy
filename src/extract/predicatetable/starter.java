@@ -16,7 +16,7 @@ public class starter {
 		String predicateAvg = folder + "PredicateAvg";
 		
 		// 1. generate "predicateId" file along with "web's triple" file
-		Extract.main(null);
+		//Extract.main(null);
 		// 2. sort predicateId table to generate "predicateId.sorted"
 		PredicateIdSort.Sort(predicate, predicateSorted);
 		// 3. fill the predicate info with dumpsinfo, generate "predicate2"

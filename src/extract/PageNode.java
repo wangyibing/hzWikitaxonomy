@@ -102,7 +102,7 @@ public class PageNode {
 					if(lastEndTagName.equals("table") ||
 							lastEndTagName.equals("div"))
 					{
-						String title = Entity.getTitle(pageid);
+						String title = Entity.getTitles(pageid);
 						if(title != null && uFunc.hasChineseCharactor(tag.toPlainTextString())){
 							//System.out.println("#######firs para:" + tag.toPlainTextString());
 							TextApprd = true;
@@ -122,22 +122,32 @@ public class PageNode {
 				if(tagName.equals("table"))
 				{
 					if(FakeDiv.size() > 0 && FakeDiv.peek())
+					{
+						InfoboxTables.add(tag);
 						return;
+					}
 					String triple = null;
 					if(uFunc.HasAttriCompnt(tag, "class", "navbox")
 							|| uFunc.HasAttriCompnt(tag, "summary", "sidebar"))
+					{
+						InfoboxTables.add(tag);
 						return;
+					}
 					// sub-tables in td
 					if(lastTagName != null && lastEndTagName != null && 
 							lastTagName.equals("td") && lastEndTagName.equals("td") == false)
 					{
 						uFunc.Alert(i, "PageNode.java: tables in td!" + pageid);
+						InfoboxTables.add(tag);
 						return;
 					}
 					for(int i = 0 ; i < InfoboxTables.size(); i ++)
 					{
 						if(dedup.isFather(InfoboxTables.get(i), tag) == true)
+						{
+							InfoboxTables.add(tag);
 							return;
+						}
 					}
 					String tS = uFunc.Simplify(tag.toPlainTextString());
 					if(tS.contains("金牌") || tS.contains("银牌") || tS.contains("铜牌"))

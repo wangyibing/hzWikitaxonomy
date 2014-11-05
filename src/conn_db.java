@@ -39,9 +39,9 @@ public class conn_db {
 		// 创建Wikipedia处理对象
 		Wikipedia wiki = new Wikipedia(dbConfig);
 
-		String title = "整块性核心‎‎";
-		
-		Page page = wiki.getPage(1261548);
+		String title = "";
+		Page page = wiki.getPage(1102474);
+		System.out.println(page.getTitle().getWikiStyleTitle().equals(title));
 		System.out.println("Page title           : "+ wiki.existsPage(title) + page.getTitle());
 		System.out.println("Page id              : "+ page.getPageId());
 		System.out.println("getPlainText:        : "+ "\"" + page.getText() + "\"");
@@ -216,6 +216,16 @@ public class conn_db {
 		{
 			e.printStackTrace();
 		}
+	}
+
+	private static void InfoString2Byte(String title) {
+		// TODO Auto-generated method stub
+		String out = "";
+		for(char c : title.toCharArray())
+		{
+			out += c +":";
+		}
+		System.out.println(out);
 	}
 
 }

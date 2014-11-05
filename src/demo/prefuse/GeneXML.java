@@ -117,9 +117,9 @@ public class GeneXML {
 				int pageid = Integer.parseInt(ss[0]);
 				if(RediPage.getTargetPageid(pageid) > 0)
 					pageid = RediPage.getTargetPageid(pageid);
-				EntityTits.put(pageid, Entity.getTitle(pageid));
+				EntityTits.put(pageid, Entity.getTitles(pageid));
 				if(pageid == 103352)
-					System.out.println(Entity.getTitle(pageid));
+					System.out.println(Entity.getTitles(pageid));
 				
 				if(ss[2].matches("(?m)^\\[.+\\]$") == true)
 				{

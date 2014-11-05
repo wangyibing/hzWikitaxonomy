@@ -1,0 +1,47 @@
+<?php
+
+$sql = ""; 
+$res = "";
+if(is_array($_GET) && count($_GET) > 0)
+{
+	$res = strtolower($_GET["res"]);
+	if(isset($_GET["id"])){
+		$pageid = ($_GET["id"]);
+		if($res == "img") {
+			$sql = "select IMGUrl, IMGWidth, IMGHeight from EntityInfo where EntityId = " . $pageid . ";";
+		}elseif($res == "firpara") {
+			$sql = "select FirPara from EntityInfo where EntityId = " . $pageid . ";";
+		}
+	}
+	elseif(isset($_GET["title"])) {
+		$pagetitle = iconv("gb2312","utf-8", $_GET["title"]);
+		if($res == "img") {
+			$sql = "select IMGUrl, IMGWidth, IMGHeight from EntityInfo where title = " . $pagetitle . ";";
+		}elseif($res == "firpara") {
+			$sql = "select FirPara from EntityInfo where title = " . $pagetitle . ";";
+		}
+	}
+	else {
+		echo "not exist in db";
+		return;
+	}
+}
+else {
+	return;
+}
+
+$link = mysqli_connect("localhost", "root", "19920326", "hzWikiCount2");
+mysqli_query($link, "SET NAMES 'utf8'");
+$result = mysqli_query($link, $sql);
+if(mysqli_connect_error($link))
+{
+	echo "connection failed:%s\n" . mysqli_connect_error();
+	exit();
+}
+$row = mysqli_fetch_array($result);
+
+if($res == "img"){
+	echo "<img src=\"" . $row["IMGWidth"] . "\" width=\"" . $row["IMGWidth"] .
+		"\" IMGHeight=\"" . $row["IMGHeight"] . " />"; 
+}
+?>

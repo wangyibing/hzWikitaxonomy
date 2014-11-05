@@ -4,30 +4,21 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.HashMap;
 
-import database.DisPage;
-import database.Entity;
-import database.RediPage;
-import database.Zhwiki;
 
 public class DataSampling {
 
 	public static void main(String [] args)
 	{
-		String dumpsFile = 
-				"/home/hanzhe/Public/result_hz/zhwiki/Infobox/Triple/Triple.txt";
-		String tarPath = 
-				"/home/hanzhe/Public/result_hz/wiki_count2/predicate/dumpsTriples";
 		int lineNr = 100000;
 		DumpsTripleSampling("/home/hanzhe/Public/result_hz/wiki_count2/predicate/predicateId2",
 				"/home/hanzhe/Public/result_hz/wiki_count2/predicate/predicateId2.sample10000", lineNr);
 	}
 
-	private static void DumpsTripleSampling2(String srcFile, String tarPath,
+	public static void DumpsTripleSampling2(String srcFile, String tarPath,
 			int lineNr) {
 		// TODO Auto-generated method stub
 		BufferedReader br = uFunc.getBufferedReader(srcFile);
 		String oneLine = "";
-		String output = "";
 		int linenr = 0;
 		HashMap<String, Integer> predId = new HashMap<String, Integer>();
 		try {

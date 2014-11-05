@@ -17,4 +17,10 @@ public class myElement {
 		link = null;
 	}
 
+	public String toString()
+	{
+		String result = "";
+		result += "context:" + context + "; " + "link:" + link;
+		return result;
+	}
 }

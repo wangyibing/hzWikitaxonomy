@@ -36,5 +36,6 @@ public class Compare2File {
 				sc.nextLine();
 			}
 		}
+		sc.close();
 	}
 }

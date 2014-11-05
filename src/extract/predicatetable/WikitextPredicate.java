@@ -226,9 +226,7 @@ public class WikitextPredicate {
 		if(dObjc.matches("\\[\\[[0-9]{1,}\\]\\]"))
 		{
 			linkOD = Integer.parseInt(dObjc.substring(2, dObjc.length() - 2));
-			dObjc = Entity.getTitle(linkOD);
-			if(dObjc == null)
-				dObjc = Zhwiki.getTitle(linkOD);
+			dObjc = Entity.getTitles(linkOD);
 			if(dObjc == null)
 			{
 				uFunc.Alert(true, i, "dObjc is null:" + pageidD + "\t" + dPred);
@@ -246,6 +244,8 @@ public class WikitextPredicate {
 			{
 				if(objP.contains("##"))
 					objP = objP.substring(0, objP.indexOf("##"));
+				if(objP.indexOf("->") < 0)
+					uFunc.Alert(true, "WikitextPredicate", objP);
 				contOP = objP.substring(0, objP.indexOf("->"));
 				String linkString = objP.substring(
 						objP.indexOf("->") + 3, objP.length() - 1);
@@ -262,9 +262,9 @@ public class WikitextPredicate {
 		}
 		whole += each;
 		String tits = "";
-		if(Page.getTitles(linkOD) != null)
+		if(Entity.getTitles(linkOD) != null)
 		{
-			tits = Page.getTitles(linkOD) + "####" + dObjc;
+			tits = Entity.getTitles(linkOD) + "####" + dObjc;
 		}
 		else tits = dObjc;
 		double maxPerc = 0;

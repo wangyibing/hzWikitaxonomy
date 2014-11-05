@@ -12,7 +12,7 @@ import com.tag.myElement;
 import com.tag.myObj;
 import com.tag.myTag;
 
-import database.Page;
+import database.Entity;
 import tools.uFunc;
 import triple.standardize.ObjeStdz;
 import triple.standardize.PredStdz;
@@ -69,7 +69,7 @@ public class RecordGenerator {
 		{
 			myTag tagPre = tags.get(0);
 			myTag tagObj = tags.get(1);
-			if((TagChild.containDescendantTag(tags.get(0).tag, "b") ||
+			if((TagChild.containDescendantTag(tagPre.tag, "b") ||
 					tagPre.tag.getTagName().equals("TH")) 
 					 && TagChild.containDescendantTag(tr, "HR") == false)
 			{
@@ -133,9 +133,6 @@ public class RecordGenerator {
 						(tr, "style", "(font\\-size\\:[0-9]{1,}\\%)|(small)"))
 					return "";
 				myObj objc = ObjeStdz.standardize(tagObj);
-				/*uFunc.Alert(true, c, "");
-				predi.OutputEle("");
-				objc.OutputEle("");*/
 				// normal triple exist, namely subtitle exist
 				if(InfoboxNode.infoboxIMG == false &&
 						predi != null && objc != null)
@@ -170,7 +167,8 @@ public class RecordGenerator {
 					if(cont.endsWith("沿革") || cont.contains("青年队")
 							|| cont.contains("职业俱乐部") || cont.contains("国家队")
 							|| cont.contains("历任") || cont.contains("承建商")
-							|| cont.equals("生涯历史") || cont.equals("奖项与成就"))
+							|| cont.equals("生涯历史") || cont.equals("奖项与成就")
+							|| cont.contains("执教球队"))
 					{
 						myElement ele = new myElement("");
 						if(pred != null)
@@ -186,6 +184,17 @@ public class RecordGenerator {
 				if(InfoboxNode.ListTable == true)
 				{
 					return "";
+					/*myObj newObj = new myObj();
+					String content = "";
+					if(pred != null)
+						content += pred.context + " ";
+					if(objc != null)
+						content += objc.toString();
+					if(content.equals(""))
+						return "";
+					myElement ele = new myElement(content);
+					newObj.addEle(ele);
+					return TripleFromUT(pageid, newObj);*/
 				}
 				String triple = GeneratorDistributor.distribute(
 						pageid, predi, objc, InfoboxNode.UpperTitle,
@@ -198,44 +207,43 @@ public class RecordGenerator {
 		else if(tags.size() == 1)
 		{
 			InfoboxNode.ListTable = false;
-			String tName = tags.get(0).tag.getTagName().toLowerCase();
-
+			Tag sglTag = tags.get(0).tag;
+			String tName = sglTag.getTagName().toLowerCase();
 			// top img
 			if(InfoboxNode.infoboxIMG == false && 
-					TagChild.containDescendantTag(tags.get(0).tag, "img"))
+					TagChild.containDescendantTag(sglTag, "img"))
 			{
 				InfoboxNode.TRTitleNr = 0;
 				InfoboxNode.infoboxIMG = true;
-				//System.out.println("TripleGenerator.java:IMG" + tags.get(0).tag.toPlainTextString());
+				//System.out.println("TripleGenerator.java:IMG" + sglTag.toPlainTextString());
 			}
 
 			String context =uFunc.Simplify(uFunc.ReplaceBoundSpace(
-					tags.get(0).tag.toPlainTextString())); 
+					sglTag.toPlainTextString())); 
 			if(context.matches(".+([\\u4e00-\\u9fa5]| |_)+(\\:|：).+") &&
-					TagChild.containDescendantTag(tags.get(0).tag, "tr") == false)
+					TagChild.containDescendantTag(sglTag, "tr") == false)
 			{
 				// single tr containing ":"
-				//uFunc.Alert(true, c, "single tr:" + context);
 				return "";
 				//return GeneratorDistributor.distribute(context, pageid, InfoboxNode.UpperTitle, InfoboxNode.TRTitleNr);
 			}
 			// subTitle
-			if(tName.equals("th") && TagChild.containDescendantTag(tr, "HR") == false)
+			if(tName.equals("th") && TagChild.containDescendantTag(sglTag, "HR") == false)
 			{
-				return UpdateUpperTitle(tr, pageid, false);
+				return UpdateUpperTitle(sglTag, pageid, false);
 			}
-			else if(TagChild.containDescendantTag(tr, "b")
-					 && TagChild.containDescendantTag(tr, "HR") == false)
+			else if(TagChild.containDescendantTag(sglTag, "b")
+					 && TagChild.containDescendantTag(sglTag, "HR") == false)
 			{
-				UpdateUpperTitle(tr, pageid, false);
+				return UpdateUpperTitle(sglTag, pageid, false);
 			}
 			// content
 			else if(tName.equals("td"))
 			{
-				RemoveUpperTitleElement(tags.get(0).tag);
-				if(TagChild.containDescendantTag(tags.get(0).tag, "tr"))
+				RemoveUpperTitleElement(sglTag);
+				if(TagChild.containDescendantTag(sglTag, "tr"))
 					return "";
-				myObj objc = ObjeStdz.standardize(new myTag(tags.get(0).tag, true));
+				myObj objc = ObjeStdz.standardize(new myTag(sglTag, true));
 				return TripleFromUT(pageid, objc);
 				
 			}
@@ -253,6 +261,17 @@ public class RecordGenerator {
 			{
 				InfoboxNode.ListTable = true;
 			}
+			//return "";
+			/*myObj newObj = new myObj();
+			String content = "";
+			for(myTag mytag : tags)
+				if(mytag.context != null && mytag.context.equals("") == false)
+					content += mytag.context + " ";
+			if(content.equals(""))
+				return "";
+			myElement ele = new myElement(content);
+			newObj.addEle(ele);
+			return TripleFromUT(pageid, newObj);*/
 		}
 		return "";
 	}
@@ -266,9 +285,7 @@ public class RecordGenerator {
 		{
 			myObj predi = new myObj();
 			predi.addEle(InfoboxNode.UpperTitle);
-			/*info = InfoboxNode.UpperTitle.context + "\n" + 
-					GeneratorDistributor.distribute(pageid, predi, objc, InfoboxNode.UpperTitle, InfoboxNode.UpperTitleMinus, InfoboxNode.TRTitleNr);
-			uFunc.Alert(true, c, info);*/
+			//uFunc.Alert(true, c, InfoboxNode.UpperTitle.toString());
 			return GeneratorDistributor.distribute(
 					pageid, predi, objc, InfoboxNode.UpperTitle,
 					InfoboxNode.UpperTitleMinus, InfoboxNode.TRTitleNr);
@@ -303,23 +320,21 @@ public class RecordGenerator {
 			tUpperTitle = PredStdz.standardize(tags.get(0).tag, pageid);
 		else{
 			String bold = TagChild.GetChildren(tr, "b");
+			if(bold != null)
+				bold = bold.replaceAll("<([^>]{1,})>", "");
 			//System.out.println(bold + "\t" + tr.toHtml());
 			if(bold == null)
 				return null;
 			tUpperTitle = new myElement(bold);
 		}
-		
+
 		// there are some image or format defin on the top
 		if(tUpperTitle == null || tUpperTitle.context == null)
 		{
 			return null;
 		}
-		/*info = "th:" + tr.toPlainTextString();
-		uFunc.Alert(true, c, info);
-		info = "UpperTItle:" + tUpperTitle.context;
-		uFunc.Alert(true, c, info);*/
 		// subtitle is not the entity's name
-		String titles = Page.getTitles(pageid);
+		String titles = Entity.getTitles(pageid);
 		String ut = tUpperTitle.context;
 		boolean isEntityName = false;
 		if(titles != null)
@@ -336,6 +351,8 @@ public class RecordGenerator {
 		}
 		if(isEntityName == true)
 			return null;
+		if(uFunc.Contain(tUpperTitle.context, "[0-9]{4}"))
+			return null;
 		if(forMinusSymbolUpperTitle == false && 
 				tUpperTitle.context.equals("") == false){
 			//uFunc.Alert(true, c, "UppderTitle:" + ut);
@@ -343,12 +360,6 @@ public class RecordGenerator {
 		}
 		else{
 			InfoboxNode.UpperTitleMinus = tUpperTitle;
-			/*
-			if(tr.getTagName().equals("TH") == false)
-			{
-				info = "UpperTitle:" + tUpperTitle.context + "\t" + pageid;
-				uFunc.Alert(true, c, info);
-			}*/
 		}
 		
 		return null;

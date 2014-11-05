@@ -20,7 +20,7 @@ public class PredNorm {
 		
 	}
 
-	private static void Survey(String predicate2, String infoFolder) {
+	public static void Survey(String predicate2, String infoFolder) {
 		// TODO Auto-generated method stub
 		String oneLine = "";
 		myPredicate pred;

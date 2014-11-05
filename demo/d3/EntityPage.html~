@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script type="text/javascript" src="js/zhwiki.js"></script>
+	<script type="text/javascript" src="js/d3.js"></script>
+	<link href="css/entitygraph.css" rel="stylesheet" type="text/css">
+	<meta charset="utf-8" />
+	<title>Entity Page</title>
+</head>
+<body onload="GetZhwikiIMGInfo(44989);GetZhwikiFirParaInfo(44989)">
+
+<div id = "zhwiki_Img"></div>
+<div id = "zhwiki_Summary"></div>
+<div id = "Entity_Graph" >
+<script type="text/javascript">
+DrawEntityMap(133);
+</script>>
+</div>
+</body>
+</html>

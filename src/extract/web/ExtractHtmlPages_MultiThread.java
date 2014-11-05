@@ -26,7 +26,7 @@ class ExtractThread implements Runnable{
 		uFunc.deleteFile(uFunc.AlertPath);
 		WebPageFolder = WholeFolder + "FileSplit";
 		FailureIdTitPath = WholeFolder + "FailureIdTit.txt";
-		br = uFunc.getBufferedReader(Entity.CanonicalPath_titles);
+		br = uFunc.getBufferedReader(Entity.id2titFile);
 		t1 = System.currentTimeMillis();
 		startTime = System.currentTimeMillis();
 		File filesplit = new File(WebPageFolder);
@@ -82,8 +82,6 @@ class ExtractThread implements Runnable{
 		try {
 			while((oneLine = br.readLine()) != null){
 				String [] ss = oneLine.split("\t");
-				if(ss[2].equals("title") == false)
-					continue;
 				int pageid = Integer.parseInt(ss[0]);
 				if(extractedPage.containsKey(pageid))
 					continue;
@@ -92,6 +90,8 @@ class ExtractThread implements Runnable{
 					if(newPageNr % 5 == 0)
 						System.out.println(oneLine);
 					String PageTitle = uFunc.Simplify(ss[1]);
+					if(PageTitle.contains("####"))
+						PageTitle = PageTitle.substring(0, PageTitle.indexOf("####"));
 					PageTitle = PageTitle.replaceAll(
 							"\\\\|\\?|\\!|\\/|\\<|\\>|\\:|\\*|\\|", "_");
 					String outputPath = WebPageFolder +"/"+ existFolderNr 

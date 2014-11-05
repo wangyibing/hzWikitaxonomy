@@ -6,14 +6,12 @@ public class MoveFile {
 
 	public static void main(String []args)
 	{
-		String srcPath = "/home/hanzhe/Public/result_hz/zhwiki/ZhwikiWebPages/ZhWebPages";
-		String targetPath = "/home/hanzhe/Public/result_hz/zhwiki/ZhwikiWebPages/ZhWebPages";
 		//for(int i = 1; i < 4; i ++)
 		//	RemoveAll(srcPath + i, targetPath);
 		FileRename("/home/hanzhe/Public/result_hz/zhwiki/ZhwikiWebPages/FileSplit");
 	}
 
-	private static void RemoveAll(String srcPath, String targetPath) {
+	public static void RemoveAll(String srcPath, String targetPath) {
 		// TODO Auto-generated method stub
 		File srcFolder = new File(srcPath);
 		File tgtFolder = new File(targetPath);

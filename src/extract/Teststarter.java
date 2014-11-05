@@ -7,7 +7,7 @@ import extract.predicatetable.WikitextPredicate;
 import tools.uFunc;
 
 
-public class starter {
+public class Teststarter {
 
 	public static String Folder = 
 			"/home/hanzhe/Public/result_hz/wiki_count/pageinfo/";

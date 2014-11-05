@@ -1,0 +1,15 @@
+
+<style type="text/css">
+.node {
+  stroke: #fff;
+  stroke-width: 1.5px;
+  cursor:pointer;
+}
+
+.nodetext {
+  fill: #000;
+  font-size:12px;
+  cursor:pointer;
+  pointer-events:none;
+ }
+</style>

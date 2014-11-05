@@ -168,7 +168,7 @@ public class PredIdGenerator {
 				int pageid = Entity.getId(entity);
 				if(pageid > 0)
 				{
-					return "[" + Entity.getTitle(pageid) + "]";
+					return cont + "->[" + pageid + "]";
 				}
 				else
 				{

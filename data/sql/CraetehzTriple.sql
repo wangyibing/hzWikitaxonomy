@@ -1,6 +1,6 @@
-USE hzwikitaxonomy;
+USE hzWikiCount2;
 -- 
--- Table structure for table `MetaData`
+-- Table structure for table `hzTriple`
 -- 
 DROP TABLE IF EXISTS `hzTriple`;
 CREATE TABLE `hzTriple` (
@@ -11,5 +11,7 @@ CREATE TABLE `hzTriple` (
 	`Subject` varchar(255) NOT NULL,
 	`Predicate` varchar(255) NOT NULL,
 	`Object` longtext default NULL,
-	PRIMARY KEY  (`id`)
+	`Note` longtext default NULL,
+	PRIMARY KEY  (`id`),
+	index(`SubId`)
 )ENGINE=MyISAM DEFAULT CHARSET=utf8;

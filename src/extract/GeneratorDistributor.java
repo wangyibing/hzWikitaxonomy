@@ -97,7 +97,6 @@ public class GeneratorDistributor {
 		// TODO Auto-generated method stub
 		String result = "";
 		if(context.split(":|：").length < 2){
-			uFunc.Alert(i, "single triple distribute failed:" + context);
 			return null;
 		}
 		int index = context.indexOf(":");
@@ -121,7 +120,6 @@ public class GeneratorDistributor {
 		if(InfoboxNode.LightBlue)
 		{
 			info = "lightblue:\n" + result;
-			uFunc.Alert(true, i, info);
 		}
 		return result;
 	}

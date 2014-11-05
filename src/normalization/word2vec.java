@@ -2,17 +2,14 @@ package normalization;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import org.ansj.domain.Term;
 import org.ansj.splitWord.analysis.NlpAnalysis;
 
 import com.ansj.vec.Word2VEC;
-import com.ansj.vec.domain.WordEntry;
 
 import tools.uFunc;
 

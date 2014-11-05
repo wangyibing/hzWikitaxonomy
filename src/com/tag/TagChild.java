@@ -46,12 +46,15 @@ public class TagChild {
 
 	public static boolean isChild(Tag father, Tag Son)
 	{
-		
+		if(father == null)
+			return false;
 		return 
 				father.getChildren().contains(Son);
 	}
 	public static boolean isChild(Node father, Tag Son)
 	{
+		if(father == null || father.getChildren() == null)
+			return false;
 		return 
 				father.getChildren().contains(Son);
 	}

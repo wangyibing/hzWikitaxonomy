@@ -6,7 +6,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -624,9 +623,8 @@ public class uFunc {
 		// TODO Auto-generated method stub
 		BufferedReader br = uFunc.getBufferedReader(path);
 		int lineNr = 0;
-		String oneLine = "";
 		try {
-			while((oneLine = br.readLine()) != null)
+			while((br.readLine()) != null)
 				lineNr ++;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -643,8 +641,17 @@ public class uFunc {
 		String attriValue = tr.getAttribute(attri.toUpperCase());
 		if(attriValue == null)
 			return false;
+		//uFunc.Alert(true, "uFUnc", tr.getTagName() + "  " + attri + " " + attriValue);
 		Pattern p = Pattern.compile(regex.toLowerCase());
 		Matcher m = p.matcher(attriValue.toLowerCase());
+		boolean result = m.find();
+		return result;
+	}
+	
+	public static boolean Contain(String string, String regex)
+	{
+		Pattern p = Pattern.compile(regex);
+		Matcher m = p.matcher(string);
 		return m.find();
 	}
 }

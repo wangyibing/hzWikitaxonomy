@@ -60,7 +60,7 @@ public class ExtractHtmlPages {
 				+ "cost:" + (System.currentTimeMillis() - t1));
 		
 		BufferedReader br = uFunc.getBufferedReader(
-				Entity.CanonicalPath_titles);
+				Entity.id2titFile);
 		String oneLine = "";
 		int PageNrSize = 0;
 		int newPageNr = folder == null ? 0 : folder.listFiles().length;
@@ -75,74 +75,72 @@ public class ExtractHtmlPages {
 			while((oneLine = br.readLine()) != null)
 			{
 				String [] ss = oneLine.split("\t");
-				if(ss[2].equals("title"))
+
+				PageNrSize ++;
+				int pageid = Integer.parseInt(ss[0]);
+				if(extractedPage.containsKey(pageid))
+					continue;
+				else
 				{
-					PageNrSize ++;
-					int pageid = Integer.parseInt(ss[0]);
-					if(extractedPage.containsKey(pageid))
-						continue;
-					else
+					if(oneLine.contains("中国") || oneLine.contains("党"))
 					{
-						if(oneLine.contains("中国") || oneLine.contains("党"))
+						uFunc.addFile(oneLine + "\n", FailureIdTitPath);
+						continue;
+					}
+					//System.out.println(oneLine);
+					String PageTitle = uFunc.Simplify(ss[1]);
+					PageTitle = PageTitle.replaceAll(
+							"\\\\|\\?|\\!|\\/|\\<|\\>|\\:|\\*|\\|", "_");
+					String outputPath = WebPageFolder +"/"+ folderNr 
+							+ "/" +pageid +"_"+ PageTitle;
+					File file = new File(outputPath);
+					if(file.exists())
+						continue;
+					try {
+						URL url = new URL("http://zh.wikipedia.org/wiki?curid="
+								+ pageid);
+						BufferedReader br2 = new BufferedReader(
+								new InputStreamReader(url.openStream()));
+						String output = "";
+						int outNr = 0;
+						String tmp = "";
+						while((tmp = br2.readLine()) != null)
 						{
-							uFunc.addFile(oneLine + "\n", FailureIdTitPath);
-							continue;
-						}
-						//System.out.println(oneLine);
-						String PageTitle = uFunc.Simplify(ss[1]);
-						PageTitle = PageTitle.replaceAll(
-								"\\\\|\\?|\\!|\\/|\\<|\\>|\\:|\\*|\\|", "_");
-						String outputPath = WebPageFolder +"/"+ folderNr 
-								+ "/" +pageid +"_"+ PageTitle;
-						File file = new File(outputPath);
-						if(file.exists())
-							continue;
-						try {
-							URL url = new URL("http://zh.wikipedia.org/wiki?curid="
-									+ pageid);
-							BufferedReader br2 = new BufferedReader(
-									new InputStreamReader(url.openStream()));
-							String output = "";
-							int outNr = 0;
-							String tmp = "";
-							while((tmp = br2.readLine()) != null)
+							output += tmp + "\n";
+							outNr ++;
+							if(outNr % 1000 == 0)
 							{
-								output += tmp + "\n";
-								outNr ++;
-								if(outNr % 1000 == 0)
-								{
-									uFunc.addFile(output, outputPath);
-									output = "";
-								}
+								uFunc.addFile(output, outputPath);
+								output = "";
 							}
-							uFunc.addFile(output, outputPath);
-							newPageNr ++;
-							if(newPageNr % 800 == 0)
-							{
-								folderNr ++;
-								newFolder = new File(WebPageFolder +"/"+ folderNr);
-								if(!(newFolder.exists() && newFolder.isDirectory()))
-									newFolder.mkdir();
-							}
-							try{
-								if(newPageNr % 10 == 0){
-									Thread.sleep(100);
-									if(newPageNr % 200 == 0){
-										//System.out.println((System.currentTimeMillis() - t2)/1000);
-										//t2 = System.currentTimeMillis();
-										Thread.sleep(20000);
-										System.out.println(newPageNr);
-									}
-									
-								}
-							}catch(Exception e){
-								System.out.println("sleep error");
-							}
-						} catch (Exception e) {
-							System.out.println("error:" + oneLine);
-							e.printStackTrace();
-							uFunc.addFile(oneLine + "\n", FailureIdTitPath);
 						}
+						uFunc.addFile(output, outputPath);
+						newPageNr ++;
+						if(newPageNr % 800 == 0)
+						{
+							folderNr ++;
+							newFolder = new File(WebPageFolder +"/"+ folderNr);
+							if(!(newFolder.exists() && newFolder.isDirectory()))
+								newFolder.mkdir();
+						}
+						try{
+							if(newPageNr % 10 == 0){
+								Thread.sleep(100);
+								if(newPageNr % 200 == 0){
+									//System.out.println((System.currentTimeMillis() - t2)/1000);
+									//t2 = System.currentTimeMillis();
+									Thread.sleep(20000);
+									System.out.println(newPageNr);
+								}
+								
+							}
+						}catch(Exception e){
+							System.out.println("sleep error");
+						}
+					} catch (Exception e) {
+						System.out.println("error:" + oneLine);
+						e.printStackTrace();
+						uFunc.addFile(oneLine + "\n", FailureIdTitPath);
 					}
 				}
 			}
@@ -154,79 +152,4 @@ public class ExtractHtmlPages {
 		}
 		
 	}
-	/*
-	static long t1,t2,t3,t4;
-	static long cost1 = 0, cost2 = 0, cost3 = 0;
-	public static void ExtractProcess() {
-		// TODO Auto-generated method stub
-		t1 = System.currentTimeMillis();
-		BufferedReader br = 
-				uFunc.getBufferedReader(EntityIdTitPath);
-		int PageNr = 0;
-		String oneLine = "";
-		int PageId = 0;
-		String PageTitle = "";
-		String url;
-		String outputPath = "";
-		int lineNr  = 0;
-		while(true){
-			oneLine = null;
-			try {
-				oneLine = br.readLine();
-			} catch (IOException e1) {
-				e1.printStackTrace();
-				continue;
-			}
-			lineNr += 3;
-			if(lineNr % 3 != 0)
-				continue;
-			if(oneLine == null)
-				break;
-			String [] ss = oneLine.split("\t");
-			if(ss.length < 2)
-				continue;
-			PageId = Integer.parseInt(ss[0]);
-			//if(PageId <= RestartPageid)
-			//	continue;
-			if(PageId == 0)
-				continue;
-			//System.out.print("b");
-			//System.out.println(lineNr +" \t" + oneLine);
-			PageTitle = uFunc.Simplify(ss[1]);
-			PageTitle = PageTitle.replaceAll("\\\\|\\?|\\!|\\/|\\<|\\>|\\:|\\*|\\|", "_");
-			outputPath = WebPageFolder +"/"+ PageId +"_"+ PageTitle;
-			File file = new File(outputPath);
-			if(file.exists())
-				continue;
-			url = "http://zh.wikipedia.org/wiki?curid=" + PageId;
-			Parser parser;
-			try {
-				parser = new Parser(url);
-				uFunc.addFile(parser.parse(null).toHtml(true), outputPath);
-			} catch (Exception e) {
-				System.out.println(oneLine);
-				e.printStackTrace();
-				uFunc.addFile(oneLine + "\n", FailureIdTitPath);
-				continue;
-			}
-			//System.out.println("end");
-
-			PageNr ++;
-			try{
-				if(PageNr % 10 == 0){
-					Thread.sleep(100);
-					if(PageNr % 200 == 0){
-						System.out.println((System.currentTimeMillis() - t2)/1000);
-						t2 = System.currentTimeMillis();
-						Thread.sleep(20000);
-						System.out.println(PageNr);
-					}
-					
-				}
-			}catch(Exception e){
-				System.out.println("sleep error");
-			}
-		}
-	}
-	*/
 }

@@ -47,7 +47,7 @@ public class PredStdz {
 		// TODO Auto-generated method stub
 		String result = uFunc.ReplaceBoundSpace(
 				HTMLStdz.standardize(plainTextString))
-				.replaceAll("(_|-|—)", " ").replaceAll(" +", " ");
+				.replaceAll(" +", " ");
 		result = result
 				// replace the ":" in the end
 				.replaceAll("(:$)|(：$)", "");

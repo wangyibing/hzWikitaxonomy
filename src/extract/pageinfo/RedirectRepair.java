@@ -6,6 +6,7 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import database.Entity;
 import database.RediPage;
 import database.Zhwiki;
 import extract.web.ExtractAPI;
@@ -61,8 +62,8 @@ public class RedirectRepair {
 					if(pageid > 0 && tarId > 0 )
 					{
 						fixNr ++;
-						title = Zhwiki.getTitle(pageid);
-						tarTitle = Zhwiki.getTitle(tarId);
+						title = Entity.getTitles(pageid);
+						tarTitle = Entity.getTitles(tarId);
 						output += pageid +"\t"+ tarId + "\t" + title + "\t"
 								+ tarTitle + "\n";
 						continue;
@@ -81,8 +82,8 @@ public class RedirectRepair {
 						if(tarId > 0 )
 						{
 							fixNr ++;
-							title = Zhwiki.getTitle(pageid);
-							tarTitle = Zhwiki.getTitle(tarId);
+							title = Entity.getTitles(pageid);
+							tarTitle = Entity.getTitles(tarId);
 							output += pageid +"\t"+ tarId + "\t" + title + "\t"
 									+ tarTitle + "\n";
 						}
@@ -120,7 +121,7 @@ public class RedirectRepair {
 				//System.out.println(text);
 			}
 			s = GetTargetTitle(s);
-			int targetId = Zhwiki.getPageId(s);
+			int targetId = Entity.getId(s);
 			if(targetId == 0)
 				targetId = ExtractAPI.GetPageId(s);
 			if(targetId == 0)

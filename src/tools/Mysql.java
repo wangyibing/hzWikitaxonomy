@@ -14,12 +14,21 @@ import java.util.List;
 public class Mysql {
 	public Connection conn;
 	public PreparedStatement Query = null;
+	public Mysql()
+	{
+		conn = null;
+		Query = null;
+	}
+	public Mysql(String dbName, String IP)
+	{
+		Connect2DB(dbName, IP);
+	}
 	public Connection Connect2DB(String dbName, String IP) {
 		// TODO Auto-generated method stub
 		try{
             //调用Class.forName()方法加载驱动程序
             Class.forName("com.mysql.jdbc.Driver");
-            System.out.println("成功加载MySQL驱动！");
+            //System.out.println("成功加载MySQL驱动！");
         }catch(ClassNotFoundException e1){
             System.out.println("找不到MySQL驱动!");
             e1.printStackTrace();
@@ -27,7 +36,7 @@ public class Mysql {
 		if(IP == null)
 			IP = "localhost";
 		//JDBC的URL
-        String url="jdbc:mysql://IP:3306/" + dbName 
+        String url="jdbc:mysql://" + IP + ":3306/" + dbName 
         		+ "?characterEncoding=utf8";    
         //调用DriverManager对象的getConnection()方法，获得一个Connection对象
         try {
@@ -35,7 +44,7 @@ public class Mysql {
             //创建一个Statement对象
             Query = conn.prepareStatement(
         			" select text from Page where pageId = ? ");
-            System.out.println("成功连接到数据库！");
+            //System.out.println("成功连接到数据库！");
             return conn;
         } catch (SQLException e){
             e.printStackTrace();

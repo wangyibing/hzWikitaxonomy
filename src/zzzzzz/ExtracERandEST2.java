@@ -7,7 +7,6 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import tools.uFunc;
@@ -382,7 +381,6 @@ public class ExtracERandEST2 {
 							entity = "";
 						else{
 							int ind = entity.indexOf(":");
-							String mark = entity;
 							while(ind >= 0 && ind < entity.length() - 1
 									&& entity.charAt(ind+1) != ' '){
 								entity = entity.substring(ind + 1);
