@@ -78,8 +78,8 @@ public class Extract{
 			String titles = uFunc.Simplify(Entity.getTitles(pageid));
 			if(titles == null)
 			{
-				info = "pagetitle missed in Entity:" + pageid;
-				uFunc.Alert(true, i, info);
+				//info = "pagetitle missed in Entity:" + pageid;
+				//uFunc.Alert(true, i, info);
 				continue;
 			}
 			boolean jump = false;
@@ -97,7 +97,7 @@ public class Extract{
 			if(jump)
 				continue;
 			////////////////////////////////
-			if(pageid != 481 && pageid != 105461)continue;
+			//if(pageid != 481 && pageid != 105461)continue;
 			////////////////////////////////
 			fileNr ++;
 			String result = "";

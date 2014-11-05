@@ -48,6 +48,8 @@ public class TagChild {
 	{
 		if(father == null)
 			return false;
+		if(father.getChildren() == null)
+			return false;
 		return 
 				father.getChildren().contains(Son);
 	}

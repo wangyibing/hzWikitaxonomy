@@ -184,13 +184,22 @@ public class TripleGenerator {
 			{
 				String entity = URL2UTF8.unescape(link.substring
 						(link.indexOf("/wiki/") + 6));
+				String lower = entity.toLowerCase();
+				if(lower.startsWith("category:") || lower.startsWith("special:")
+						|| lower.startsWith("portal:") || lower.startsWith("wikipedia:"))
+					return cont;
 				if(entity.contains("#"))
 					entity = entity.substring(0,  entity.indexOf("#"));
 				int pageid = Entity.getId(entity);
+				if(pageid <= 0)
+					pageid = Entity.getId(uFunc.TraConverter.convert(entity));
+				if(pageid <= 0)
+					pageid = Entity.getId(uFunc.Simplify(entity));
 				if(pageid > 0)
 				{
 					return cont + "->" + "[" + pageid + "]";
-				}else{
+				}
+				else{
 					info = "entity pageid not found!" + cont + " " + PageId;
 					uFunc.Alert(true, i, info);
 				}

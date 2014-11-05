@@ -1,9 +1,12 @@
-package extract.predicatetable;
+package extract;
 
-import extract.Extract;
+import extract.predicatetable.PredAvgExtraction;
+import extract.predicatetable.PredNorm;
+import extract.predicatetable.PredicateIdSort;
+import extract.predicatetable.WikitextPredicate;
 
 
-public class starter {
+public class PredTableStarter {
 
 	public static void main(String [] args)
 	{
@@ -16,7 +19,7 @@ public class starter {
 		String predicateAvg = folder + "PredicateAvg";
 		
 		// 1. generate "predicateId" file along with "web's triple" file
-		//Extract.main(null);
+		Extract.main(null);
 		// 2. sort predicateId table to generate "predicateId.sorted"
 		PredicateIdSort.Sort(predicate, predicateSorted);
 		// 3. fill the predicate info with dumpsinfo, generate "predicate2"

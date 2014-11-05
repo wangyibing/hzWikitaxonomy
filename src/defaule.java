@@ -15,12 +15,15 @@ import database.Entity;
 import database.InfoboxNameList;
 import database.Zhwiki;
 import extract.Extract;
+import tools.URL2UTF8;
 import tools.uFunc;
 
 public class defaule {
 
 	public static void main(String [] args){
 		Entity.getId("姚明");
+		System.out.println(URL2UTF8.unescape(
+				"%E4%B8%AD%E8%8F%AF%E4%BA%BA%E6%B0%91%E5%85%B1%E5%92%8C%E5%9C%8B"));
 		String re = uFunc.OutputProjectInfo();
 		Scanner sc = new Scanner(System.in);
 		String title = "";
