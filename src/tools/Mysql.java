@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -23,12 +24,30 @@ public class Mysql {
 	{
 		Connect2DB(dbName, IP);
 	}
+	
+	public boolean SetLargeQuery(String sql)
+	{
+		try {
+			Query = conn.prepareStatement(sql,
+					ResultSet.TYPE_FORWARD_ONLY,  
+			        ResultSet.CONCUR_READ_ONLY);
+			Query.setFetchSize(Integer.MIN_VALUE);
+			Query.setFetchDirection(ResultSet.FETCH_REVERSE);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}  
+        
+		return true;
+	}
+	
 	public Connection Connect2DB(String dbName, String IP) {
 		// TODO Auto-generated method stub
 		try{
             //调用Class.forName()方法加载驱动程序
             Class.forName("com.mysql.jdbc.Driver");
-            //System.out.println("成功加载MySQL驱动！");
+            System.out.println("成功加载MySQL驱动！");
         }catch(ClassNotFoundException e1){
             System.out.println("找不到MySQL驱动!");
             e1.printStackTrace();
@@ -44,7 +63,7 @@ public class Mysql {
             //创建一个Statement对象
             Query = conn.prepareStatement(
         			" select text from Page where pageId = ? ");
-            //System.out.println("成功连接到数据库！");
+            System.out.println("成功连接到数据库！");
             return conn;
         } catch (SQLException e){
             e.printStackTrace();

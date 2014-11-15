@@ -1,0 +1,21 @@
+Triple2Mysql:1053964	别名	氧化𨱏
+Triple2Mysql:1053964	别名	氧化𨱏(Ⅶ)
+Triple2Mysql:cost:36sec	wrongNr:913	totalTriples:500000	longest obj:1390
+Triple2Mysql:cost:34sec	wrongNr:1522	totalTriples:1000000	longest obj:1390
+Triple2Mysql:1915988	前任	石本𨱌太郎->[1915924]
+Triple2Mysql:226817	配偶	陈堃𨱇->[1698553]
+Triple2Mysql:cost:34sec	wrongNr:1865	totalTriples:1500000	longest obj:1390
+Triple2Mysql:cost:34sec	wrongNr:2290	totalTriples:2000000	longest obj:1390
+Triple2Mysql:cost:33sec	wrongNr:3490	totalTriples:2500000	longest obj:1962
+Triple2Mysql:663302	现存遗迹	𩾇之门及续橹
+Triple2Mysql:cost:33sec	wrongNr:4775	totalTriples:3000000	longest obj:9539
+Triple2Mysql:67577	通称	金𩾇城
+Triple2Mysql:74972	旧称	玛𨱈
+Triple2Mysql:74972	区公所位址	玛𨱈路221号5楼
+Triple2Mysql:545638	亚目->[109538]	𩽾𩾌亚目 Lophioidei
+Triple2Mysql:1056267	别名	氯化𨱏(Ⅳ)
+Triple2Mysql:1624663	别名	高𨱏酸钠->[1624663]
+Triple2Mysql:1624663	相关化学品	七氧化二𨱏->[1053964]
+Triple2Mysql:cost:34sec	wrongNr:5785	totalTriples:3500000	longest obj:9539
+Triple2Mysql:wrongNr:5785	totalTriples:3562631
+longest obj:9539

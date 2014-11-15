@@ -4,7 +4,7 @@ USE hzWikiCount2;
 -- 
 DROP TABLE IF EXISTS `EntityInfo`;
 CREATE TABLE `EntityInfo` (
-	`EntityId` bigint(20) NOT NULL auto_increment,
+	`EntityId` bigint(20) NOT NULL,
 	`title` varchar(255) NOT NULL,
 	`IMGUrl` text default NULL,
 	`IMGWidth` bigint(11) default NULL,
