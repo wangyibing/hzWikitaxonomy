@@ -147,8 +147,6 @@ public class uFunc {
 			e.printStackTrace();
 		}		
 	}
-	private static ZHConverter SimConverter = 
-			ZHConverter.getInstance(ZHConverter.SIMPLIFIED);
 	public static ZHConverter TraConverter = 
 			ZHConverter.getInstance(ZHConverter.TRADITIONAL);
 	
@@ -450,6 +448,8 @@ public class uFunc {
 	}
 
 
+	private static ZHConverter SimConverter = 
+			ZHConverter.getInstance(ZHConverter.SIMPLIFIED);
 	public static String Simplify(String plainTextString) {
 		// TODO Auto-generated method stub
 		if(plainTextString == null)
