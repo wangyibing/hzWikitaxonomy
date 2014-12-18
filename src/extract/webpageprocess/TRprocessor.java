@@ -1,4 +1,4 @@
-package extract;
+package extract.webpageprocess;
 
 import java.util.Vector;
 import java.util.regex.Matcher;
@@ -13,6 +13,7 @@ import com.tag.myObj;
 import com.tag.myTag;
 
 import database.Entity;
+import extract.GeneratorDistributor;
 import tools.uFunc;
 import triple.standardize.ObjeStdz;
 import triple.standardize.PredStdz;

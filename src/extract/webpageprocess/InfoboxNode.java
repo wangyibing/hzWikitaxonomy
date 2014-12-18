@@ -1,4 +1,4 @@
-package extract;
+package extract.webpageprocess;
 
 import org.htmlparser.Tag;
 import org.htmlparser.util.NodeList;

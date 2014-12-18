@@ -10,6 +10,7 @@ import com.tag.myElement;
 import com.tag.myObj;
 
 import extract.predicatetable.PredIdGenerator;
+import extract.webpageprocess.InfoboxNode;
 
 public class GeneratorDistributor {
 	static String i = "GeneratorDistributor";

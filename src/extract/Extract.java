@@ -8,6 +8,7 @@ import org.htmlparser.util.NodeList;
 import database.Entity;
 import database.Infobox;
 import database.RediPage;
+import extract.webpageprocess.PageNode;
 import tools.uFunc;
 /**
  * 1. extract in each folder: ExtractFromLocalFiles
