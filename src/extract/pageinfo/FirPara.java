@@ -1,11 +1,11 @@
-package extract.web;
+package extract.pageinfo;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 
 import tools.uFunc;
 
-public class ExtractFirPara {
+public class FirPara {
 	public static void main(String [] args)
 	{
 		Extract("/home/hanzhe/Public/result_hz/zhwiki/data2/text",

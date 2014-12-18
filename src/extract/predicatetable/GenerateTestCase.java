@@ -8,7 +8,8 @@ import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Scanner;
 
-import extract.pageinfo.myPredicateAvg;
+import com.tag.myPredicateAvg;
+
 import tools.uFunc;
 
 public class GenerateTestCase {

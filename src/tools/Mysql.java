@@ -56,7 +56,7 @@ public class Mysql {
 			IP = "localhost";
 		//JDBC的URL
         String url="jdbc:mysql://" + IP + ":3306/" + dbName 
-        		+ "?characterEncoding=utf8";    
+        		+ "?useUnicode=true&characterEncoding=UTF-8";    
         //调用DriverManager对象的getConnection()方法，获得一个Connection对象
         try {
             conn = DriverManager.getConnection(url,"root","19920326");

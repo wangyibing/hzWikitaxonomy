@@ -39,8 +39,8 @@ public class conn_db {
 		// 创建Wikipedia处理对象
 		Wikipedia wiki = new Wikipedia(dbConfig);
 
-		String title = "";
-		Page page = wiki.getPage(1102474);
+		String title = "亚美尼亚数字";
+		Page page = wiki.getPage(title);
 		System.out.println(page.getTitle().getWikiStyleTitle().equals(title));
 		System.out.println("Page title           : "+ wiki.existsPage(title) + page.getTitle());
 		System.out.println("Page id              : "+ page.getPageId());

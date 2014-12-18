@@ -23,11 +23,9 @@ import database.DisPage;
 import database.Entity;
 import database.Zhwiki;
 import de.tudarmstadt.ukp.wikipedia.api.Page;
-import de.tudarmstadt.ukp.wikipedia.api.exception.WikiApiException;
 import de.tudarmstadt.ukp.wikipedia.parser.Link;
 import de.tudarmstadt.ukp.wikipedia.parser.NestedList;
 import de.tudarmstadt.ukp.wikipedia.parser.NestedListContainer;
-import extract.web.ExtractAPI;
 
 public class DisaPageExtraction {
 	static String i = "DisaPageExtraction";
@@ -57,7 +55,6 @@ public class DisaPageExtraction {
 	private static void ResultFiltering(String srcFile, String exception, 
 			String outPath) {
 		// TODO Auto-generated method stub
-		Zhwiki.init();
 		HashMap<String, Integer> targetFreq = 
 				new HashMap<String, Integer>();
 		BufferedReader br = uFunc.getBufferedReader(exception);
@@ -83,7 +80,7 @@ public class DisaPageExtraction {
 			{
 				String [] ss = oneLine.split("\t");
 				int linkId = Integer.parseInt(ss[1]);
-				String linkTitle = uFunc.Simplify(Entity.getTitles(linkId));
+				String linkTitle = uFunc.Simplify(Entity.getTitle(linkId));
 				int freq = 1;
 				if(targetFreq.containsKey(linkTitle))
 				{
@@ -129,7 +126,6 @@ public class DisaPageExtraction {
 		HashMap<String, Integer> PageTarget = 
 				new HashMap<String, Integer>();
 		
-		Zhwiki.init();
 		int lastId = 0;
 		int pageid = 0;
 		int freq = 0;
@@ -148,7 +144,7 @@ public class DisaPageExtraction {
 					PageTarget.clear();
 					lastId = pageid;
 				}
-				String title = Entity.getTitles(Integer.parseInt(ss[1]));
+				String title = Entity.getTitle(Integer.parseInt(ss[1]));
 				if(title != null && title.contains("####"))
 					title = title.substring(0, title.indexOf("####"));
 				if(PageTarget.containsKey(title) == false)
@@ -191,18 +187,17 @@ public class DisaPageExtraction {
 	 */
 	private static void ExtractDisPages(String folder, String infoPath) {
 		// TODO Auto-generated method stub
-		Zhwiki.init();
 		int PageNr = 0;
 		int DisNr = 0;
 		String info = "";
 		
 		long time = System.currentTimeMillis();
-		for(Page page : Zhwiki.wiki.getPages())
+		for(Page page : Zhwiki.getPages())
 		{
 			//page = Zhwiki.getPage(43690);
 			PageNr ++;
 			PageId = page.getPageId();
-			PageTitle = Entity.getTitles(PageId);
+			PageTitle = Entity.getTitle(PageId);
 			if(PageTitle != null && PageTitle.contains("####"))
 				PageTitle = PageTitle.substring(0, PageTitle.indexOf("####"));
 			//uFunc.Alert("", PageId + "\t" + PageTitle);
@@ -329,8 +324,6 @@ public class DisaPageExtraction {
 					String entity = titles.get(i);
 					int pageid = Entity.getId(entity);
 					if(pageid <= 0)
-						pageid = ExtractAPI.GetPageId(entity);
-					if(pageid <= 0)
 					{
 						String info = "";
 						info = "no targer ERROR:" + PageId + "\t"+ PageTitle + "\t" + entity;
@@ -440,19 +433,14 @@ public class DisaPageExtraction {
 		// TODO Auto-generated method stub
 		int sim = 0;
 		Vector<String> linkTitles = new Vector<String>();
-		try {
-			String title = Entity.getTitles(id);
-			if(title != null)
-			{
-				for(String tit : title.split("####"))
-					linkTitles.add(tit);
-			}
-			for(String redi : Zhwiki.wiki.getPage(id).getRedirects())
-				linkTitles.add(redi);
-		} catch (WikiApiException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		String title = Entity.getTitles(id);
+		if(title != null)
+		{
+			for(String tit : title.split("####"))
+				linkTitles.add(tit);
 		}
+		for(String redi : Zhwiki.getPage(id).getRedirects())
+			linkTitles.add(redi);
 		for(int ii = 0; ii < linkTitles.size(); ii ++){
 			String link = linkTitles.get(ii);
 			for(int i = 0 ; i < titles.size(); i ++)

@@ -7,8 +7,7 @@ import java.util.HashMap;
 import tools.uFunc;
 
 public class Page {
-	public static void main(String [] args){
-	}
+	
 	public static String getCategories(int pageid)
 	{
 		initId2Cate();

@@ -1,7 +1,6 @@
 package database;
 
 
-import tools.uFunc;
 import de.tudarmstadt.ukp.wikipedia.api.Category;
 import de.tudarmstadt.ukp.wikipedia.api.DatabaseConfiguration;
 import de.tudarmstadt.ukp.wikipedia.api.Page;
@@ -13,7 +12,7 @@ public class Zhwiki {
 	// 数据库连接
 	static DatabaseConfiguration dbConfig = new DatabaseConfiguration();
 	//wikipedia实例
-	public static Wikipedia wiki;
+	private static Wikipedia wiki;
 	private static boolean inited = false;
 	public static Page page;
 	public static int PageNum = 0;
@@ -21,7 +20,11 @@ public class Zhwiki {
 	public static int PageId = 0;
 	public static String PageTitle = "";
 	
-	
+	public static Iterable<Page> getPages()
+	{
+		ConnectToDB();
+		return wiki.getPages();
+	}
 	public static Category getCategory(int cateId)
 	{
 		ConnectToDB();
@@ -43,38 +46,7 @@ public class Zhwiki {
 		
 	}
 	
-	/**
-	 * search title, sim_title, trans_title
-	 * @param title
-	 * @return
-	 */
-	public static int getPageId(String title){
-		ConnectToDB();
-		try {
-			if(wiki.existsPage(title))
-				return wiki.getPage(title).getPageId();
-			else if(wiki.existsPage(uFunc.TraConverter.convert(title)))
-				return wiki.getPage(uFunc.TraConverter.convert(title))
-						.getPageId();
-			else if(wiki.existsPage(uFunc.Simplify((title))))
-				return wiki.getPage(uFunc.Simplify((title)))
-						.getPageId();
-			return 0;
-		} catch (Exception e) {
-			//e.printStackTrace();
-			//uFunc.Alert("Zhwiki", "getId error " + title);
-			return 0;
-		}
-	}
-	public static String getTitle(int PageId){
-		ConnectToDB();
-		try {
-			return wiki.getPage(PageId).getTitle().getWikiStyleTitle();
-		} catch (Exception e) {
-			return null;
-		}
-	}
-	public static void ConnectToDB() {
+	private static void ConnectToDB() {
 		if(inited == true)
 			return;
 		try{
@@ -91,12 +63,5 @@ public class Zhwiki {
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-	}
-	public static void init() {
-		// TODO Auto-generated method stub
-		ConnectToDB();
-		PageNum = 0;
-		InfoboxNum = 0;
-		PageId = 0;
 	}
 }

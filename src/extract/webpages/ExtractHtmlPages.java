@@ -1,4 +1,4 @@
-package extract.web;
+package extract.webpages;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -6,8 +6,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.HashMap;
-
-import org.htmlparser.Parser;
 
 import database.Entity;
 import tools.uFunc;
@@ -29,7 +27,6 @@ public class ExtractHtmlPages {
 	//static int RestartPageid = 1126608;
 	public static void main(String [] args){
 		//ExtractProcess();
-		int threadNr = 5;
 		AddNewPages(1004, 1, 5);
 	}
 	private static void AddNewPages(int existFolderNr, int threadK, int threadNr) {

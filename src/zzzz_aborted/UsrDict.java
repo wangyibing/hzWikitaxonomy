@@ -1,4 +1,4 @@
-package tools;
+package zzzz_aborted;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -6,6 +6,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Vector;
+
+import tools.StopWords;
+import tools.uFunc;
 
 public class UsrDict {
 	public static void main(String [] args)
@@ -75,7 +78,6 @@ public class UsrDict {
 				lineNr ++;
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		System.out.println("lineNr:" + lineNr);

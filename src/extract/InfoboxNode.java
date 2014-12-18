@@ -70,7 +70,7 @@ public class InfoboxNode {
 						return;
 					}
 					String triples = 
-							RecordGenerator.GenerFromTR(PageId, tag);
+							TRprocessor.GenerFromTR(PageId, tag);
 					if(triples == null || triples.equals(""))
 						return;
 					outputTriples += triples;

@@ -27,9 +27,9 @@ public class conn_db2 {
 			
 			// 创建Wikipedia处理对象
 			Wikipedia wiki = new Wikipedia(dbConfig);
-			String title = "地理";
+			String title = "人物";
 			// 创建类对象
-			Category cat = wiki.getCategory(4086834);
+			Category cat = wiki.getCategory(title);
 			StringBuilder sb = new StringBuilder();
 			// 类别名
 			sb.append("Title : " + cat.getTitle() + LF);

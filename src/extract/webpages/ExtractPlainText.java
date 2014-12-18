@@ -1,4 +1,4 @@
-package extract.web;
+package extract.webpages;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -151,7 +151,7 @@ public class ExtractPlainText {
 	static boolean lastTagRemove = false;
 	final static NodeFilter contextFilter = 
 			new HasAttributeFilter( "id", "mw-content-text");
-	static final NodeFilter contextFilter2 = new NodeFilter(){
+	static NodeFilter contextFilter2 = new NodeFilter(){
 		public boolean accept(Node node){
 			if(node instanceof TagNode)
 			{

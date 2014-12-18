@@ -1,4 +1,4 @@
-package extract.web;
+package extract.webpages;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -7,9 +7,6 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.HashMap;
 
-import org.htmlparser.Parser;
-
-import database.Entity;
 import tools.uFunc;
 
 /**
@@ -18,17 +15,18 @@ import tools.uFunc;
  * @author hz
  *
  */
-class ExtractThread implements Runnable{
-	public ExtractThread()
+class ExtractThread_Enwiki implements Runnable{
+	public ExtractThread_Enwiki()
 	{
-		String infoPath = "data/info/extract/ExtractThread.info";
+		String infoPath = "data/info/extract/ExtractThread_Enwiki.info";
 		uFunc.AlertPath = infoPath;
 		uFunc.deleteFile(uFunc.AlertPath);
 		WebPageFolder = WholeFolder + "FileSplit";
 		FailureIdTitPath = WholeFolder + "FailureIdTit.txt";
-		br = uFunc.getBufferedReader(Entity.id2titFile);
+		uFunc.deleteFile(FailureIdTitPath);
+		br = uFunc.getBufferedReader(
+				"D:/hanzhe/result_hz/enwiki/EnwikiIdTitle");
 		t1 = System.currentTimeMillis();
-		startTime = System.currentTimeMillis();
 		File filesplit = new File(WebPageFolder);
 		if(filesplit.exists() == false ||
 				filesplit.isDirectory() == false){
@@ -63,7 +61,7 @@ class ExtractThread implements Runnable{
 		t1 = System.currentTimeMillis();
 	}
 	private String WholeFolder = 
-			"/home/hanzhe/Public/result_hz/zhwiki/ZhwikiWebPages/";
+			"D:/hanzhe/result_hz/enwiki/EnwikiWebPages/";
 	private static String WebPageFolder;
 	private String FailureIdTitPath;
 	private static String c = "ExtractThread";
@@ -74,7 +72,6 @@ class ExtractThread implements Runnable{
 	BufferedReader br;
 	static int existFolderNr;
 	static int newPageNr;
-	private long startTime;
 	private static long t1; 
 	public void run()
 	{
@@ -87,20 +84,18 @@ class ExtractThread implements Runnable{
 					continue;
 				else
 				{
-					if(newPageNr % 5 == 0)
+					if(newPageNr % 50 == 0)
 						System.out.println(oneLine);
 					String PageTitle = uFunc.Simplify(ss[1]);
-					if(PageTitle.contains("####"))
-						PageTitle = PageTitle.substring(0, PageTitle.indexOf("####"));
 					PageTitle = PageTitle.replaceAll(
-							"\\\\|\\?|\\!|\\/|\\<|\\>|\\:|\\*|\\|", "_");
+							"\\\\|\\?|\\!|\\/|\\<|\\>|\\:|\\*|\\||\"", "_");
 					String outputPath = WebPageFolder +"/"+ existFolderNr 
 							+ "/" +pageid +"_"+ PageTitle;
 					File file = new File(outputPath);
 					if(file.exists())
 						continue;
 					try {
-						URL url = new URL("http://zh.wikipedia.org/wiki?curid="
+						URL url = new URL("http://en.wikipedia.org/wiki?curid="
 								+ pageid);
 						BufferedReader br = new BufferedReader(
 								new InputStreamReader(url.openStream()));
@@ -114,7 +109,7 @@ class ExtractThread implements Runnable{
 							continue;
 						uFunc.addFile(sb.toString(), outputPath);
 						newPageNr ++;
-						if(newPageNr >= 800)
+						if(newPageNr >= 1500)
 							CreateNewFolder();
 						mySleep();
 					} catch (Exception e) {
@@ -174,90 +169,16 @@ class ExtractThread implements Runnable{
 		
 	}
 }
-public class ExtractHtmlPages_MultiThread {
+public class ExtractHtmlPages_MultiThread_Enwiki {
 
 	//static int RestartPageid = 1126608;
 	public static void main(String [] args){
 		//ExtractProcess();
-		int threadNr = 5;
-		ExtractThread myThr = new ExtractThread();
+		ExtractThread_Enwiki myThr = new ExtractThread_Enwiki();
 		new Thread(myThr, "thread 1").start();
 		new Thread(myThr, "thread 2").start();
 		new Thread(myThr, "thread 3").start();
+		new Thread(myThr, "thread 4").start();
+		new Thread(myThr, "thread 5").start();
 	}
-	/*
-	static long t1,t2,t3,t4;
-	static long cost1 = 0, cost2 = 0, cost3 = 0;
-	public static void ExtractProcess() {
-		// TODO Auto-generated method stub
-		t1 = System.currentTimeMillis();
-		BufferedReader br = 
-				uFunc.getBufferedReader(EntityIdTitPath);
-		int PageNr = 0;
-		String oneLine = "";
-		int PageId = 0;
-		String PageTitle = "";
-		String url;
-		String outputPath = "";
-		int lineNr  = 0;
-		while(true){
-			oneLine = null;
-			try {
-				oneLine = br.readLine();
-			} catch (IOException e1) {
-				e1.printStackTrace();
-				continue;
-			}
-			lineNr += 3;
-			if(lineNr % 3 != 0)
-				continue;
-			if(oneLine == null)
-				break;
-			String [] ss = oneLine.split("\t");
-			if(ss.length < 2)
-				continue;
-			PageId = Integer.parseInt(ss[0]);
-			//if(PageId <= RestartPageid)
-			//	continue;
-			if(PageId == 0)
-				continue;
-			//System.out.print("b");
-			//System.out.println(lineNr +" \t" + oneLine);
-			PageTitle = uFunc.Simplify(ss[1]);
-			PageTitle = PageTitle.replaceAll("\\\\|\\?|\\!|\\/|\\<|\\>|\\:|\\*|\\|", "_");
-			outputPath = WebPageFolder +"/"+ PageId +"_"+ PageTitle;
-			File file = new File(outputPath);
-			if(file.exists())
-				continue;
-			url = "http://zh.wikipedia.org/wiki?curid=" + PageId;
-			Parser parser;
-			try {
-				parser = new Parser(url);
-				uFunc.addFile(parser.parse(null).toHtml(true), outputPath);
-			} catch (Exception e) {
-				System.out.println(oneLine);
-				e.printStackTrace();
-				uFunc.addFile(oneLine + "\n", FailureIdTitPath);
-				continue;
-			}
-			//System.out.println("end");
-
-			PageNr ++;
-			try{
-				if(PageNr % 10 == 0){
-					Thread.sleep(100);
-					if(PageNr % 200 == 0){
-						System.out.println((System.currentTimeMillis() - t2)/1000);
-						t2 = System.currentTimeMillis();
-						Thread.sleep(20000);
-						System.out.println(PageNr);
-					}
-					
-				}
-			}catch(Exception e){
-				System.out.println("sleep error");
-			}
-		}
-	}
-	*/
 }

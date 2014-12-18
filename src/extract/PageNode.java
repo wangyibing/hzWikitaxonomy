@@ -6,6 +6,7 @@ import java.util.Vector;
 
 
 
+
 import org.htmlparser.Remark;
 import org.htmlparser.Tag;
 import org.htmlparser.Text;
@@ -16,7 +17,7 @@ import org.htmlparser.visitors.NodeVisitor;
 import com.tag.dedup;
 
 import database.Entity;
-import database.InfoboxNameList;
+import database.Infobox;
 import tools.uFunc;
 
 
@@ -157,7 +158,7 @@ public class PageNode {
 						String possiName = uFunc.ReplaceBoundSpace(
 								tag.getAttribute("CLASS").toLowerCase());
 						
-						if(InfoboxNameList.isInfoboxName(possiName))
+						if(Infobox.isInfoboxName(possiName))
 						{
 							// is infobox
 							switch(Mode)

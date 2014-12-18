@@ -5,6 +5,13 @@ hzWikitaxonomy
 >this is a project about wikipedia
 >created by hanzhe, Peking University
 
+deadline
+
+    [1222]文档整理:后续计划（抽时间做paraphrase大作业代码）
+    [1221]category归一化:页面分类254517
+    [1220]整理之前的代码:predicate属性迁移到mysql存储（改写extract.predicatetable代码）
+    [1219]整理之前的代码:triple迁移到mysql数据库存储（改写extract.triple代码）
+    
 TimeTable
 
     1.抽取三元组<b>（v1.1，20140819）</b>

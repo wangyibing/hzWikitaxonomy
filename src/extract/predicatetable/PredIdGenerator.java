@@ -3,7 +3,6 @@ package extract.predicatetable;
 import com.tag.myElement;
 
 import tools.uFunc;
-import triple.extract.TripleGenerator;
 
 public class PredIdGenerator {
 
@@ -31,8 +30,9 @@ public class PredIdGenerator {
 			prediId = "0" + prediId;
 		prediId = PageId + prediId;
 		output += prediId +  "\n";
-		String upperInfo = TripleGenerator.
-				getStringFromMyelement(upperTitle, true);
+		String upperInfo = null;
+		if(upperTitle != null)
+			upperInfo = upperTitle.getStringFromMyelement(null, true);
 		output += "UpperTitle:" + upperInfo + "\n";
 		output += triple;
 		output += "\n";

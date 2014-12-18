@@ -6,7 +6,7 @@ public class SimConv {
 
 	public static ZHConverter SimConverter = 
 			ZHConverter.getInstance(ZHConverter.SIMPLIFIED);
-	public String Convert2Simp(String string)
+	public static String Convert2Simp(String string)
 	{
 		return SimConverter.convert(string);
 	}

@@ -4,9 +4,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.HashMap;
 
-import database.Zhwiki;
-import extract.pageinfo.myPredicate;
-import extract.pageinfo.myPredicateAvg;
+import com.tag.myPredicate;
+import com.tag.myPredicateAvg;
+
 import tools.uFunc;
 
 public class PredAvgExtraction {
@@ -25,7 +25,6 @@ public class PredAvgExtraction {
 	static int predSeq = 0;
 	public static void Extract(String predicateId2_Normal, String tar)
 	{
-		Zhwiki.init();
 		BufferedReader br = uFunc.getBufferedReader(predicateId2_Normal);
 		String oneLine = "";
 		int predicateNr = 0;

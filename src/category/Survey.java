@@ -1,4 +1,4 @@
-package extract.category;
+package category;
 
 import java.io.BufferedReader;
 import java.io.IOException;

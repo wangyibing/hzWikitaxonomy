@@ -481,7 +481,7 @@ public class uFunc {
 		uFunc.SaveHashMap(tmp, path);
 	}
 
-	public static String AlertPath;
+	public static String AlertPath = null;
 	public static int AlertNr = 0;
 	private static String AlertOutput = "";
 	public static void Alert(String className, String info) {
@@ -491,7 +491,7 @@ public class uFunc {
 		AlertOutput += className + ":" + info + "\n";
 		if(AlertNr % 100 == 0)
 		{
-			uFunc.addFile(AlertOutput, AlertPath);
+			if(AlertPath != null) uFunc.addFile(AlertOutput, AlertPath);
 			AlertOutput = "";
 		}
 			

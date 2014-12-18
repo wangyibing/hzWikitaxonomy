@@ -9,7 +9,6 @@ import java.util.regex.Pattern;
 import database.Entity;
 import database.RediPage;
 import database.Zhwiki;
-import extract.web.ExtractAPI;
 import tools.uFunc;
 
 public class RedirectRepair {
@@ -39,7 +38,6 @@ public class RedirectRepair {
 		String oneLine = "";
 		Scanner sc = new Scanner(System.in);
 		String output = "";
-		Zhwiki.init();
 		try {
 			int fixNr = 0;
 			while((oneLine = br.readLine()) != null)
@@ -82,8 +80,8 @@ public class RedirectRepair {
 						if(tarId > 0 )
 						{
 							fixNr ++;
-							title = Entity.getTitles(pageid);
-							tarTitle = Entity.getTitles(tarId);
+							title = Entity.getTitle(pageid);
+							tarTitle = Entity.getTitle(tarId);
 							output += pageid +"\t"+ tarId + "\t" + title + "\t"
 									+ tarTitle + "\n";
 						}
@@ -122,11 +120,6 @@ public class RedirectRepair {
 			}
 			s = GetTargetTitle(s);
 			int targetId = Entity.getId(s);
-			if(targetId == 0)
-				targetId = ExtractAPI.GetPageId(s);
-			if(targetId == 0)
-				targetId = ExtractAPI.GetPageId(
-						uFunc.PunctuationZh2En(s));
 			if(targetId > 0){
 				//System.out.println("GetRedirectInfo targetId: " + targetId + "\t" + s);
 				if(targetId == lastId)

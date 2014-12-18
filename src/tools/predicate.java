@@ -101,7 +101,7 @@ public class predicate {
 				if(ss.length < 3)
 					continue;
 				int pageid = Integer.parseInt(ss[0]);
-				int freq = 1;
+				//int freq = 1;
 				ss[1] = uFunc.Simplify(uFunc.ReplaceBoundSpace(ss[1]));
 				if(ss[1].equals(""))
 				{

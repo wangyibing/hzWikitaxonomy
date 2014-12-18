@@ -6,25 +6,38 @@ import org.htmlparser.Parser;
 import org.htmlparser.util.NodeList;
 
 import database.Entity;
-import database.InfoboxIdList;
-import database.NoInfoboxIdList;
-import database.Page;
+import database.Infobox;
 import database.RediPage;
 import tools.uFunc;
-
+/**
+ * 1. extract in each folder: ExtractFromLocalFiles
+ * 2. extract in each file: ExtractTriplefromOneFile
+ * 3. parse page.html to generate class.PageNode 
+ * 		(the following process by PageNode.java)
+ * 4. PageNode: parse PageNode to find each Infobox (class.InfoboxNode)
+ * 		(the following process by InfoboxNode.java)
+ * 5. InfoboxNode: parse InfoboxNode to find each line (each TR tag)
+ * 		(the following process by TRprocessor.java)
+ * 6. TRprocessor: filtering the wrong TR tag and extract UpperTitle and other info,
+ * 		(the following TR->triple processed by GeneratorDistributor.java)
+ * 7. GeneratorDistributor: collect triple info and distribute to each generator(
+ * 	tripleGenerator, predicateTableGenerator, tripleMysqlGenerator, ...)
+ * @author hanzhe
+ *
+ */
 public class Extract{
 	private static String i = "Extract";
 
 	public static String TripleFolder = 
 			"/home/hanzhe/Public/result_hz/zhwiki/Infobox/Triple/Web/";
-	public static String TriplePath = TripleFolder + "Triple";
-	public static String InfoboxIdListPath;
 	public static String PredicateIdPath = 
 			"/home/hanzhe/Public/result_hz/wiki_count2/predicate/predicateId";
+	
+	public static String TriplePath = TripleFolder + "Triple";
+	public static String InfoboxIdListPath;
 	private static String info = "";
 	public static void main(String [] args)
 	{
-		InfoboxIdList.LoadInfoboxNameList();
 		TriplePath = TripleFolder + "Triple";
 		InfoboxIdListPath = TripleFolder + "InfoboxIdList";
 		uFunc.deleteFile(TriplePath);
@@ -73,13 +86,13 @@ public class Extract{
 					0, file.getName().indexOf("_")));
 			if(RediPage.getTargetPageid(pageid) > 0)
 				continue;
-			if(NoInfoboxIdList.isNot(pageid))
+			if(Infobox.isNotInfobox(pageid))
 				continue;
-			String titles = uFunc.Simplify(Entity.getTitles(pageid));
+			String titles = uFunc.Simplify(Entity.getTitle(pageid));
 			if(titles == null)
 			{
-				//info = "pagetitle missed in Entity:" + pageid;
-				//uFunc.Alert(true, i, info);
+				info = "pagetitle missed in Entity:" + pageid;
+				uFunc.Alert(true, i, info);
 				continue;
 			}
 			boolean jump = false;
@@ -102,8 +115,8 @@ public class Extract{
 			fileNr ++;
 			String result = "";
 			boolean Alert = true;
-			result  = ExtractTriplefromOneFile(
-					pageid, file.getAbsolutePath(), Alert);
+			result  = ExtractTriplefromOneFile(pageid, file.getAbsolutePath(), Alert);
+			
 			if(result != null && result.equals("") == false)
 			{
 				triples += result;
@@ -128,7 +141,10 @@ public class Extract{
 		File file = new File(Path);
 		// for empty file, may be extract null
 		if(file.exists() == false || file.length() < 10)
+		{
+			uFunc.Alert(i, pageid + " file not exist locally, extracting from web...");
 			Path = "http://zh.wikipedia.org/wiki?curid=" + pageid;
+		}
 		try {
 			try{
 				pageParser = new Parser(Path);

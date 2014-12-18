@@ -31,9 +31,19 @@ public class Entity {
 			initTitIdMap();
 		if(Tit2IdMap.containsKey(title))
 			return Tit2IdMap.get(title);
+
+		title = uFunc.Simplify(title);
+		if(Tit2IdMap.containsKey(title))
+			return Tit2IdMap.get(title);
+		
+		title = uFunc.TraConverter.convert(title);
+		if(Tit2IdMap.containsKey(title))
+			return Tit2IdMap.get(title);
+		
+		
 		return 0;
 	}
-	
+
 	public static String getTitles(int pageid)
 	{
 		if(Id2TitsInited == false)
@@ -42,7 +52,50 @@ public class Entity {
 			return Id2TitsMap.get(pageid);
 		return null;
 	}
+	
+	public static String getTitle(int pageid)
+	{
+		if(Id2TitInited == false)
+			initId2TitMap();
+		if(Id2TitMap.containsKey(pageid))
+			return Id2TitMap.get(pageid);
+		return null;
+	}
 
+
+	// <13, 数学;数学科学;数学系;>
+	private static HashMap<Integer, String> Id2TitMap = 
+			new HashMap<Integer, String>();
+	private static boolean Id2TitInited = false;
+	private static void initId2TitMap() {
+		if(Id2TitInited == true)
+			return;
+		String oneLine = "";
+		try{
+			BufferedReader reader = uFunc.getBufferedReader(
+					id2titFile);
+			while((oneLine = reader.readLine())!= null){
+				String [] ts = oneLine.split("\t");
+				if(ts.length < 2)
+				{
+					System.out.println("id2tit error:" + oneLine);
+					continue;
+				}
+				int Eid = Integer.parseInt(ts[0]);
+				String title = ts[1];
+				if(title.contains("####"))
+					title = title.substring(0, title.indexOf("####"));
+				Id2TitMap.put(Eid, title);
+			}
+			System.out.println("Id2TitMap.size:"+ 
+					Id2TitMap.size());
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		Id2TitInited = true;
+	}
+
+	
 	public static HashMap<String, Integer> Str2Id = 
 		new HashMap<String, Integer>();
 	

@@ -5,10 +5,9 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.Vector;
 
+import com.tag.myPredicate;
+
 import database.Entity;
-import database.Page;
-import database.Zhwiki;
-import extract.pageinfo.myPredicate;
 import tools.uFunc;
 
 public class WikitextPredicate {

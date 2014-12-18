@@ -120,8 +120,8 @@ public class EntityIdTitleTable {
 		{
 			Entry<String, Integer> next = it.next();
 			try {
-				mysql.Query.setString(1, "'" + 
-						next.getKey().replaceAll("'", "\\\\'") + "'");
+				mysql.Query.setString(1,  
+						next.getKey().replaceAll("'", "\\\\'"));
 				mysql.Query.setInt(2, next.getValue());
 				mysql.Query.addBatch();
 				recordNr ++;

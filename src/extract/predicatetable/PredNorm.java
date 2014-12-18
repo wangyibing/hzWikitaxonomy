@@ -3,9 +3,10 @@ package extract.predicatetable;
 import java.io.BufferedReader;
 import java.util.HashMap;
 
+import com.tag.myPredicate;
+
 import tools.predicate;
 import tools.uFunc;
-import extract.pageinfo.myPredicate;
 
 public class PredNorm {
 	public static void main(String [] args)

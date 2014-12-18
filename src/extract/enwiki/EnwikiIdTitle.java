@@ -1,4 +1,4 @@
-package extract.database;
+package extract.enwiki;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -46,6 +46,7 @@ public class EnwikiIdTitle {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		disconnectToMysql();
 	}
 	
 

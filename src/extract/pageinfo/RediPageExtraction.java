@@ -7,7 +7,6 @@ import tools.uFunc;
 import database.Entity;
 import database.Zhwiki;
 import de.tudarmstadt.ukp.wikipedia.api.Page;
-import extract.web.ExtractAPI;
 
 public class RediPageExtraction {
 	static String i = "RediPageExtraction";
@@ -24,14 +23,13 @@ public class RediPageExtraction {
 		uFunc.deleteFile(infoPath);
 		uFunc.deleteFile(outputPath);
 		uFunc.AlertPath = infoPath;
-		Zhwiki.init();
 		long time = System.currentTimeMillis();
-		for(Page page : Zhwiki.wiki.getPages())
+		for(Page page : Zhwiki.getPages())
 		{
 			//page = Zhwiki.getPage(617541);
 			PageNr ++;
 			PageId = page.getPageId();
-			PageTitle = Zhwiki.getTitle(PageId);
+			PageTitle = Entity.getTitle(PageNr);
 			if(PageId <= 0){
 				uFunc.Alert(i, "pageid null:" + page.getText());
 				continue;
@@ -152,11 +150,6 @@ public class RediPageExtraction {
 			}
 			s = GetTargetTitle(s);
 			int targetId = Entity.getId(s);
-			if(targetId == 0)
-				targetId = ExtractAPI.GetPageId(s);
-			if(targetId == 0)
-				targetId = ExtractAPI.GetPageId(
-						uFunc.PunctuationZh2En(s));
 			if(targetId > 0){
 				//System.out.println("GetRedirectInfo targetId: " + targetId + "\t" + s);
 				if(targetId == lastId)
@@ -166,7 +159,7 @@ public class RediPageExtraction {
 					lastId = targetId;
 				}
 				String info = PageId +"\t"+ targetId + "\t" + PageTitle + "\t"
-						+ Zhwiki.getTitle(targetId) + "\n";
+						+ Entity.getTitle(targetId) + "\n";
 				output += info;
 				outNr ++;
 				if(outNr % 1000 == 0){

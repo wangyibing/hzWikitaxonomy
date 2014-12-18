@@ -1,4 +1,4 @@
-package extract.web;
+package zzzz_aborted;
 
 import java.net.URL;
 import java.net.URLConnection;
@@ -11,7 +11,7 @@ import tools.uFunc;
 public class ExtractAPI {
 	public static String i = "ExtractAPI";
 
-	public static int GetPageId(String title)
+	public static int GetPageIds(String title)
 	{
 		int pageid = 0;
 		try {

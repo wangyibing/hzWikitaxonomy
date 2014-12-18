@@ -1,9 +1,6 @@
 package triple.standardize;
 
 import java.util.Vector;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.htmlparser.Tag;
 
 import com.tag.TagChild;

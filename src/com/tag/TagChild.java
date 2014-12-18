@@ -143,6 +143,8 @@ public class TagChild {
 			return null;
 		return sons;
 	}
+	
+	
 	public static Vector<myTag> getChildren_old(Tag father)
 	{
 		if(father == null)

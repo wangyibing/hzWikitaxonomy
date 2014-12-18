@@ -1,4 +1,4 @@
-package normalization.predicate;
+package zzzz_aborted;
 
 import java.util.Vector;
 
@@ -11,14 +11,12 @@ import com.tag.TagChild;
 import com.tag.myElement;
 import com.tag.myTag;
 
-import database.Entity;
-import triple.extract.TripleGenerator;
+import tools.uFunc;
 import triple.standardize.PredStdz;
 
-public class UpperTitleExtract {
+public class linkExtract {
 	private static NodeVisitor Extractor; 
 	private static Vector<myTag> sons;
-	private static myElement UpperTitle;
 	private static myElement predicate;
 	private static String result = "";
 	private static int PageId;
@@ -47,33 +45,16 @@ public class UpperTitleExtract {
 					if(tag.getTagName().toLowerCase().equals("tr"))
 					{
 						sons = TagChild.getChildren(tag);
-						if(sons.size() == 1 && sons.get(0).tag.getTagName().equals("TH"))
-						{
-							//System.out.println("UpperTitleExtract.java" + sons.get(0).context);
-							myElement tUpperTitle = PredStdz.standardize(sons.get(0).tag, pageid2);
-							// there are some image or format defin on the top
-							if(tUpperTitle == null || tUpperTitle.context == null)
-							{
-								//uFunc.OutputTagInfo(tag, "");
-								return;
-							}
-							if(Entity.getId(tUpperTitle.context) == PageId)
-								return;
-							UpperTitle = tUpperTitle;
-							//System.out.println("oo");
-						}
-						else if(sons.size() == 2 && UpperTitle != null &&
+						if(sons.size() == 2 &&
 								sons.get(0).tag.getTagName().equals("TH"))
 						{
 							predicate = PredStdz.standardize(sons.get(0).tag, pageid2);
-							if(predicate == null)
+							if(predicate != null && predicate.link != null)
 							{
-								//uFunc.OutputTagInfo(tag, "");
-								return;
+								result += predicate.getStringFromMyelement(null, true)
+										+ "\t" + uFunc.ReplaceBoundSpace(predicate.context)
+										+ "\t" + PageId + "\n";
 							}
-							result += predicate.context
-									+ "\t" + TripleGenerator.getStringFromMyelement(UpperTitle, false) 
-									+ "\t" + PageId + "\n";
 						}
 					}
 				}

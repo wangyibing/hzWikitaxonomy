@@ -1,4 +1,4 @@
-package extract.pageinfo;
+package com.tag;
 
 import java.io.BufferedReader;
 import java.io.IOException;

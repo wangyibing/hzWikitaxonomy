@@ -1,4 +1,4 @@
-package extract.database;
+package extract.enwiki;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

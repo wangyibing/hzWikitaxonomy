@@ -17,8 +17,8 @@ import tools.uFunc;
 import triple.standardize.ObjeStdz;
 import triple.standardize.PredStdz;
 
-public class RecordGenerator {
-	public final static String c = "RecordGenerator";
+public class TRprocessor {
+	public final static String c = "TRprocessor";
 	public static String info;
 	private static Vector<myTag> tags = new Vector<myTag>();
 	public static String GenerFromTR(int pageid, Tag tr)
