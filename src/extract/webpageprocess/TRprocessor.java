@@ -22,6 +22,9 @@ public class TRprocessor {
 	public final static String c = "TRprocessor";
 	public static String info;
 	private static Vector<myTag> tags = new Vector<myTag>();
+	
+	static int TRtagId = 0;
+	
 	public static String GenerFromTR(int pageid, Tag tr)
 	{
 
@@ -163,7 +166,7 @@ public class TRprocessor {
 							|| cont.equals("仪器") || cont.equals("望远镜") )
 					{
 						newObj.addEle(predi.eles);
-						return TripleFromUT(pageid, newObj);
+						return TripleFromUT(pageid, newObj, tagObj.tag);
 					}
 					if(cont.endsWith("沿革") || cont.contains("青年队")
 							|| cont.contains("职业俱乐部") || cont.contains("国家队")
@@ -177,7 +180,7 @@ public class TRprocessor {
 						if(objc != null)
 							ele.context += objc.toString();
 						newObj.addEle(ele);
-						return TripleFromUT(pageid, newObj);
+						return TripleFromUT(pageid, newObj, tagObj.tag);
 					}
 					if(cont.equals("伤亡与损失") || cont.equals("指挥官和领导者"))
 						return "";
@@ -199,7 +202,8 @@ public class TRprocessor {
 				}
 				String triple = GeneratorDistributor.distribute(
 						pageid, predi, objc, InfoboxNode.UpperTitle,
-						InfoboxNode.UpperTitleMinus, InfoboxNode.TRTitleNr);
+						InfoboxNode.UpperTitleMinus, InfoboxNode.TRTitleNr,
+						tagObj.tag, TRtagId);
 				return triple;
 			case 2:
 				
@@ -245,7 +249,7 @@ public class TRprocessor {
 				if(TagChild.containDescendantTag(sglTag, "tr"))
 					return "";
 				myObj objc = ObjeStdz.standardize(new myTag(sglTag, true));
-				return TripleFromUT(pageid, objc);
+				return TripleFromUT(pageid, objc, sglTag);
 				
 			}
 		}
@@ -279,7 +283,7 @@ public class TRprocessor {
 	
 	
 
-	private static String TripleFromUT(int pageid, myObj objc) {
+	private static String TripleFromUT(int pageid, myObj objc, Tag objTag) {
 		// TODO Auto-generated method stub
 		if(InfoboxNode.TRTitleNr > 1 && 
 				InfoboxNode.UpperTitle != null)
@@ -289,7 +293,7 @@ public class TRprocessor {
 			//uFunc.Alert(true, c, InfoboxNode.UpperTitle.toString());
 			return GeneratorDistributor.distribute(
 					pageid, predi, objc, InfoboxNode.UpperTitle,
-					InfoboxNode.UpperTitleMinus, InfoboxNode.TRTitleNr);
+					InfoboxNode.UpperTitleMinus, InfoboxNode.TRTitleNr, objTag, TRtagId);
 		}
 		return "";
 	}

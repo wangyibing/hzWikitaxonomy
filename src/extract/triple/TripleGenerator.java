@@ -1,7 +1,9 @@
-package triple.extract;
+package extract.triple;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.htmlparser.Tag;
 
 import com.tag.myElement;
 import com.tag.myObj;
@@ -13,12 +15,14 @@ import tools.uFunc;
 public class TripleGenerator {
 	public static String i = "TripleGenerator";
 	public static String info;
+	
 	public static boolean NoLink = false;
 	public static myElement UpperTitle;
 	public static int PageId;
 
 	public static String GetTriples(int pageid, myObj predi, myObj objc, 
-			myElement upperTitle, myElement upperTitleMinus, int tRTitleNr) {
+			myElement upperTitle, myElement upperTitleMinus, int tRTitleNr, 
+			Tag objTag, int tRtagId) {
 		// TODO Auto-generated method stub
 		String remark = "";
 		UpperTitle = upperTitle;
@@ -66,9 +70,9 @@ public class TripleGenerator {
 					objc.eles.get(0).context.contains(":") == true)
 			{
 				GeneratorDistributor.distribute(contP, PageId,
-						UpperTitle, upperTitleMinus, tRTitleNr);
+						UpperTitle, upperTitleMinus, tRTitleNr, objTag, tRtagId);
 				GeneratorDistributor.distribute(objc.eles.get(0).context,
-						PageId, UpperTitle, upperTitleMinus, tRTitleNr);
+						PageId, UpperTitle, upperTitleMinus, tRTitleNr, objTag, tRtagId);
 			}
 			// else is considered
 			return null;
@@ -97,6 +101,8 @@ public class TripleGenerator {
 					isPageTitle(pageid, contP))
 				continue;
 			info = pageid + "\t" + contP + "\t" + contO + remark + "\n";
+			Triple2Mysql.insert(pageid, contP, contO, objTag,
+					remark, UpperTitle, tRtagId);
 			result += info;
 		}
 		if(result.equals("") == false)

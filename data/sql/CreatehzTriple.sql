@@ -11,10 +11,7 @@ CREATE TABLE `hzTriple` (
 	`Subject` varchar(255) NOT NULL,
 	`Predicate` varchar(255) NOT NULL,
 	`Object` longtext default NULL,
-
 	`UpperTitle` text default NULL,
-	`UpperTitleId` int(11) default NULL,
-
 	`OriginalObj` longtext default NULL,
 	`OriginalTRtag` longtext default NULL,
 	`TRtagid` int(11) NOT NULL,
