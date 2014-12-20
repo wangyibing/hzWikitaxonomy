@@ -3,8 +3,9 @@ package extract;
 import tools.Mysql;
 import extract.predicate.PredAvgExtraction;
 import extract.predicate.PredNorm;
-import extract.predicate.WikitextPredicate;
+import extract.predicate.WikitextPredicate_old;
 import extract.predicate.predicateInfo.PredicateId;
+import extract.predicate.predicateInfo.Update_PredicateInfo;
 
 
 public class PredTableStarter {
@@ -24,16 +25,18 @@ public class PredTableStarter {
 		Mysql m = new Mysql("hzWikiCount2", null);
 		// create table
 		m.execute("data/sql/PredicateInfo.sql");
+		
 		// 0. generate triple info to mysql.hzTriple
 		//Extract.main(null);
 		
 		// 1. generate "predicateId" file along with "web's triple" file
-		PredicateId.Generate(m, tableName, predicateId);
+		//PredicateId.Generate(m, tableName, predicateId);
 		// 2. sort predicateId table to generate "predicateId.sorted"
 		//PredicateId.Sort_old(predicateId, predicateSorted);
+		//Update_PredicateInfo.Update();
 		// 3. fill the predicate info with dumpsinfo, generate "predicate2"
 		// file
-		//WikitextPredicate.Extract(predicateSorted, dumpsTriple, predicate2);
+		//WikitextPredicate_old.Extract(predicateSorted, dumpsTriple, predicate2);
 		// 4. replace some predicates' content with their UpperTitles
 		//PredNorm.Normalize(predicate2, predicateNormed);
 		// 5. Generate myPredicateAvg from myPredicates

@@ -3,7 +3,7 @@ package extract;
 import database.RediPage;
 import extract.pageinfo.DisaPageExtraction;
 import extract.pageinfo.RediPageExtraction;
-import extract.predicate.WikitextPredicate;
+import extract.predicate.WikitextPredicate_old;
 import tools.uFunc;
 
 
@@ -18,7 +18,7 @@ public class Teststarter {
 		//EntityTitleExtraction.Extract(Entity.CanonicalPath_titles, 
 		//		Folder + "EntityExtractionInfo");
 		
-		WikitextPredicate.Extract(
+		WikitextPredicate_old.Extract(
 				"/home/hanzhe/Public/result_hz/wiki_count2/predicate/predicateId.sorted",
 				"/home/hanzhe/Public/result_hz/wiki_count2/predicate/dumpsTriples",
 				"/home/hanzhe/Public/result_hz/wiki_count2/predicate/predicateId2");

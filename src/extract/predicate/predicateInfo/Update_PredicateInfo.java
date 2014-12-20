@@ -15,12 +15,13 @@ public class Update_PredicateInfo {
 	private static String PidUPairFile = folder + "PidUPair";
 	public static void Update(){
 		Mysql m = new Mysql("hzWikiCount2", null);
-		
+		UpperTitle(m, "UpperTitle", "PredicateInfo", "UpperTitles");
+		UpperTitle(m, "UpperTitleId", "PredicateInfo", "UpperTitleIds");
 	}
 
-	public static void UpperTitle(Mysql db, String tripleTableName,
+	public static void UpperTitle(Mysql db, String tripleTableCol,
 			String predTableName, String utName){
-		db.SetLargeQuery("select Predicate, " + utName + " from " + tripleTableName);
+		db.SetLargeQuery("select Predicate, " + tripleTableCol + " from hzTriple");
 		ResultSet rs = null;
 
 		StringBuffer outPidUPair = new StringBuffer();
@@ -32,7 +33,10 @@ public class Update_PredicateInfo {
 				String pred = rs.getString(1);
 				int predId = Predicate.GetId(pred);
 				String upper = rs.getString(2);
-				if(upper != null && upper.toLowerCase().equals("null"))
+				if(upper != null && (
+						upper.toLowerCase().equals("null") 
+						|| upper.equals("")
+						|| upper.equals("0")))
 					upper = null;
 				if(upper != null){
 					outPidUPair.append(predId + "\t" + upper + "\n");
@@ -55,7 +59,7 @@ public class Update_PredicateInfo {
 			db.Query = db.conn.prepareStatement(sql);
 			
 			HashMap<String, Integer> upFreq = new HashMap<String, Integer>();
-			BufferedReader br = uFunc.getBufferedReader(PidUPairFile);
+			BufferedReader br = uFunc.getBufferedReader(PidUPairFile+ ".sorted");
 			String oneLine = "";
 			int lastId = -1;
 			int rNr = 0;
@@ -67,6 +71,8 @@ public class Update_PredicateInfo {
 				if(pid != lastId){
 					if(lastId != -1){
 						String upCol = uFunc.Map2Id(upFreq, ",", ";");
+						if(upFreq.size() > 10)
+							continue;
 						db.Query.setInt(2, lastId);
 						db.Query.setString(1, upCol);
 						db.Query.addBatch();

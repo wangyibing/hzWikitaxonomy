@@ -10,7 +10,7 @@ import com.tag.myPredicate;
 import database.Entity;
 import tools.uFunc;
 
-public class WikitextPredicate {
+public class WikitextPredicate_old {
 	private static String i = "";
 	private static String info = "";
 
@@ -482,6 +482,8 @@ public class WikitextPredicate {
 		for(int j = 0; j < PagePred.size(); j ++)
 		{
 			myPredicate pred = PagePred.get(j);
+			if(pred.InfoboxName == null && infoboxName != null)
+				pred.InfoboxName = infoboxName;
 			output += pred.toString();
 			outNr  ++;
 			if(outNr % 1000 == 0)

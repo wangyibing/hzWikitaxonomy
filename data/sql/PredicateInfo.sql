@@ -6,6 +6,7 @@ DROP TABLE IF EXISTS `PredicateInfo`;
 CREATE TABLE `PredicateInfo` (
 	`id` bigint(20) NOT NULL auto_increment,
 	`Content` varchar(255) NOT NULL,
+	`Content_wikitext` varchar(255) default NULL,
 	`Pinyin` varchar(255) NOT NULL,
 	`Freq` bigint(20) NOT NULL,
 	`UpperTitles` text default NULL,
