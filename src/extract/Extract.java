@@ -9,6 +9,7 @@ import database.Entity;
 import database.Infobox;
 import database.RediPage;
 import extract.webpageprocess.PageNode;
+import extract.webpages.ExtractHtmlPages;
 import tools.uFunc;
 /**
  * 1. extract in each folder: ExtractFromLocalFiles
@@ -59,7 +60,7 @@ public class Extract{
 				t1 = System.currentTimeMillis();
 				info = ("folder" + i + " cost: " + uFunc.GetTime(sec) + ";"
 						+ " total inofboxNr:" + InfoboxNr );
-				uFunc.Alert("Extract", info);
+				uFunc.Alert("\nExtract", info);
 			}
 		}
 		info = "total time:" + (System.currentTimeMillis() - start)/60000 + " min";
@@ -140,6 +141,7 @@ public class Extract{
 		Parser pageParser ;
 		String PageTriples = "";
 		File file = new File(Path);
+		String pathOld = Path;
 		// for empty file, may be extract null
 		if(file.exists() == false || file.length() < 10)
 		{
@@ -149,6 +151,12 @@ public class Extract{
 		try {
 			try{
 				pageParser = new Parser(Path);
+				if(Path.startsWith("http:")){
+					//uFunc.addFile(pageParser.toString(), "data/html/page");
+					if(ExtractHtmlPages.ExtractOnePage(Path, pathOld))
+						System.out.println("\tweb page saved!");
+					else System.out.println("web page save failed:" + pathOld);
+				}
 			}catch(Exception e1){
 				pageParser = new Parser("http://zh.wikipedia.org/wiki?curid=" + pageid);
 			}

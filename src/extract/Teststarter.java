@@ -3,7 +3,7 @@ package extract;
 import database.RediPage;
 import extract.pageinfo.DisaPageExtraction;
 import extract.pageinfo.RediPageExtraction;
-import extract.predicatetable.WikitextPredicate;
+import extract.predicate.WikitextPredicate;
 import tools.uFunc;
 
 

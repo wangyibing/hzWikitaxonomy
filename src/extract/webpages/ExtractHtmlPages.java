@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 
@@ -148,5 +149,48 @@ public class ExtractHtmlPages {
 			e.printStackTrace();
 		}
 		
+	}
+	
+	public static boolean ExtractOnePage(String URLPath, String tgPath)
+	{
+		URL url;
+		try {
+			url = new URL(URLPath);
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+		BufferedReader br2;
+		try {
+			br2 = new BufferedReader(
+					new InputStreamReader(url.openStream()));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+		String output = "";
+		int outNr = 0;
+		String tmp = "";
+		uFunc.deleteFile(tgPath);
+		try {
+			while((tmp = br2.readLine()) != null)
+			{
+				output += tmp + "\n";
+				outNr ++;
+				if(outNr % 1000 == 0)
+				{
+					uFunc.addFile(output, tgPath);
+					output = "";
+				}
+			}
+			uFunc.addFile(output, tgPath);
+			return true;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
 	}
 }

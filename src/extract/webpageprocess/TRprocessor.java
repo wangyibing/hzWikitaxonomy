@@ -23,7 +23,7 @@ public class TRprocessor {
 	public static String info;
 	private static Vector<myTag> tags = new Vector<myTag>();
 	
-	static int TRtagId = 0;
+	static int TRtagId = 1;
 	
 	public static String GenerFromTR(int pageid, Tag tr)
 	{

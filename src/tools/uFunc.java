@@ -264,7 +264,7 @@ public class uFunc {
 		result = full2HalfChange(s1);
 		return result;
 	}
-	
+
 	public static void addFile(String string, String path) {
 		if(string == null || string.equals(""))
 			return;
@@ -282,6 +282,11 @@ public class uFunc {
 			System.out.println(path);
 			e.printStackTrace();
 		}		
+	}
+	public static void addFile(StringBuffer sb, String path) {
+		if(sb == null) return;
+		addFile(sb.toString(), path);
+		sb.setLength(0);
 	}
 	public static void deleteFile(String path) {
 		
@@ -405,6 +410,104 @@ public class uFunc {
 		uFunc.addFile(output, path);
 	}
 
+
+	public static void SaveDoubleHashMap(HashMap<String, Double> map, String path){
+		deleteFile(path);
+		List<Entry<String, Double>> infoIds =
+			    new ArrayList<Entry<String, Double>>(
+			    		((HashMap<String, Double>)map).entrySet());
+		if(infoIds.size() == 0)
+		{
+			System.out.println("DoubleHashMap size=0");
+			return;
+		}
+		Collections.sort(infoIds, new Comparator<Entry<String, Double>>() {   
+		    public int compare(Entry<String, Double> o1, Entry<String, Double> o2) {      
+		        //return (o2.getValue() - o1.getValue()); 
+		    	if(o2.getValue() > o1.getValue())
+		    		return 1;
+		    	if(o2.getValue() < o1.getValue())
+		    		return -1;
+		    	return 0;
+		    }
+		});
+		int size = 0;
+		StringBuffer output = new StringBuffer();
+		for(int i = 0 ; i < infoIds.size() ;  i ++)
+		{
+			output.append( infoIds.get(i).getKey() + "\t" + 
+					infoIds.get(i).getValue() + "\n");
+			size ++;
+			if(size % 1000 == 0){
+				addFile(output.toString(), path);
+				output.setLength(0);
+			}
+		}
+		addFile(output.toString(), path);
+	}
+	
+	public static void SaveIntDoubleHashMap(HashMap<Integer, Double> map, String path){
+		deleteFile(path);
+		List<Entry<Integer, Double>> infoIds =
+			    new ArrayList<Entry<Integer, Double>>(
+			    		((HashMap<Integer, Double>)map).entrySet());
+		if(infoIds.size() == 0)
+		{
+			System.out.println("DoubleHashMap size=0");
+			return;
+		}
+		Collections.sort(infoIds, new Comparator<Entry<Integer, Double>>() {   
+		    public int compare(Entry<Integer, Double> o1, Entry<Integer, Double> o2) {      
+		        //return (o2.getValue() - o1.getValue()); 
+		    	if(o2.getValue() > o1.getValue())
+		    		return 1;
+		    	if(o2.getValue() < o1.getValue())
+		    		return -1;
+		    	return 0;
+		    }
+		});
+		int size = 0;
+		StringBuffer output = new StringBuffer();
+		for(int i = 0 ; i < infoIds.size() ;  i ++)
+		{
+			output.append( infoIds.get(i).getKey() + "\t" + 
+					infoIds.get(i).getValue() + "\n");
+			size ++;
+			if(size % 1000 == 0){
+				addFile(output.toString(), path);
+				output.setLength(0);
+			}
+		}
+		addFile(output.toString(), path);
+	}
+	
+	public static void SaveStringHashMap(HashMap<Integer, String> map, String path){
+		deleteFile(path);
+		List<Entry<Integer, String>> infoIds =
+			    new ArrayList<Entry<Integer, String>>(
+			    		(map).entrySet());
+		Collections.sort(infoIds, new Comparator<Entry<Integer, String>>() {   
+		    public int compare(Entry<Integer, String> o1, Entry<Integer, String> o2) {      
+		        //return (o2.getValue() - o1.getValue()); 
+		        return (o2.getKey() - o1.getKey());
+		    }
+		});
+		int size = 0;
+		StringBuffer output = new StringBuffer();
+		for(int i = 0 ; i < infoIds.size() ;  i ++)
+		{
+			output.append( infoIds.get(i).getKey() + "\t" + 
+					infoIds.get(i).getValue() + "\n");
+			size ++;
+			if(size % 1000 == 0){
+				addFile(output.toString(), path);
+				output.setLength(0);
+			}
+		}
+		addFile(output.toString(), path);
+	}
+	
+	
 	public static void CalcuFreqDistr(HashMap<String, Integer> map2, String path){
 		uFunc.deleteFile(path);
 		HashMap<Integer, Integer> map = 
@@ -653,5 +756,22 @@ public class uFunc {
 		Pattern p = Pattern.compile(regex);
 		Matcher m = p.matcher(string);
 		return m.find();
+	}
+
+
+	@SuppressWarnings("rawtypes")
+	public static String Map2Id(HashMap map, String iSign,
+			String pSign) {
+		// TODO Auto-generated method stub
+		if(map == null)
+			return null;
+		Iterator it = map.entrySet().iterator();
+		StringBuffer sb = new StringBuffer();
+		while(it.hasNext())
+		{
+			Entry next = (Entry) it.next();
+			sb.append("" + next.getKey() + iSign + next.getValue() + pSign);
+		}
+		return sb.toString();
 	}
 }

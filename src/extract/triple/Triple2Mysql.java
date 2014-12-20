@@ -22,12 +22,15 @@ public class Triple2Mysql {
 		try {
 			m.Query.setInt(1, pageid);
 			m.Query.setString(4, Entity.getTitle(pageid));
+			
 			if(contP.contains("->")){
 				int pid = Integer.parseInt(contP.substring(
 						contP.indexOf("->") + 3, contP.length() - 1));
 				m.Query.setInt(2, pid);
 				contP = contP.substring(0, contP.indexOf("->"));
 			}
+			else m.Query.setInt(2, 0);
+			
 			m.Query.setString(5, contP);
 			
 			if(contO.contains("->")){
@@ -36,6 +39,8 @@ public class Triple2Mysql {
 				m.Query.setInt(3, pid);
 				contO = contO.substring(0, contO.indexOf("->"));
 			}
+			else m.Query.setInt(3, 0);
+			
 			m.Query.setString(6, contO);
 			
 			if(upperTitle != null){
@@ -46,7 +51,13 @@ public class Triple2Mysql {
 					m.Query.setInt(8, uid);
 					us = us.substring(0, us.indexOf("->"));
 				}
-				m.Query.setString(8, us);
+				else m.Query.setInt(8, 0);
+				
+				m.Query.setString(7, us);
+			}
+			else{
+				m.Query.setInt(8, 0);
+				m.Query.setString(7, null);
 			}
 			
 			m.Query.setString(9, objTag.toPlainTextString());
@@ -60,7 +71,8 @@ public class Triple2Mysql {
 				System.out.println(batchNr + " batchNr inserted into mysql");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//e.printStackTrace();
+			System.out.println("mysql inser error:" + pageid + "\t" + contP + "\t" + contO);
 		}
 	}
 
@@ -70,7 +82,7 @@ public class Triple2Mysql {
 		m.execute("data/sql/CreatehzTriple.sql");
 		String sql = "insert into " + tName + " (SubId, PredId, ObjId, Subject, "
 				+ "Predicate, Object, UpperTitle, UpperTitleId, OriginalObj, OriginalTRtag, "
-				+ "TRtagid, Note) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ";
+				+ "TRtagid, Note) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ";
 		try {
 			m.Query = m.conn.prepareStatement(sql);
 			System.out.println("hzTriple.table in mysql inited!");

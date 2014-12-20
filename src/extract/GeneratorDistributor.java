@@ -6,11 +6,11 @@ import org.htmlparser.Tag;
 
 import tools.uFunc;
 import triple.standardize.ObjeStdz;
+import zzzz_aborted.PredIdGenerator;
 
 import com.tag.myElement;
 import com.tag.myObj;
 
-import extract.predicatetable.PredIdGenerator;
 import extract.triple.TripleGenerator;
 import extract.webpageprocess.InfoboxNode;
 
@@ -139,11 +139,11 @@ public class GeneratorDistributor {
 				pageid, predi, objc, upperTitle, upperTitleMinus, 
 				tRTitleNr, objTag, tRtagId);
 		//uFunc.Alert(true, i, result);
-		if(result != null && result.equals("") == false)
+		/*if(result != null && result.equals("") == false)
 		{
 			PredIdGenerator.generator(pageid, 
 					"/home/hanzhe/Public/result_hz/wiki_count2/predicate/predicateId", upperTitle, result);
-		}
+		}*/
 		// else is considered
 		if(result == null || result.equals(""))
 			return null;

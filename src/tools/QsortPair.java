@@ -35,6 +35,8 @@ public class QsortPair {
 			boolean Low2High, int Capacity) {
 		String path = srcPath;
 		uFunc.deleteFile(targetPath);
+		Capacity = uFunc.GetLineNr(path) + 5;
+		System.out.println("QsortPair: pair Nr:" + (Capacity-5));
 		SIpair [] pairs = new SIpair[Capacity];
 		for(int i = 0; i < Capacity;i++){
 			pairs[i] = new SIpair();
@@ -44,6 +46,7 @@ public class QsortPair {
 		String s = "";
 		int index = 0;
 		try {
+			System.out.println("QsortPair: begin pair loading...");
 			while(( s = br.readLine())!= null){
 				String [] ss = s.split("\t");
 				try{
@@ -83,18 +86,18 @@ public class QsortPair {
 		else
 			Arrays.sort(pairs, 0, index, new DescComp());
 		System.out.println("QsortPair: qsort finished!");
-		String output = "";
+		StringBuffer sb = new StringBuffer();
 		for(int i = 0 ; i < index; i++){
 			if(SecColComp == true)
-				output += pairs[i].s + "\t" + pairs[i].i + "\n";
+				sb.append(pairs[i].s + "\t" + pairs[i].i + "\n");
 			else
-				output += pairs[i].i + "\t" + pairs[i].s + "\n";
+				sb.append(pairs[i].i + "\t" + pairs[i].s + "\n");
 			if(i % 1000 == 0){
-				uFunc.addFile(output, targetPath);
-				output = "";
+				uFunc.addFile(sb.toString(), targetPath);
+				sb.setLength(0);
 			}
 		}
-		uFunc.addFile(output, targetPath);
+		uFunc.addFile(sb.toString(), targetPath);
 		System.out.println("QsortPair: finished!");
 	}
 }

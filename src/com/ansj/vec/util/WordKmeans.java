@@ -21,8 +21,7 @@ import com.ansj.vec.Word2VEC;
 public class WordKmeans {
 
     public static void main(String[] args) throws IOException {
-        Word2VEC vec = new Word2VEC();
-        vec.loadGoogleModel("vectors.bin");
+        Word2VEC vec = new Word2VEC(word2vec.word2vec.modePath);
         System.out.println("load model ok!");
         WordKmeans wordKmeans = new WordKmeans(vec.getWordMap(), 50, 50);
         Classes[] explain = wordKmeans.explain();

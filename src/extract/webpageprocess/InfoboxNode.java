@@ -73,6 +73,8 @@ public class InfoboxNode {
 							TRprocessor.GenerFromTR(PageId, tag);
 					if(triples == null || triples.equals(""))
 						return;
+					
+					TRprocessor.TRtagId ++;
 					outputTriples += triples;
 				}
 				else if(tagName.equals("HR"))

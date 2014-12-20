@@ -1,181 +1,60 @@
 package zzzz_aborted;
 
-import tools.URL2UTF8;
-import tools.uFunc;
-import triple.standardize.HTMLStdz;
-import triple.standardize.ObjeStdz;
-
 import com.tag.myElement;
-import com.tag.myObj;
 
-import database.Entity;
+import tools.uFunc;
 
 public class PredIdGenerator {
-	public static boolean NoLink = false;
-	public static myElement UpperTitle;
-	public static int PageId;
 
-	public static String GetTriples(int pageid, myObj predi, myObj objc, 
-			myElement upperTitle, int tRTitleNr) {
-		// TODO Auto-generated method stub
-		UpperTitle = upperTitle;
-		PageId = pageid;
-		if(predi == null || objc == null || predi.eles.size() < 1)
+	static int PageId = 0;
+	static int PagePredNr = 0;
+	static int MaxPagePredNr = 0;
+	
+	public static void generator(int pageid,
+			String outputpath, myElement upperTitle, String triple)
+	{
+		if(pageid != PageId)
 		{
-			return null;
+			if(PagePredNr > MaxPagePredNr)
+				MaxPagePredNr = PagePredNr;
+			PagePredNr = 1;
+			PageId = pageid;
 		}
-		String contP = getStringFromMyelement(predi.eles.get(0), NoLink);
-		if(contP == null || contP.equals(""))
+		else
 		{
-			//System.out.println("SecondStandardize.java:" + "conP empty:pageid:" + pageid);
-			return null;
+			PagePredNr ++;
 		}
-		
-		String result = "";
-		for(int i = 0; i < objc.eles.size(); i ++)
+		String prediId = PagePredNr + "";
+		int zeroNr = 3 - prediId.length();
+		for(int i = 0; i < zeroNr; i ++)
+			prediId = "0" + prediId;
+		prediId = PageId + prediId;
+		output += prediId +  "\n";
+		String upperInfo = null;
+		if(upperTitle != null)
+			upperInfo = upperTitle.getStringFromMyelement(null, true);
+		output += "UpperTitle:" + upperInfo + "\n";
+		output += triple;
+		output += "\n";
+		outNr ++;
+		if(outNr % 1000 == 0)
 		{
-			String contO = getStringFromMyelement(objc.eles.get(i), !NoLink);
-			if(contO == null || contO.equals(""))
+			uFunc.addFile(output, outputpath);
+			output = "";
+			if(outNr % 500000 == 0)
 			{
-				continue;
+				System.out.println(outNr + " predicate find!");
 			}
-			if(predi.eleNr == objc.eleNr && objc.eleNr > 1)
-				contP = getStringFromMyelement(predi.eles.get(i), NoLink);
-			if(uFunc.isPeriod(contP) || contP.contains("〒"))
-			{
-				if(tRTitleNr <= 1)
-				{
-					continue;
-				}
-				if(contP.contains("〒") == false && upperTitle == null)
-				{
-					//System.out.println(pageid + ";" + contP);
-					continue;
-				}
-				contO += "####" + contP;
-				contP = upperTitle.context;
-			}
-			if(isNotPredicate(contP))
-				continue;
-			// page's title can't be predicate
-			if(Entity.getId(uFunc.Simplify(contP.replaceAll(" |_", "").toLowerCase())) == pageid)
-			{
-				//System.out.println("SecondStandardize.java:is Entity:" + pageid + ":" + contP);
-				continue;
-			}
-			//System.out.println(contP + ":" + Entity.getId(uFunc.Simplify(contP.replaceAll(" |_", ""))));
-			if(contP.contains(":") == true)
-			{
-				if(contO.contains(":") == true)
-				{
-					result += getTripleFromSgl(contP, pageid);
-					result += getTripleFromSgl(contO, pageid);
-				}
-				continue;
-			}
-			if(contP.matches("\\(.+\\)") == false)
-				contP = contP.replaceAll("(?m)(\\(.+\\))$", "");
-			result += pageid + "\t" + contP + "\t" + contO + "\n";
 		}
-		if(result.equals("") == false)
-			return result;
-		//System.out.println("not in my cases!" + objc.eles.size());
-		return null;
 	}
-
-	public static String getTripleFromSgl(String cont, int pageid2) {
-		// TODO Auto-generated method stub
-		String result = "";
-		if(cont.split(":|：").length < 2){
-			System.out.println("SecondStandardize.java: error");
-			return "";
-		}
-		int index = cont.indexOf(":");
-		if(index < 0 || (index > cont.indexOf("：") && cont.indexOf("：") > 0))
-			index = cont.indexOf("：");
-		String predi = uFunc.ReplaceBoundSpace(cont.substring(0, index));
-		String objc = uFunc.ReplaceBoundSpace(cont.substring(index + 1));
-		myObj p, o;
-		p = new myObj();
-		p.addEle(new myElement(predi));
-		o = new myObj();
-		for(String ss : objc.split(ObjeStdz.splitRegex))
-			o.addEle(new myElement(ss));
-		result += GetTriples(PageId, p, o, null, 0);
-		return result;
+	
+	public static void close(String outputpath){
+		uFunc.addFile(output, outputpath);
+		if(PagePredNr > MaxPagePredNr)
+			MaxPagePredNr = PagePredNr; 
+		System.out.println("max page's predicate nr is:" + MaxPagePredNr);
 	}
-
-	private static boolean isNotPredicate(String contP) {
-		// TODO Auto-generated method stub
-		contP = uFunc.Simplify(contP);
-		if(contP.contains("伤亡") && uFunc.containNumber(contP))
-			return true;
-		if(contP.contains("国旗") || contP.contains("←") 
-				|| contP.contains("国旗") || contP.contains("«")  )
-			return true;
-		if(contP.contains("查") && contP.contains("论") && contP.contains("编"))
-			return true;
-		return false;
-	}
-
-	public static String getStringFromMyelement(myElement predi, boolean hasLink) {
-		// TODO Auto-generated method stub
-		if(predi == null)
-			return null;
-		String cont = predi.context;
-		cont = uFunc.ReplaceBoundSpace(
-				HTMLStdz.standardize(cont));
-		if(cont.contains("•"))
-		{
-			if(UpperTitle != null)
-			{
-				//System.out.println(UpperTitle.context + "\t" + cont);
-				String upp = UpperTitle.context.replaceAll("(\\(.+\\))|(\\[.+\\])", "");
-				//uFunc.countStrings(upp + ":" + cont);
-				if(cont.contains("总") || cont.contains("陆地")
-						|| cont.contains("密度")|| cont.contains("水域")
-						|| cont.contains("排名")|| cont.contains("首都")
-						|| cont.contains("市")|| cont.contains("都会区"))
-				{
-					cont = upp + cont.replaceAll("(?m)^[•_ ]+", "");
-				}
-			}
-			cont = cont.replaceAll("(?m)^[•_ ]+", "");
-			//System.out.println("SecondStandardize.java:" + PageId + cont);
-		}
-		if(cont.equals("") && predi.context.equals("") == false)
-		{
-			//System.out.println("cont: is emptey;Context:" + predi.context + " link:" + predi.link);
-			return null;
-		}
-		if(predi.link == null)
-			return cont;
-		String link = predi.link;
-		if(hasLink == true && (link.startsWith("/wiki/") || 
-				link.startsWith("http://zh.wikipedia.org/wiki/")))
-		{
-			if(link.endsWith(".jpg") || link.endsWith(".png") ||
-					link.endsWith(".svg"))
-			{
-				return cont;
-			}
-			else
-			{
-				String entity = URL2UTF8.unescape(link.substring
-						(link.indexOf("/wiki/") + 6));
-				if(entity.contains("#"))
-					entity = entity.substring(0,  entity.indexOf("#"));
-				int pageid = Entity.getId(entity);
-				if(pageid > 0)
-				{
-					return cont + "->[" + pageid + "]";
-				}
-				else
-				{
-					return cont;
-				}
-			}
-		}
-		return cont;
-	}
+	static String output = "";
+	static int outNr = 0;
 }
+

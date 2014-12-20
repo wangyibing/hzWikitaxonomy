@@ -14,10 +14,19 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
 
-
 import com.ansj.vec.domain.WordEntry;
 
 public class Word2VEC {
+	public Word2VEC(String modelPath)
+	{
+		try {
+			this.loadGoogleModel(modelPath);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return;
+		}
+		System.out.println("word2vec model inited:" + modelPath);
+	}
 
 	public static void main(String[] args) throws IOException {
 
@@ -25,11 +34,15 @@ public class Word2VEC {
 		// learn.learnFile(new File("library/xh.txt"));
 		// learn.saveModel(new File("library/javaSkip1"));
 
-		Word2VEC vec = new Word2VEC();
-		vec.loadJavaModel("library/javaSkip1");
+		Word2VEC vec = new Word2VEC("data/word2vec/QA_vectors.bin");
+		System.out.println("loaded");
 
-		// System.out.println("中国" + "\t" +
-		// Arrays.toString(vec.getWordVector("中国")));
+		float[] s1 = vec.getWordVector("中国");
+		float[] s2 = vec.getWordVector("中华人民共和国");
+		float sim = 0;
+		for(int i = 0 ; i < s1.length; i ++)
+			sim += s1[i]*s2[i];
+		 System.out.println(sim);
 		// ;
 		// System.out.println("毛泽东" + "\t" +
 		// Arrays.toString(vec.getWordVector("毛泽东")));
@@ -62,7 +75,7 @@ public class Word2VEC {
 
 	private int words;
 	private int size;
-	private int topNSize = 40;
+	private int topNSize = 20;
 
 	/**
 	 * 加载模型

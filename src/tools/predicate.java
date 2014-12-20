@@ -19,7 +19,26 @@ public class predicate {
 	public static void main(String [] args)
 	{
 		//FindDuplicatePredi(Extract.TriplePath);
-		PredDistribution(Extract.TriplePath + "");
+		//PredDistribution(Extract.TriplePath + "");
+		PredW2VDistribution(Extract.TriplePath + "");
+	}
+
+	private static void PredW2VDistribution(String string) {
+		// TODO Auto-generated method stub
+		PredDistribution(string);
+		BufferedReader br = uFunc.getBufferedReader(PrediDistributionPath);
+		String oneLine = "";
+		try {
+			while((oneLine = br.readLine()) != null)
+			{
+				String [] ss = oneLine.split("\t");
+				String pred = ss[0];
+				
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public static int PredFreq(String content)

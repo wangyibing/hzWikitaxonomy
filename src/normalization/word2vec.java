@@ -1,6 +1,5 @@
 package normalization;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -103,12 +102,9 @@ public class word2vec {
 		// TODO Auto-generated method stub
 		if(ModelInited == false)
 		{
-			w1 = new Word2VEC();
-			try {
-				w1.loadGoogleModel(ModelPath);
-			} catch (IOException e) {
+			w1 = new Word2VEC(ModelPath);
+			if(w1 == null){
 				System.out.println("word2vec model init failed!");
-				e.printStackTrace();
 				return false;
 			}
 			ModelInited = true;
