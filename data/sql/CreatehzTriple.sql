@@ -12,6 +12,9 @@ CREATE TABLE `hzTriple` (
 	`Predicate` varchar(255) NOT NULL,
 	`Object` longtext default NULL,
 
+	`Content_wikitext` varchar(255) default NULL,
+	`InfoboxNames` text default NULL,
+
 	`UpperTitle` longtext default NULL,
 	`UpperTitleId` int(11) default NULL,
 

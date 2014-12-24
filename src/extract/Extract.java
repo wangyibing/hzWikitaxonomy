@@ -93,8 +93,8 @@ public class Extract{
 			String titles = uFunc.Simplify(Entity.getTitle(pageid));
 			if(titles == null)
 			{
-				info = "pagetitle missed in Entity:" + pageid;
-				uFunc.Alert(true, i, info);
+				info = "\tpagetitle missed in Entity:" + pageid;
+				uFunc.Alert(false, i, info);
 				continue;
 			}
 			boolean jump = false;

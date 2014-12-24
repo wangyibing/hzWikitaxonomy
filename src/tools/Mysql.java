@@ -25,6 +25,18 @@ public class Mysql {
 		Connect2DB(dbName, IP);
 	}
 	
+	public boolean setQuery(String sql)
+	{
+		try {
+			Query = conn.prepareStatement(sql);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+	
 	public boolean SetLargeQuery(String sql)
 	{
 		try {

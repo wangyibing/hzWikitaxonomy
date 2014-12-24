@@ -15,8 +15,15 @@ public class Update_PredicateInfo {
 	private static String PidUPairFile = folder + "PidUPair";
 	public static void Update(){
 		Mysql m = new Mysql("hzWikiCount2", null);
-		UpperTitle(m, "UpperTitle", "PredicateInfo", "UpperTitles");
-		UpperTitle(m, "UpperTitleId", "PredicateInfo", "UpperTitleIds");
+		//UpperTitle(m, "UpperTitle", "PredicateInfo", "UpperTitles");
+		//UpperTitle(m, "UpperTitleId", "PredicateInfo", "UpperTitleIds");
+		UpdateWikitextInfo(m, "hzTriple", "dumpsTriple", "PredicateInfo");
+	}
+
+	private static void UpdateWikitextInfo(Mysql m, String hzTriple,
+			String dumpsTriple, String predTable) {
+		// TODO Auto-generated method stub
+		WikitextAlignment.DO(m, hzTriple, dumpsTriple, predTable);
 	}
 
 	public static void UpperTitle(Mysql db, String tripleTableCol,

@@ -33,7 +33,7 @@ public class PredTableStarter {
 		//PredicateId.Generate(m, tableName, predicateId);
 		// 2. sort predicateId table to generate "predicateId.sorted"
 		//PredicateId.Sort_old(predicateId, predicateSorted);
-		//Update_PredicateInfo.Update();
+		Update_PredicateInfo.Update();
 		// 3. fill the predicate info with dumpsinfo, generate "predicate2"
 		// file
 		//WikitextPredicate_old.Extract(predicateSorted, dumpsTriple, predicate2);

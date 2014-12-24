@@ -2,6 +2,8 @@ package com.tag;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Vector;
 
 import tools.uFunc;
@@ -11,9 +13,11 @@ public class myPredicate {
 	public static String info = "";
 
 	//**********Base info**************
+	public long id; /*id in mysql */
 	public long Predid;
 	public String Content;
 	public String Link;
+	public int LinkId;
 	public String UpperTitle;
 	public int Pageid;
 	public Vector<String> Objs;
@@ -175,5 +179,37 @@ public class myPredicate {
 			e.printStackTrace();
 		}
 		
+	}
+
+	/*//**********Base info**************
+	public long Predid;
+	public String Content;
+	public String Link;
+	public String UpperTitle;
+	public int Pageid;
+	public Vector<String> Objs;
+	//**********Additional info**************
+	// infobox's name of wikidumps
+	public String InfoboxName;
+	public String WikitextContent;*/
+	
+	// select id, SubId, PredId, ObjId, Subject, Predicate, Object, UpperTitle, 
+	// OriginalObj, Content_wikitext, Note from hzTriple where SubId = ?
+	public void CompleteInfo(ResultSet rs) {
+		// TODO Auto-generated method stub
+		try {
+			id = rs.getLong("id");
+			Content = rs.getString("Predicate");
+			LinkId = rs.getInt("PredId");
+			UpperTitle = rs.getString("UpperTitle");
+			Objs = new Vector<String>();
+			Objs.add(rs.getString("Object"));
+			/*WikitextContent = rs.getString("Content_wikitext");
+			if(WikitextContent != null && WikitextContent.equals("null"))
+				WikitextContent = null;*/
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

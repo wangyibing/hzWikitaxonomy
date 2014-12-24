@@ -3,11 +3,15 @@ import java.util.Vector;
 import com.tag.myPredicate;
 
 class Mytest{
-	int i = 0 ;
+	protected int i = 0 ;
 	int j = 1;
 	Mytest(int a, int b){
 		i = a;
 		j = b;
+	}
+	
+	public void setI(int a){
+		i = a;
 	}
 }
 public class test {
