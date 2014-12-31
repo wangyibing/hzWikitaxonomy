@@ -14,17 +14,49 @@ import java.util.List;
 
 public class Mysql {
 	public Connection conn;
+	public String IP;
+	public String DBname;
 	public PreparedStatement Query = null;
 	public Mysql()
 	{
 		conn = null;
 		Query = null;
 	}
-	public Mysql(String dbName, String IP)
+	public Mysql(String dbName, String ip)
 	{
-		Connect2DB(dbName, IP);
+		DBname = dbName;
+		IP = ip == null ? "localhost" : ip;
+		Connect2DB(DBname, IP);
 	}
 	
+	public Mysql(String dbName, String ip, String usr, String pw)
+	{
+		DBname = dbName;
+		IP = ip == null ? "localhost" : ip;
+		Connect2DB(DBname, IP, usr, pw);
+	}
+	
+	public boolean existTable(String table)
+	{
+		return  existTable(DBname, table);
+	}
+	
+	public boolean existTable(String db, String table)
+	{
+		try {
+			PreparedStatement tQuery = conn.prepareStatement("select `TABLE_NAME` from `INFORMATION_SCHEMA`.`TABLES` "
+					+ "where `TABLE_SCHEMA`='" + db + "' and `TABLE_NAME`='" + table + "'");
+			ResultSet rs = tQuery.executeQuery();
+			if(rs == null)
+				return false;
+			return rs.next();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+	}
+
 	public boolean setQuery(String sql)
 	{
 		try {
@@ -37,7 +69,7 @@ public class Mysql {
 		return true;
 	}
 	
-	public boolean SetLargeQuery(String sql)
+	public PreparedStatement SetLargeQuery(String sql)
 	{
 		try {
 			Query = conn.prepareStatement(sql,
@@ -48,13 +80,23 @@ public class Mysql {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return false;
+			return null;
 		}  
-        
-		return true;
+        return Query;
+	}
+
+	public Connection Connect2DB(String dbName, String ip){
+		return Connect2DB(dbName, ip, "19920326");
 	}
 	
-	public Connection Connect2DB(String dbName, String IP) {
+	public Connection Connect2DB(String dbName, String ip, String pw){
+		return Connect2DB(dbName, ip, "root", pw);
+	}
+	
+	public Connection Connect2DB(String dbName, String ip, String usr, 
+			String pw) {
+		DBname = dbName;
+		IP = ip;
 		// TODO Auto-generated method stub
 		try{
             //调用Class.forName()方法加载驱动程序
@@ -71,7 +113,7 @@ public class Mysql {
         		+ "?useUnicode=true&characterEncoding=UTF-8";    
         //调用DriverManager对象的getConnection()方法，获得一个Connection对象
         try {
-            conn = DriverManager.getConnection(url,"root","19920326");
+            conn = DriverManager.getConnection(url, usr, pw);
             //创建一个Statement对象
             Query = conn.prepareStatement(
         			" select text from Page where pageId = ? ");
@@ -79,8 +121,8 @@ public class Mysql {
             return conn;
         } catch (SQLException e){
             e.printStackTrace();
+            return null;
         }
-        return null;
 	}
 	
 	public void disconnectToMysql() {
